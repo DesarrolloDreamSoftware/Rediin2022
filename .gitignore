@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Rediin2022Api/appsettings.json
+/Rediin2022Web/appsettings.json
