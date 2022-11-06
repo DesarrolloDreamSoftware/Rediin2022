@@ -1,0 +1,33 @@
+﻿@model EProcesoOperativoColFiltro
+
+<form asp-action="_FiltraProcesoOperativoCol">
+    <div mpanel="Base" xpnl-rules="ViewBag.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilEtiqueta"/>
+            </div>
+            <div melemento="FilCol" melem-cols="4">
+                <select mval-filter="Model" xval-for="FilActivo"></select>
+            </div>
+            <div melemento="FilColBtn" melem-cols="4">
+                <button maccion="Filtra" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoColFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoColLimpiaFiltros)"></button>
+                <button maccion="MasFiltros"></button>
+            </div>
+        </div>
+        <div msub-panel="MasFiltros">
+            <div msub-panel="CapTitulo">@MMensajesXId.MasFiltros</div>
+            <div msub-panel="CapDatos">
+                <div melemento="CapLin">
+                    <div melemento="FilCol" melem-cols="12">
+                        <select mval-filter="Model" xval-for="FilTipo"></select>
+                    </div>
+                </div>
+            </div>
+            <div msub-panel="FilAccionesGen">
+                <button maccion="Filtra" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoColFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoColLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>

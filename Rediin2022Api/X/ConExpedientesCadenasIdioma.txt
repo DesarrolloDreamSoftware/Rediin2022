@@ -1,0 +1,48 @@
+﻿/* ************************************************************* */
+/* Cadenas                                                       */
+/* ************************************************************* */
+_ConExpProcOperativoTitCon	Expedientes/Procesos operativos
+EstablecimientoId	Cve establecimiento
+ProcesoOperativoId	Cve proceso operativo
+ProcesoOperativoNombre	Proceso operativo
+Orden	Orden
+ControlEstatus	Control estatus
+Activo	Activo
+_ConExpedienteTitCon	Expedientes
+_ConExpedienteTitCap	Expediente
+ProcesoOperativoId	Cve proceso operativo
+ExpedienteId	Cve expediente
+ProcesoOperativoEstId	Estatus
+EstatusNombre	Estatus
+PermiteModificar	Permite modificar
+_ConExpedienteInicia	Expedientes
+_ConExpedienteCambioEstatusUnoBtn	EstatusUno
+_ConExpedienteCambioEstatusDosBtn	EstatusDos
+_ConExpedienteObjetoTitCon	Expedientes/Archivos
+_ConExpedienteObjetoTitCap	Agregar archivo
+ExpedienteId	Cve expediente
+ExpedienteObjetoId	Cve archivo
+ProcesoOperativoObjetoId	Selecciona un tipo
+ArchivoNombre	Nombre (opcional)
+Ruta	Ruta
+Activo	Activo
+ProcesoOperativoObjetoNombre	Nombre
+Cantidad	Cantidad
+Orden	Orden
+ArchivoVencido	Vencido
+Archivo	Archivo
+NombreArchivo	Nombre
+_ConExpedienteObjetoInicia	Objetos
+_ExpedienteEstatuTitCon	Estatus
+_ExpedienteEstatuTitCap	Expediente estatu
+ExpedienteId	Cve expediente
+ExpedienteEstatusId	Cve expediente estatus
+ProcesoOperativoEstId	Cve proceso operativo est
+EstatusNombre	Estatus
+Nombre	Nombre
+ApellidoPaterno	Apellido paterno
+ApellidoMaterno	Apellido materno
+_ExpedienteEstatuInicia	Estatus
+/* ************************************************************* */
+/* Fin cadenas                                                   */
+/* ************************************************************* */

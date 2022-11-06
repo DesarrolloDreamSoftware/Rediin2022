@@ -1,0 +1,62 @@
+using DSMetodNetX.Api.Seguridad;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Rediin2022.Entidades.PriCatalogos;
+using Rediin2022.Negocio.PriCatalogos;
+using Rediin2022.Entidades.PriOperacion;
+using Rediin2022.Negocio.PriOperacion;
+using Rediin2022.Entidades.PriClientes;
+using Rediin2022.Negocio.PriClientes;
+
+namespace Rediin2022Api
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            //Configuracion personalizada
+            MStartUpApi.ConfiguraServicios(services, Configuration);
+
+            //Inyeccion Negocios
+            //services.AddScoped<INPaises, NPaises>();
+            //Catalogos
+            services.AddScoped<INCatalogos, NCatalogos>();
+            services.AddScoped<INProcesosOperativos, NProcesosOperativos>();
+            services.AddScoped<INAutorizaciones, NAutorizaciones>();
+            //Operacion
+            services.AddScoped<INConExpedientes, NConExpedientes>();
+            //Clientes
+            services.AddScoped<INExpedientes, NExpedientes>();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {            
+            //Configuracion personalizada
+            MStartUpApi.Configura(app, env);
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute("default", "{area=ModuloPrueba}/{controller=PruebaCtrl}/{action=Valida}/{id?}");
+            });
+        }
+    }
+}

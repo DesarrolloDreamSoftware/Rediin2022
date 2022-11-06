@@ -1,0 +1,149 @@
+﻿@model EProcesoOperativoCol
+
+@{
+	ViewData["Title"] = "Captura";
+	Boolean vTieneExpedientes = ViewBag.TieneExpedientes;
+}
+
+<form asp-action="_ProcesoOperativoColCaptura">
+	<div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+		<div msub-panel="CapTitulo">
+			@MensajesXId._ProcesoOperativoColTitCap
+		</div>
+		<div msub-panel="CapDatos">
+			<div melemento="CapLin">
+				<div melemento="CapCol" melem-cols="6">
+					<input mval="Model" xval-for="ColumnaId" xval-enabled="false" />
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="Activo" xenabled="@vTieneExpedientes == false" />
+				</div>
+			</div>
+			<div melemento="CapLin">
+				<div melemento="CapCol" melem-cols="12">
+					<input mval="Model" xval-for="Etiqueta" />
+				</div>
+			</div>
+			<div melemento="CapLin">
+				<div melemento="CapCol" melem-cols="3">
+					@if (!vTieneExpedientes)
+					{
+						<select mval="Model" xval-for="Tipo" onchange="ConfiguraTipo(this);"></select>
+					}
+					else
+					{
+						<select mval="Model" xval-for="Tipo" onchange="ConfiguraTipo(this);" disabled="disabled"></select>
+					}
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="Decimales" />
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					@if (!vTieneExpedientes)
+					{
+						<input type="hidden" mval="Model" xval-for="CapRangoIni" />
+						<input id="CapRangoIniTexto" mval="Int" xval-min="0" xval-max="200" onchange="EstableceCapRangoIni(this);"
+						   mval-crea-etiq="false" value="@Model.CapRangoIni" />
+						<input id="CapRangoIniEntero" mval="Int" xval-min="0" xval-max="@MValidaciones._int64Max" onchange="EstableceCapRangoIni(this);"
+						   mval-crea-etiq="false" value="@Model.CapRangoIni" />
+						<input id="CapRangoIniImporte" mval="Dec" xval-min="0" xval-max="999999999999.999999" onchange="EstableceCapRangoIni(this);"
+						   mval-crea-etiq="false" value="@Model.CapRangoIni" />
+						<input id="CapRangoIniFecha" mval="Date" xval-min="1800/1/1" xval-max="9999/1/1" onchange="EstableceCapRangoIni(this);"
+						   mval-crea-etiq="false" value="@Model.CapRangoIni" />
+					}
+					else
+					{
+						<input mval="Model" xval-for="CapRangoIni" xenabled="false" />
+					}
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					@if (!vTieneExpedientes)
+					{
+						<input type="hidden" mval="Model" xval-for="CapRangoFin" />
+						<input id="CapRangoFinTexto" mval="Int" xval-min="0" xval-max="200" onchange="EstableceCapRangoFin(this);"
+						   mval-crea-etiq="false" value="@Model.CapRangoFin" />
+						<input id="CapRangoFinEntero" mval="Int" xval-min="0" xval-max="@MValidaciones._int64Max" onchange="EstableceCapRangoFin(this);"
+						   mval-crea-etiq="false" value="@Model.CapRangoFin" />
+						<input id="CapRangoFinImporte" mval="Dec" xval-min="0" xval-max="999999999999.999999" onchange="EstableceCapRangoFin(this);"
+						   mval-crea-etiq="false" value="@Model.CapRangoFin" />
+						<input id="CapRangoFinFecha" mval="Date" xval-min="1800/1/1" xval-max="9999/1/1" onchange="EstableceCapRangoFin(this);"
+						   mval-crea-etiq="false" value="@Model.CapRangoFin" />
+					}
+					else
+					{
+						<input mval="Model" xval-for="CapRangoFin" xenabled="false" />
+					}
+				</div>
+			</div>
+			<div melemento="CapLinSubEnc">
+				<div melemento="CapCol" melem-cols="12">
+					@MensajesXId._ProcesoOperativoColST1
+				</div>
+			</div>
+			<div melemento="CapLin">
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="ConOrden" />
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="ConOrdenar" />
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="ConLongitud" />
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+				</div>
+			</div>
+			<div melemento="CapLinSubEnc">
+				<div melemento="CapCol" melem-cols="12">
+					@MensajesXId._ProcesoOperativoColST2
+				</div>
+			</div>
+			<div melemento="CapLin">
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="CapOrden" />
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="CapColumnas" />
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="CapColumnasVacias" />
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="CapObligatorio" />
+				</div>
+			</div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="3">
+                    <input mval="Model" xval-for="CapTab"/>
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+            </div>
+		</div>
+		<div msub-panel="CapAccionesGen">
+			<button maccion="Guarda"
+					asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoColInserta) : nameof(ProcesosOperativosController.ProcesoOperativoColActualiza))"
+					xvalidate="@nameof(EProcesoOperativoCol)"></button>
+			&nbsp;
+			<a maccion="Regresa" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoColCon)"></a>
+			&nbsp;
+			<div mauditoriacb="@Model"></div>
+		</div>
+	</div>
+</form>
+
+@section Scripts {
+	<script src="~/PriCatalogos/ProcesosOperativos/ProcesoOperativoCol.js" asp-append-version="true"></script>
+	if (!vTieneExpedientes)
+	{
+		<script type="text/javascript">
+			ConfiguraTipo(document.getElementById('Tipo'));
+		</script>
+	}
+}

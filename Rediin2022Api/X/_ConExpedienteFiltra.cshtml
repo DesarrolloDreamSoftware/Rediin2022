@@ -1,0 +1,18 @@
+﻿@model EConExpedienteFiltro
+
+<form asp-action="_FiltraConExpediente">
+    <div mpanel="Base" xpnl-rules="ViewBag.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilExpedienteId"/>
+            </div>
+            <div melemento="FilCol" melem-cols="4">
+                <select mval-filter="Model" xval-for="FilProcesoOperativoEstId" xval-items="ViewBag.ProcesosOperativosEst"></select>
+            </div>
+            <div melemento="FilColBtn" melem-cols="4">
+                <button maccion="Filtra" asp-action="@nameof(ConExpedientesController.ConExpedienteFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(ConExpedientesController.ConExpedienteLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>

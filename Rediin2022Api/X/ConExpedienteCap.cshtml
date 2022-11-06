@@ -1,0 +1,35 @@
+﻿@model EConExpediente
+
+@{
+    ViewData["Title"] = "Captura";
+}
+
+<form asp-action="_ConExpedienteCaptura">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._ConExpedienteTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="3">
+                    <input mval="Model" xval-for="ExpedienteId" xval-enabled="false"/>
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <button maccion="Guarda"
+                    asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInserta) : nameof(ConExpedientesController.ConExpedienteActualiza))"
+                    xvalidate="@nameof(EConExpediente)"></button>
+            &nbsp;
+            <a maccion="Regresa" asp-action="@nameof(ConExpedientesController.ConExpedienteCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

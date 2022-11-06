@@ -1,0 +1,42 @@
+﻿@model EExpedienteEstatu
+
+@{
+    ViewData["Title"] = "Captura";
+}
+
+<form asp-action="_ExpedienteEstatuCaptura">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._ExpedienteEstatuTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="3">
+                    <input mval="Model" xval-for="ExpedienteEstatusId" xval-enabled="false"/>
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="3">
+                    <select mval="Model" xval-for="ProcesoOperativoEstId" xval-items="ViewBag.ProcesosOperativosEst"></select>
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+                <div melemento="CapCol" melem-cols="3">
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <a maccion="Regresa" asp-action="@nameof(ConExpedientesController.ExpedienteEstatuCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

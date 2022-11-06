@@ -1,0 +1,381 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="_ProcesoOperativoTitCon" xml:space="preserve">
+    <value>Catálogos/Procesos operativos</value>
+  </data>
+  <data name="_ProcesoOperativoTitCap" xml:space="preserve">
+    <value>Proceso operativo</value>
+  </data>
+  <data name="EstablecimientoId" xml:space="preserve">
+    <value>Cve establecimiento</value>
+  </data>
+  <data name="ProcesoOperativoId" xml:space="preserve">
+    <value>No. proceso</value>
+  </data>
+  <data name="ProcesoOperativoNombre" xml:space="preserve">
+    <value>Proceso operativo</value>
+  </data>
+  <data name="Orden" xml:space="preserve">
+    <value>Orden</value>
+  </data>
+  <data name="Activo" xml:space="preserve">
+    <value>Activo</value>
+  </data>
+  <data name="EstablecimientoNombre" xml:space="preserve">
+    <value>Establecimiento</value>
+  </data>
+  <data name="_ProcesoOperativoColTitCon" xml:space="preserve">
+    <value>Procesos operativos/Columnas</value>
+  </data>
+  <data name="_ProcesoOperativoColTitCap" xml:space="preserve">
+    <value>Columna</value>
+  </data>
+  <data name="ColumnaId" xml:space="preserve">
+    <value>No. columna</value>
+  </data>
+  <data name="Etiqueta" xml:space="preserve">
+    <value>Etiqueta</value>
+  </data>
+  <data name="Tipo" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="ConLongitud" xml:space="preserve">
+    <value>Longitud</value>
+  </data>
+  <data name="Decimales" xml:space="preserve">
+    <value>Decimales</value>
+  </data>
+  <data name="ConOrden" xml:space="preserve">
+    <value>Orden en consulta</value>
+  </data>
+  <data name="ConOrdenar" xml:space="preserve">
+    <value>Permite ordenar</value>
+  </data>
+  <data name="CapOrden" xml:space="preserve">
+    <value>Orden en captura</value>
+  </data>
+  <data name="CapColumnas" xml:space="preserve">
+    <value>Columnas de captura</value>
+  </data>
+  <data name="CapColumnasVacias" xml:space="preserve">
+    <value>Columnas vacias</value>
+  </data>
+  <data name="CapObligatorio" xml:space="preserve">
+    <value>Obligatorio</value>
+  </data>
+  <data name="CapRangoIni" xml:space="preserve">
+    <value>Rango inicial</value>
+  </data>
+  <data name="CapRangoFin" xml:space="preserve">
+    <value>Rango final</value>
+  </data>
+  <data name="_ProcesoOperativoColST1" xml:space="preserve">
+    <value>Consulta</value>
+  </data>
+  <data name="_ProcesoOperativoColST2" xml:space="preserve">
+    <value>Captura</value>
+  </data>
+  <data name="_ProcesoOperativoColInicia" xml:space="preserve">
+    <value>Columnas</value>
+  </data>
+  <data name="_ProcesoOperativoObjetoTitCon" xml:space="preserve">
+    <value>Procesos operativos/Objetos</value>
+  </data>
+  <data name="_ProcesoOperativoObjetoTitCap" xml:space="preserve">
+    <value>Objeto</value>
+  </data>
+  <data name="ProcesoOperativoObjetoId" xml:space="preserve">
+    <value>No. objeto</value>
+  </data>
+  <data name="ProcesoOperativoObjetoNombre" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="Cantidad" xml:space="preserve">
+    <value>Cantidad</value>
+  </data>
+  <data name="_ProcesoOperativoObjetoInicia" xml:space="preserve">
+    <value>Objetos</value>
+  </data>
+  <data name="TiposColumna" xml:space="preserve">
+    <value>Tipos de columna</value>
+  </data>
+  <data name="TiposColumna_Ninguno" xml:space="preserve">
+    <value>Enumerador vacío</value>
+  </data>
+  <data name="TiposColumna_Texto" xml:space="preserve">
+    <value>Texto</value>
+  </data>
+  <data name="TiposColumna_Boleano" xml:space="preserve">
+    <value>Boleano</value>
+  </data>
+  <data name="TiposColumna_Entero" xml:space="preserve">
+    <value>Entero</value>
+  </data>
+  <data name="TiposColumna_Importe" xml:space="preserve">
+    <value>Importe</value>
+  </data>
+  <data name="TiposColumna_Fecha" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="TiposColumna_FechaYHora" xml:space="preserve">
+    <value>FechaYHora</value>
+  </data>
+  <data name="TiposColumna_Hora" xml:space="preserve">
+    <value>Hora</value>
+  </data>
+  <data name="_ConExpProcOperativoTitCon" xml:space="preserve">
+    <value>Expedientes/Procesos operativos</value>
+  </data>
+  <data name="_ConExpedienteTitCon" xml:space="preserve">
+    <value>Expedientes</value>
+  </data>
+  <data name="_ConExpedienteTitCap" xml:space="preserve">
+    <value>Expediente</value>
+  </data>
+  <data name="ExpedienteId" xml:space="preserve">
+    <value>Cve expediente</value>
+  </data>
+  <data name="_ConExpedienteInicia" xml:space="preserve">
+    <value>Expedientes</value>
+  </data>
+  <data name="_ConExpedienteObjetoTitCon" xml:space="preserve">
+    <value>Expedientes/Objetos</value>
+  </data>
+  <data name="ExpedienteObjetoId" xml:space="preserve">
+    <value>Cve expediente objeto</value>
+  </data>
+  <data name="ArchivoNombre" xml:space="preserve">
+    <value>Archivo</value>
+  </data>
+  <data name="Ruta" xml:space="preserve">
+    <value>Ruta</value>
+  </data>
+  <data name="_ConExpedienteObjetoInicia" xml:space="preserve">
+    <value>Objetos</value>
+  </data>
+  <data name="BusquedaTexto" xml:space="preserve">
+    <value>Buscador</value>
+  </data>
+  <data name="_ConExpedienteObjetoTitCap" xml:space="preserve">
+    <value>Expediente objeto</value>
+  </data>
+  <data name="CapTab" xml:space="preserve">
+    <value>Tabulador</value>
+  </data>
+  <data name="ControlEstatus" xml:space="preserve">
+    <value>Control por estatus</value>
+  </data>
+  <data name="TieneExpedientes" xml:space="preserve">
+    <value>Tiene expedientes</value>
+  </data>
+  <data name="DiasVencimiento" xml:space="preserve">
+    <value>Días vencimiento</value>
+  </data>
+  <data name="Obligatorio" xml:space="preserve">
+    <value>Obligatorio</value>
+  </data>
+  <data name="EstatusNombre" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="PermiteModificar" xml:space="preserve">
+    <value>Permite modificar</value>
+  </data>
+  <data name="ProcesoOperativoEstId" xml:space="preserve">
+    <value>Cve estatus</value>
+  </data>
+  <data name="_ProcesoOperativoEstInicia" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="_ProcesoOperativoEstTitCap" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="_ProcesoOperativoEstTitCon" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="ProcesoOperativoEstIdSig" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="ProcesoOperativoEstSecId" xml:space="preserve">
+    <value>Cve secuencia</value>
+  </data>
+  <data name="_ProcesoOperativoEstSecInicia" xml:space="preserve">
+    <value>Secuencia</value>
+  </data>
+  <data name="_ProcesoOperativoEstSecTitCap" xml:space="preserve">
+    <value>Secuencia</value>
+  </data>
+  <data name="_ProcesoOperativoEstSecTitCon" xml:space="preserve">
+    <value>Secuencia</value>
+  </data>
+  <data name="_AutorizacionTitCon" xml:space="preserve">
+    <value>Autorizaciones</value>
+  </data>
+  <data name="_AutorizacionTitCap" xml:space="preserve">
+    <value>Autorización</value>
+  </data>
+  <data name="AutorizacionId" xml:space="preserve">
+    <value>Cve autorización</value>
+  </data>
+  <data name="AutorizacionNombre" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="_AutorizacionUsuarioTitCon" xml:space="preserve">
+    <value>Usuarios</value>
+  </data>
+  <data name="_AutorizacionUsuarioTitCap" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="AutorizacionUsuarioId" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="UsuarioId" xml:space="preserve">
+    <value>Cve usuario</value>
+  </data>
+  <data name="Nombre" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="ApellidoPaterno" xml:space="preserve">
+    <value>Apellido paterno</value>
+  </data>
+  <data name="ApellidoMaterno" xml:space="preserve">
+    <value>Apellido materno</value>
+  </data>
+  <data name="_AutorizacionUsuarioInicia" xml:space="preserve">
+    <value>Usuarios</value>
+  </data>
+  <data name="EstatusNombreSig" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="_ExpedienteEstatuTitCap" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="_ExpedienteEstatuTitCon" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="_ExpedienteEstatuInicia" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="EsquemaObjetos" xml:space="preserve">
+    <value>Esquema objetos</value>
+  </data>
+  <data name="_ConExpedienteObjetoSelArchivoTitCap" xml:space="preserve">
+    <value>Seleccionar el archivo</value>
+  </data>
+</root>
