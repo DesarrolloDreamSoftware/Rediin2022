@@ -842,5 +842,69 @@ namespace Rediin2022.Entidades.Idioma {
                 return ResourceManager.GetString("UsuarioId", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Bancos.
+        /// </summary>
+        public static string _BancoTitCon {
+            get {
+                return ResourceManager.GetString("_BancoTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string _BancoTitCap {
+            get {
+                return ResourceManager.GetString("_BancoTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve banco.
+        /// </summary>
+        public static string BancoId {
+            get {
+                return ResourceManager.GetString("BancoId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string BancoNombre {
+            get {
+                return ResourceManager.GetString("BancoNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Identificaciones.
+        /// </summary>
+        public static string _IdentificacionTitCon {
+            get {
+                return ResourceManager.GetString("_IdentificacionTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Identificacion.
+        /// </summary>
+        public static string _IdentificacionTitCap {
+            get {
+                return ResourceManager.GetString("_IdentificacionTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve identificaci&#243;n.
+        /// </summary>
+        public static string IdentificacionId {
+            get {
+                return ResourceManager.GetString("IdentificacionId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Identificaci&#243;n.
+        /// </summary>
+        public static string IdentificacionNombre {
+            get {
+                return ResourceManager.GetString("IdentificacionNombre", resourceCulture);
+            }
+        }
     }
 }

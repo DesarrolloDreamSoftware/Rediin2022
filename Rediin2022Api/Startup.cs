@@ -41,6 +41,8 @@ namespace Rediin2022Api
             services.AddScoped<INCatalogos, NCatalogos>();
             services.AddScoped<INProcesosOperativos, NProcesosOperativos>();
             services.AddScoped<INAutorizaciones, NAutorizaciones>();
+            services.AddScoped<INBancos, NBancos>();
+            services.AddScoped<INIdentificaciones, NIdentificaciones>();
             //Operacion
             services.AddScoped<INConExpedientes, NConExpedientes>();
             //Clientes

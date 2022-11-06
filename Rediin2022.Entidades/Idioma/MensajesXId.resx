@@ -378,4 +378,28 @@
   <data name="_ConExpedienteObjetoSelArchivoTitCap" xml:space="preserve">
     <value>Seleccionar el archivo</value>
   </data>
+  <data name="_BancoTitCon" xml:space="preserve">
+    <value>Bancos</value>
+  </data>
+  <data name="_BancoTitCap" xml:space="preserve">
+    <value>Banco</value>
+  </data>
+  <data name="BancoId" xml:space="preserve">
+    <value>Cve banco</value>
+  </data>
+  <data name="BancoNombre" xml:space="preserve">
+    <value>Banco</value>
+  </data>
+  <data name="_IdentificacionTitCon" xml:space="preserve">
+    <value>Identificaciones</value>
+  </data>
+  <data name="_IdentificacionTitCap" xml:space="preserve">
+    <value>Identificacion</value>
+  </data>
+  <data name="IdentificacionId" xml:space="preserve">
+    <value>Cve identificaci&#243;n</value>
+  </data>
+  <data name="IdentificacionNombre" xml:space="preserve">
+    <value>Identificaci&#243;n</value>
+  </data>
 </root>
