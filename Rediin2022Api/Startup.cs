@@ -17,6 +17,7 @@ using Rediin2022.Entidades.PriOperacion;
 using Rediin2022.Negocio.PriOperacion;
 using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Negocio.PriClientes;
+using Sisegui2020.Entidades.PriSeguridad;
 
 namespace Rediin2022Api
 {
@@ -41,8 +42,6 @@ namespace Rediin2022Api
             services.AddScoped<INCatalogos, NCatalogos>();
             services.AddScoped<INProcesosOperativos, NProcesosOperativos>();
             services.AddScoped<INAutorizaciones, NAutorizaciones>();
-            services.AddScoped<INBancos, NBancos>();
-            services.AddScoped<INIdentificaciones, NIdentificaciones>();
             //Operacion
             services.AddScoped<INConExpedientes, NConExpedientes>();
             //Clientes

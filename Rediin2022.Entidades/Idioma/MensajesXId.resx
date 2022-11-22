@@ -397,9 +397,24 @@
     <value>Identificacion</value>
   </data>
   <data name="IdentificacionId" xml:space="preserve">
-    <value>Cve identificaci&#243;n</value>
+    <value>Cve identificación</value>
   </data>
   <data name="IdentificacionNombre" xml:space="preserve">
-    <value>Identificaci&#243;n</value>
+    <value>Identificación</value>
+  </data>
+  <data name="CapCmbIdColumnaId" xml:space="preserve">
+    <value>Columna Cve</value>
+  </data>
+  <data name="CapCmbProcesoOperativoId" xml:space="preserve">
+    <value>Cve proc. oper. catálogo</value>
+  </data>
+  <data name="CapCmbTextoColumnaId" xml:space="preserve">
+    <value>Columna Texto</value>
+  </data>
+  <data name="_ProcesoOperativoColST3" xml:space="preserve">
+    <value>Combo (opcional)</value>
+  </data>
+  <data name="EsCatalogo" xml:space="preserve">
+    <value>Es catálogo</value>
   </data>
 </root>

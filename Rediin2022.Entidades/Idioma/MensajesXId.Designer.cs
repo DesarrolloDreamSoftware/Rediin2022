@@ -106,6 +106,24 @@ namespace Rediin2022.Entidades.Idioma {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string _BancoTitCap {
+            get {
+                return ResourceManager.GetString("_BancoTitCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Bancos.
+        /// </summary>
+        public static string _BancoTitCon {
+            get {
+                return ResourceManager.GetString("_BancoTitCon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Expedientes.
         /// </summary>
         public static string _ConExpedienteInicia {
@@ -205,6 +223,24 @@ namespace Rediin2022.Entidades.Idioma {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Identificacion.
+        /// </summary>
+        public static string _IdentificacionTitCap {
+            get {
+                return ResourceManager.GetString("_IdentificacionTitCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Identificaciones.
+        /// </summary>
+        public static string _IdentificacionTitCon {
+            get {
+                return ResourceManager.GetString("_IdentificacionTitCon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Columnas.
         /// </summary>
         public static string _ProcesoOperativoColInicia {
@@ -228,6 +264,15 @@ namespace Rediin2022.Entidades.Idioma {
         public static string _ProcesoOperativoColST2 {
             get {
                 return ResourceManager.GetString("_ProcesoOperativoColST2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Combo (opcional).
+        /// </summary>
+        public static string _ProcesoOperativoColST3 {
+            get {
+                return ResourceManager.GetString("_ProcesoOperativoColST3", resourceCulture);
             }
         }
         
@@ -412,6 +457,24 @@ namespace Rediin2022.Entidades.Idioma {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Cve banco.
+        /// </summary>
+        public static string BancoId {
+            get {
+                return ResourceManager.GetString("BancoId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string BancoNombre {
+            get {
+                return ResourceManager.GetString("BancoNombre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Buscador.
         /// </summary>
         public static string BusquedaTexto {
@@ -426,6 +489,33 @@ namespace Rediin2022.Entidades.Idioma {
         public static string Cantidad {
             get {
                 return ResourceManager.GetString("Cantidad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Columna Cve.
+        /// </summary>
+        public static string CapCmbIdColumnaId {
+            get {
+                return ResourceManager.GetString("CapCmbIdColumnaId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve proc. oper. catálogo.
+        /// </summary>
+        public static string CapCmbProcesoOperativoId {
+            get {
+                return ResourceManager.GetString("CapCmbProcesoOperativoId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Columna Texto.
+        /// </summary>
+        public static string CapCmbTextoColumnaId {
+            get {
+                return ResourceManager.GetString("CapCmbTextoColumnaId", resourceCulture);
             }
         }
         
@@ -556,6 +646,15 @@ namespace Rediin2022.Entidades.Idioma {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Es catálogo.
+        /// </summary>
+        public static string EsCatalogo {
+            get {
+                return ResourceManager.GetString("EsCatalogo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Esquema objetos.
         /// </summary>
         public static string EsquemaObjetos {
@@ -624,6 +723,24 @@ namespace Rediin2022.Entidades.Idioma {
         public static string ExpedienteObjetoId {
             get {
                 return ResourceManager.GetString("ExpedienteObjetoId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve identificación.
+        /// </summary>
+        public static string IdentificacionId {
+            get {
+                return ResourceManager.GetString("IdentificacionId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Identificación.
+        /// </summary>
+        public static string IdentificacionNombre {
+            get {
+                return ResourceManager.GetString("IdentificacionNombre", resourceCulture);
             }
         }
         
@@ -840,70 +957,6 @@ namespace Rediin2022.Entidades.Idioma {
         public static string UsuarioId {
             get {
                 return ResourceManager.GetString("UsuarioId", resourceCulture);
-            }
-        }
-        /// <summary>
-        ///   Busca una cadena traducida similar a Bancos.
-        /// </summary>
-        public static string _BancoTitCon {
-            get {
-                return ResourceManager.GetString("_BancoTitCon", resourceCulture);
-            }
-        }
-        /// <summary>
-        ///   Busca una cadena traducida similar a Banco.
-        /// </summary>
-        public static string _BancoTitCap {
-            get {
-                return ResourceManager.GetString("_BancoTitCap", resourceCulture);
-            }
-        }
-        /// <summary>
-        ///   Busca una cadena traducida similar a Cve banco.
-        /// </summary>
-        public static string BancoId {
-            get {
-                return ResourceManager.GetString("BancoId", resourceCulture);
-            }
-        }
-        /// <summary>
-        ///   Busca una cadena traducida similar a Banco.
-        /// </summary>
-        public static string BancoNombre {
-            get {
-                return ResourceManager.GetString("BancoNombre", resourceCulture);
-            }
-        }
-        /// <summary>
-        ///   Busca una cadena traducida similar a Identificaciones.
-        /// </summary>
-        public static string _IdentificacionTitCon {
-            get {
-                return ResourceManager.GetString("_IdentificacionTitCon", resourceCulture);
-            }
-        }
-        /// <summary>
-        ///   Busca una cadena traducida similar a Identificacion.
-        /// </summary>
-        public static string _IdentificacionTitCap {
-            get {
-                return ResourceManager.GetString("_IdentificacionTitCap", resourceCulture);
-            }
-        }
-        /// <summary>
-        ///   Busca una cadena traducida similar a Cve identificaci&#243;n.
-        /// </summary>
-        public static string IdentificacionId {
-            get {
-                return ResourceManager.GetString("IdentificacionId", resourceCulture);
-            }
-        }
-        /// <summary>
-        ///   Busca una cadena traducida similar a Identificaci&#243;n.
-        /// </summary>
-        public static string IdentificacionNombre {
-            get {
-                return ResourceManager.GetString("IdentificacionNombre", resourceCulture);
             }
         }
     }

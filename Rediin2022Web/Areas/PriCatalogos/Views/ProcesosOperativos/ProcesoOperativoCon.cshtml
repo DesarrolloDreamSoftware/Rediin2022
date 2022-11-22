@@ -27,6 +27,9 @@
 						<span mhead-for="@nameof(EProcesoOperativo.ProcesoOperativoNombre)" xhead-sort="true"></span>
 					</th>
 					<th>
+                        <span mhead-for="@nameof(EProcesoOperativo.EsCatalogo)" xhead-sort="true"></span>
+                    </th>
+					<th>
                         <span mhead-for="@nameof(EProcesoOperativo.ControlEstatus)" xhead-sort="true"></span>
                     </th>
 					<th>
@@ -68,6 +71,9 @@
 							<td>
 								<span mcell-for="@Model[i].ProcesoOperativoNombre" xcell-first="30"></span>
 							</td>
+                            <td>
+                                <span mcell-for="@Model[i].EsCatalogo"></span>
+                            </td>
 							<td>
 								<span mcell-for="@Model[i].ControlEstatus"></span>
 							</td>

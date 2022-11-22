@@ -1,5 +1,6 @@
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Negocio;
+using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
 
@@ -14,13 +15,20 @@ namespace Rediin2022.Entidades.PriOperacion
         /// Consulta paginada de la entidad ConExpProcOperativo.
         /// </summary>
         EConExpProcOperativoPag ConExpProcOperativoPag(EConExpProcOperativoFiltro conExpProcOperativoFiltro);
-        #endregion
 
-        #region ConExpediente (Exp)
-        /// <summary>
-        /// Consulta paginada de la entidad ConExpediente.
-        /// </summary>
-        EConExpedientePag ConExpedientePag(EConExpedienteFiltro conExpedienteFiltro);
+		#endregion
+
+		#region ConExpediente (Exp)
+		/// <summary>
+		/// Consulta paginada de la entidad ConExpediente.
+		/// </summary>
+		EConExpedientePag ConExpedientePag(EConExpedienteFiltro conExpedienteFiltro);
+		/// <summary>
+		/// Consulta por id de la entidad ConExpediente.
+		/// </summary>
+		/// <param name="expedienteId"></param>
+		/// <returns></returns>
+		EConExpediente ConExpedienteXId(Int64 expedienteId);
         /// <summary>
         /// Permite insertar la entidad ConExpediente.
         /// </summary>
@@ -41,13 +49,17 @@ namespace Rediin2022.Entidades.PriOperacion
         /// Reglas de negocio de la entidad ConExpediente.
         /// </summary>
         List<MEReglaNeg> ConExpedienteReglas();
-        #endregion
-
-        #region ConExpedienteObjeto (Objs)
         /// <summary>
-        /// Consulta paginada de la entidad ConExpedienteObjeto.
+        /// Consulta para los combos que se capturan.
         /// </summary>
-        EConExpedienteObjetoPag ConExpedienteObjetoPag(EConExpedienteObjetoFiltro conExpedienteObjetoFiltro);
+		List<MEElemento> ConExpedienteCmb(EProcesoOperativoCol procesoOperativoCol);
+		#endregion
+
+		#region ConExpedienteObjeto (Objs)
+		/// <summary>
+		/// Consulta paginada de la entidad ConExpedienteObjeto.
+		/// </summary>
+		EConExpedienteObjetoPag ConExpedienteObjetoPag(EConExpedienteObjetoFiltro conExpedienteObjetoFiltro);
         /// <summary>
         /// Permite insertar la entidad ConExpedienteObjeto.
         /// </summary>

@@ -1,22 +1,30 @@
 ﻿using DSEntityNetX.Common.Casting;
+using DSMetodNetX.AccesoDatos;
 using DSMetodNetX.Entidades;
+using DSMetodNetX.Negocio;
+using Rediin2022.AccesoDatos.PriClientes;
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
+using Rediin2022.Entidades.PriClientes.Expedientes;
 using Rediin2022.Entidades.PriOperacion;
+using Sisegui2020.Entidades.PriSeguridad;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Rediin2022.Negocio.PriClientes
 {
-    public class NExpedientes : INExpedientes
+    public class NExpedientes : RExpendientes, INExpedientes
     {
         #region Constructores
-        public NExpedientes(INConExpedientes nConExpedientes,
+        public NExpedientes(IMConexionEntidad conexionEntidad,
+                            INConExpedientes nConExpedientes,
                             INProcesosOperativos nProcesosOperativos)
+            : base(conexionEntidad)
         {
             NConExpedientes = nConExpedientes;
             NProcesosOperativos = nProcesosOperativos;
@@ -26,16 +34,15 @@ namespace Rediin2022.Negocio.PriClientes
         #region Propiedades
         public INConExpedientes NConExpedientes { get; }
         public INProcesosOperativos NProcesosOperativos { get; }
-
         public IMMensajes Mensajes
         {
             get { return NProcesosOperativos.Mensajes; }
         }
-
-
         #endregion
 
         #region Funciones
+
+        #region Funciones para el cliente
         public Int64 ExpedienteInserta(EExpediente expediente)
         {
             //Validamos
@@ -160,6 +167,99 @@ namespace Rediin2022.Negocio.PriClientes
             vConExpedienteObjeto.Activo = expedienteObjeto.Activo;
             return NConExpedientes.ConExpedienteObjetoInserta(vConExpedienteObjeto);
         }
+        /// <summary>
+        /// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
+        /// </summary>
+        /// <param name="expendienteDatCmb"></param>
+        /// <returns></returns>
+        public List<MEElemento> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb)
+        {
+            return NConExpedientes.ConExpedienteCmb(new EProcesoOperativoCol()
+            {
+                CapCmbProcesoOperativoId = expendienteDatCmb.CapCmbProcesoOperativoId,
+                CapCmbIdColumnaId = expendienteDatCmb.CapCmbIdColumnaId,
+                CapCmbTextoColumnaId = expendienteDatCmb.CapCmbTextoColumnaId
+            });
+        }
+        #endregion
+
+        //No config Proveedor
+        #region Funciones especificas para un proc operativo
+        /// <summary>
+        /// Regresa los datos del proveedor segun el usuario autentificado 
+        /// para el proceso operativo especifico de proveedores.
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        public EDatosProveedor ProveedorXUsuario(Int64 procesoOperativoIdProveedor,
+                                                 Int64 usuarioId)
+        {
+            EDatosProveedor vDP = new EDatosProveedor();
+
+            //Obtenemos la relacion de las columnas con sus propiedades
+            List<ERelacionProcOper> vRelaciones = base.RelacionProcesoOperativo(procesoOperativoIdProveedor);
+            if (vRelaciones == null || vRelaciones.Count == 0)
+                return vDP;
+
+            //Obtenemos la columna de UsuarioId.
+            Int64 vColUsuarioId = UtilExpediente.ObtenRelacion(vRelaciones, "UsuarioId").ColumnaId;
+            if (vColUsuarioId == 0)
+                return vDP;
+
+            //Obtenemos el id de expediente del usuario.
+            Int64 vExpendienteId = base.ProveedorExpedienteId(usuarioId,
+                                                              procesoOperativoIdProveedor,
+                                                              vColUsuarioId);
+            if (vExpendienteId <= 0)
+                return vDP;
+
+            //Obtenemos los datos del expediente.
+            EConExpediente vExpediente = NConExpedientes.ConExpedienteXId(vExpendienteId);
+            if (vExpediente == null)
+                return vDP;
+
+            //Obtenemos los metadatos de las columnas
+            List<EProcesoOperativoCol> vColMD =
+                NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoIdProveedor);
+
+            //Cargamos las entidades
+            vDP.Proveedor = new EProveedor();
+            foreach (ERelacionProcOper vRelacion in vRelaciones)
+            {
+                PropertyInfo vPI = vDP.Proveedor.GetType().GetProperty(vRelacion.Propiedad);
+                if (vPI != null)
+                    vPI.SetValue(vDP.Proveedor, UtilExpediente.ObtenValor(vColMD, vExpediente, vRelacion.ColumnaId));
+            }
+
+            //Creamos las reglas de negocio
+            vDP.ReglasNegocio = new List<MEReglaNeg>();
+            foreach (EProcesoOperativoCol vPOC in vColMD)
+            {
+                vDP.ReglasNegocio.Add(new MEReglaNeg()
+                {
+                    Property = vRelaciones.FirstOrDefault(e => e.ColumnaId == vPOC.ColumnaId, new ERelacionProcOper()).Propiedad,
+                    Label = vPOC.Etiqueta,
+                    Required = vPOC.CapObligatorio,
+                    RangeMin = vPOC.CapRangoIni,
+                    RangeMax = vPOC.CapRangoFin,
+                    Decimals = (vPOC.Tipo == TiposColumna.Importe ? vPOC.Decimales : 0)
+                });
+            }
+
+            return vDP;
+        }
+        /// <summary>
+        /// Pasa el expediente al siguiente estatus.
+        /// </summary>
+        /// <param name="expedienteId"></param>
+        /// <returns></returns>
+        public Boolean ProveedorCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
+        {
+            return NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus);
+        }
+        #endregion
+        //No config Proveedor
+
         #endregion
     }
 }

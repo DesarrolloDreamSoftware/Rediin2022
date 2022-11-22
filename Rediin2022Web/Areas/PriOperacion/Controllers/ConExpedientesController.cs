@@ -9,10 +9,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Rediin2022.Aplicacion.PriCatalogos;
 using Rediin2022.Aplicacion.PriOperacion;
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
+using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Entidades.PriOperacion;
+using Sisegui2020.Entidades.Idioma;
+using Sisegui2020.Entidades.PriSeguridad;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,16 +32,22 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 	{
 		#region Constructores
 		public ConExpedientesController(INConExpedientes nConExpedientes,
-										INProcesosOperativos nProcesosOperativos)
+										INProcesosOperativos nProcesosOperativos,
+										INUsuarios nUsuarios,
+										INExpedientes nExpedientes)
 		{
 			NConExpedientes = nConExpedientes;
 			NProcesosOperativos = nProcesosOperativos;
+			NUsuarios = nUsuarios;
+			NExpedientes = nExpedientes;
 		}
 		#endregion
 
 		#region Propiedades
 		private INConExpedientes NConExpedientes { get; set; }
 		private INProcesosOperativos NProcesosOperativos { get; set; }
+		private INUsuarios NUsuarios { get; set; }
+		private INExpedientes NExpedientes { get; set; }
 		private EVConExpedientes EVConExpedientes
 		{
 			get
@@ -55,6 +65,9 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 		#region Acciones
 		public IActionResult ConExpProcOperativoInicia()
 		{
+			//Permisos
+			EVConExpedientes.PermisoMostrarCatalogos = base.MPermisoIdXOpcion("MostrarCatalogos") > 0;
+
 			//Configuracion de inicio
 			if (String.IsNullOrWhiteSpace(EVConExpedientes.ConExpProcOperativoColOrden))
 				EVConExpedientes.ConExpProcOperativoColOrden = nameof(EConExpProcOperativo.Orden);
@@ -68,6 +81,9 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 									 EVConExpedientes.ConExpProcOperativoPag,
 									 EVConExpedientes.ConExpProcOperativoColOrden,
 									 nameof(EConExpProcOperativo));
+
+			EVConExpedientes.ConExpProcOperativoFiltro.PermisoMostrarCatalogos =
+				EVConExpedientes.PermisoMostrarCatalogos;
 
 			EVConExpedientes.ConExpProcOperativoPag = NConExpedientes.ConExpProcOperativoPag(EVConExpedientes.ConExpProcOperativoFiltro);
 			base.MActualizaTamPag(EVConExpedientes.ConExpProcOperativoPag?.DatPag);
@@ -147,6 +163,40 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 
 			//EVConExpedientes.ProcOperColumnas = NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoCol.ProcesoOperativoId);
 
+			//Cargamos la informacion de los combos
+			if (EVConExpedientes.ProcOperColumnasCap != null && EVConExpedientes.ProcOperColumnasCap.Count > 0)
+			{
+				foreach (EProcesoOperativoCol vCol in EVConExpedientes.ProcOperColumnasCap)
+				{
+					if (vCol.CapCmbProcesoOperativoId > 0)
+						vCol.ElementosCmb = NConExpedientes.ConExpedienteCmb(vCol);
+				}
+			}
+
+			//No config Proveedor
+			EVConExpedientes.ParamProveedorProcesoOperativoId = base.MParametroSist<Int64>("RediinProveedorProcesoOperativoId");
+
+			if (EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId == EVConExpedientes.ParamProveedorProcesoOperativoId)
+			{
+				var vRelaciones = NExpedientes.RelacionProcesoOperativo(EVConExpedientes.ParamProveedorProcesoOperativoId);
+				//EVConExpedientes.ParamProveedorColumnaIdNombre = base.MParametroSist<Int64>("RediinProveedorColumnaIdNombre");
+				//EVConExpedientes.ParamProveedorColumnaIdCorreo = base.MParametroSist<Int64>("RediinProveedorColumnaIdCorreo");
+
+				EVConExpedientes.ParamProveedorColumnaIdNombre = UtilExpediente.ObtenRelacion(vRelaciones, "Nombre").ColumnaId;
+				EVConExpedientes.ParamProveedorColumnaIdCorreo = UtilExpediente.ObtenRelacion(vRelaciones, "Correo").ColumnaId;
+				if (!EVConExpedientes.ProcOperColumnasCon.Exists(e => e.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdNombre))
+				{
+					NConExpedientes.Mensajes.AddError($"No se configuro correctamente la columna de nombre para este proceso operativo de proveedores [{EVConExpedientes.ParamProveedorColumnaIdNombre}].");
+					return ConExpProcOperativoCon();
+				}
+				if (!EVConExpedientes.ProcOperColumnasCon.Exists(e => e.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdCorreo))
+				{
+					NConExpedientes.Mensajes.AddError($"No se configuro correctamente la columna de correo para este proceso operativo de proveedores [{EVConExpedientes.ParamProveedorColumnaIdCorreo}].");
+					return ConExpProcOperativoCon();
+				}
+			}
+			//No config Proveedor
+
 			return RedirectToAction(nameof(ConExpedienteCon));
 		}
 		[MValidaSeg(nameof(ConExpedienteInicia))]
@@ -222,7 +272,15 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 			//conExpediente.ProcesoOperativoEstId = 0L;
 			NConExpedientes.ConExpedienteInserta(conExpediente);
 			if (NConExpedientes.Mensajes.Ok)
+			{
+				//No config Proveedor
+				if (EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId == EVConExpedientes.ParamProveedorProcesoOperativoId)
+					EnviaCorreo(conExpediente, CreaUsuario(conExpediente, out EUsuario usuario), usuario);
+
+				//No config Proveedor
+
 				return RedirectToAction(nameof(ConExpedienteCon));
+			}
 
 			return ConExpedienteInsertaCap(conExpediente);
 		}
@@ -313,6 +371,36 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 
 			return conExpediente;
 		}
+		//No config Proveedor
+		private EClave CreaUsuario(EConExpediente conExpediente, out EUsuario usuario)
+		{
+			usuario = new EUsuario();
+			usuario.Nombre = ObtenValor(conExpediente, EVConExpedientes.ParamProveedorColumnaIdNombre).ToString();
+			usuario.CorreoElectronico = ObtenValor(conExpediente, EVConExpedientes.ParamProveedorColumnaIdCorreo).ToString();
+
+			String[] vNombres = usuario.Nombre.Split(" ");
+			if (vNombres.Length >= 3)
+			{
+				usuario.ApellidoMaterno = vNombres[vNombres.Length - 1];
+				usuario.ApellidoPaterno = vNombres[vNombres.Length - 2];
+				usuario.Nombre = String.Empty;
+				for (int i = 0; i < vNombres.Length - 2; i++)
+					usuario.Nombre += (i > 0 ? " " : String.Empty) + vNombres[i];
+			}
+
+			return NUsuarios.UsuarioInsertaAuto(usuario);
+		}
+		private void EnviaCorreo(EConExpediente conExpediente, EClave clave, EUsuario usuario)
+		{
+
+		}
+		private Object ObtenValor(EConExpediente conExpediente, Int64 columnaId)
+		{
+			return UtilExpediente.ObtenValor(EVConExpedientes.ProcOperColumnasCon,
+					       					 conExpediente, 
+											 columnaId);
+		}
+		//No config Proveedor
 		#endregion
 
 		#region Acciones de Paginacion Orden y Filtro

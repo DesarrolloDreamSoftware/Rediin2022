@@ -14,6 +14,8 @@ using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Aplicacion.PriCatalogos;
 using Rediin2022.Entidades.PriOperacion;
 using Rediin2022.Aplicacion.PriOperacion;
+using Rediin2022.Entidades.PriClientes;
+using Rediin2022.Aplicacion.PriClientes;
 
 namespace Rediin2022Web
 {
@@ -43,10 +45,10 @@ namespace Rediin2022Web
             services.AddScoped<INCatalogos, APLCatalogos>();
             services.AddScoped<INProcesosOperativos, APLProcesosOperativos>();
             services.AddScoped<INAutorizaciones, APLAutorizaciones>();
-            services.AddScoped<INBancos, APLBancos>();
-            services.AddScoped<INIdentificaciones, APLIdentificaciones>();
             //Operacion
             services.AddScoped<INConExpedientes, APLConExpedientes>();
+            //Clientes
+            services.AddScoped<INExpedientes, APLExpedientes>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

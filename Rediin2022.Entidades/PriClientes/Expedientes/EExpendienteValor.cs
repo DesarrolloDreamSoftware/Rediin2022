@@ -8,7 +8,7 @@ namespace Rediin2022.Entidades.PriClientes
 {
     public class EExpendienteValor
     {
-        public Int64 ColumnaId { get; set; } = 0L;
-        public String Valor { get; set; } = String.Empty;
+        public long ColumnaId { get; set; } = 0L;
+        public string Valor { get; set; } = string.Empty;
     }
 }
