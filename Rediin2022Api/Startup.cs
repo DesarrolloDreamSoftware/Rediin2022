@@ -36,12 +36,17 @@ namespace Rediin2022Api
             //Configuracion personalizada
             MStartUpApi.ConfiguraServicios(services, Configuration);
 
+            services.AddSwaggerGen();
+
             //Inyeccion Negocios
             //services.AddScoped<INPaises, NPaises>();
             //Catalogos
             services.AddScoped<INCatalogos, NCatalogos>();
             services.AddScoped<INProcesosOperativos, NProcesosOperativos>();
             services.AddScoped<INAutorizaciones, NAutorizaciones>();
+            services.AddScoped<INBancos, NBancos>();
+            services.AddScoped<INIdentificaciones, NIdentificaciones>();
+
             //Operacion
             services.AddScoped<INConExpedientes, NConExpedientes>();
             //Clientes
@@ -50,7 +55,13 @@ namespace Rediin2022Api
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {            
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
             //Configuracion personalizada
             MStartUpApi.Configura(app, env);
 

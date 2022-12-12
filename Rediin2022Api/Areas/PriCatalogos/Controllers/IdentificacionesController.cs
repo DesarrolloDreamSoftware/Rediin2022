@@ -47,6 +47,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad Identificacion.
         /// </summary>
+        [HttpPost]
         public EIdentificacionPag IdentificacionPag(EIdentificacionFiltro identificacionFiltro)
         {
             return NIdentificaciones.IdentificacionPag(identificacionFiltro);
@@ -62,6 +63,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta para combos de la entidad Identificacion.
         /// </summary>
+        [HttpGet]
         public List<MEElemento> IdentificacionCmb()
         {
             return NIdentificaciones.IdentificacionCmb();
@@ -69,6 +71,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite insertar la entidad Identificacion.
         /// </summary>
+        [HttpPost]
         public Int64 IdentificacionInserta(EIdentificacion identificacion)
         {
             return NIdentificaciones.IdentificacionInserta(identificacion);
@@ -76,6 +79,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite actualizar la entidad Identificacion.
         /// </summary>
+        [HttpPost]
         public Boolean IdentificacionActualiza(EIdentificacion identificacion)
         {
             return NIdentificaciones.IdentificacionActualiza(identificacion);
@@ -83,6 +87,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite eliminar la entidad Identificacion.
         /// </summary>
+        [HttpPost]
         public Boolean IdentificacionElimina(EIdentificacion identificacion)
         {
             return NIdentificaciones.IdentificacionElimina(identificacion);
@@ -90,6 +95,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Reglas de negocio de la entidad Identificacion.
         /// </summary>
+        [HttpGet]
         public List<MEReglaNeg> IdentificacionReglas()
         {
             return NIdentificaciones.IdentificacionReglas();

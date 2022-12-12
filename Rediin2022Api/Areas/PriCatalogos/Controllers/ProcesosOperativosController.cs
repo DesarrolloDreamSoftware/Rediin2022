@@ -35,6 +35,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativo.
         /// </summary>
+        [HttpPost]
         public EProcesoOperativoPag ProcesoOperativoPag(EProcesoOperativoFiltro procesoOperativoFiltro)
         {
             return NProcesosOperativos.ProcesoOperativoPag(procesoOperativoFiltro);
@@ -52,6 +53,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativo.
         /// </summary>
+        [HttpGet]
         public List<MEElemento> ProcesoOperativoCmb()
         {
             return NProcesosOperativos.ProcesoOperativoCmb();
@@ -59,6 +61,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativo.
         /// </summary>
+        [HttpPost]
         public Int64 ProcesoOperativoInserta(EProcesoOperativo procesoOperativo)
         {
             return NProcesosOperativos.ProcesoOperativoInserta(procesoOperativo);
@@ -66,6 +69,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativo.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoActualiza(EProcesoOperativo procesoOperativo)
         {
             return NProcesosOperativos.ProcesoOperativoActualiza(procesoOperativo);
@@ -73,6 +77,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativo.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoElimina(EProcesoOperativo procesoOperativo)
         {
             return NProcesosOperativos.ProcesoOperativoElimina(procesoOperativo);
@@ -80,6 +85,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativo.
         /// </summary>
+        [HttpGet]
         public List<MEReglaNeg> ProcesoOperativoReglas()
         {
             return NProcesosOperativos.ProcesoOperativoReglas();
@@ -90,6 +96,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativoCol.
         /// </summary>
+        [HttpPost]
         public EProcesoOperativoColPag ProcesoOperativoColPag(EProcesoOperativoColFiltro procesoOperativoColFiltro)
         {
             return NProcesosOperativos.ProcesoOperativoColPag(procesoOperativoColFiltro);
@@ -123,6 +130,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoCol.
         /// </summary>
+        [HttpPost]
         public Int64 ProcesoOperativoColInserta(EProcesoOperativoCol procesoOperativoCol)
         {
             return NProcesosOperativos.ProcesoOperativoColInserta(procesoOperativoCol);
@@ -130,6 +138,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoCol.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoColActualiza(EProcesoOperativoCol procesoOperativoCol)
         {
             return NProcesosOperativos.ProcesoOperativoColActualiza(procesoOperativoCol);
@@ -137,6 +146,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoCol.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoColElimina(EProcesoOperativoCol procesoOperativoCol)
         {
             return NProcesosOperativos.ProcesoOperativoColElimina(procesoOperativoCol);
@@ -144,6 +154,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativoCol.
         /// </summary>
+        [HttpGet]
         public List<MEReglaNeg> ProcesoOperativoColReglas()
         {
             return NProcesosOperativos.ProcesoOperativoColReglas();
@@ -154,6 +165,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativoObjeto.
         /// </summary>
+        [HttpPost]
         public EProcesoOperativoObjetoPag ProcesoOperativoObjetoPag(EProcesoOperativoObjetoFiltro procesoOperativoObjetoFiltro)
         {
             return NProcesosOperativos.ProcesoOperativoObjetoPag(procesoOperativoObjetoFiltro);
@@ -177,6 +189,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoObjeto.
         /// </summary>
+        [HttpPost]
         public Int64 ProcesoOperativoObjetoInserta(EProcesoOperativoObjeto procesoOperativoObjeto)
         {
             return NProcesosOperativos.ProcesoOperativoObjetoInserta(procesoOperativoObjeto);
@@ -184,6 +197,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoObjeto.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoObjetoActualiza(EProcesoOperativoObjeto procesoOperativoObjeto)
         {
             return NProcesosOperativos.ProcesoOperativoObjetoActualiza(procesoOperativoObjeto);
@@ -191,6 +205,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoObjeto.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoObjetoElimina(EProcesoOperativoObjeto procesoOperativoObjeto)
         {
             return NProcesosOperativos.ProcesoOperativoObjetoElimina(procesoOperativoObjeto);
@@ -198,6 +213,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativoObjeto.
         /// </summary>
+        [HttpGet]
         public List<MEReglaNeg> ProcesoOperativoObjetoReglas()
         {
             return NProcesosOperativos.ProcesoOperativoObjetoReglas();
@@ -208,6 +224,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativoEst.
         /// </summary>
+        [HttpPost]
         public EProcesoOperativoEstPag ProcesoOperativoEstPag(EProcesoOperativoEstFiltro procesoOperativoEstFiltro)
         {
             return NProcesosOperativos.ProcesoOperativoEstPag(procesoOperativoEstFiltro);
@@ -231,6 +248,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoEst.
         /// </summary>
+        [HttpPost]
         public Int64 ProcesoOperativoEstInserta(EProcesoOperativoEst procesoOperativoEst)
         {
             return NProcesosOperativos.ProcesoOperativoEstInserta(procesoOperativoEst);
@@ -238,6 +256,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoEst.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoEstActualiza(EProcesoOperativoEst procesoOperativoEst)
         {
             return NProcesosOperativos.ProcesoOperativoEstActualiza(procesoOperativoEst);
@@ -245,6 +264,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoEst.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoEstElimina(EProcesoOperativoEst procesoOperativoEst)
         {
             return NProcesosOperativos.ProcesoOperativoEstElimina(procesoOperativoEst);
@@ -252,6 +272,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativoEst.
         /// </summary>
+        [HttpGet]
         public List<MEReglaNeg> ProcesoOperativoEstReglas()
         {
             return NProcesosOperativos.ProcesoOperativoEstReglas();
@@ -262,6 +283,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativoEstSec.
         /// </summary>
+        [HttpPost]
         public EProcesoOperativoEstSecPag ProcesoOperativoEstSecPag(EProcesoOperativoEstSecFiltro procesoOperativoEstSecFiltro)
         {
             return NProcesosOperativos.ProcesoOperativoEstSecPag(procesoOperativoEstSecFiltro);
@@ -285,6 +307,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoEstSec.
         /// </summary>
+        [HttpPost]
         public Int64 ProcesoOperativoEstSecInserta(EProcesoOperativoEstSec procesoOperativoEstSec)
         {
             return NProcesosOperativos.ProcesoOperativoEstSecInserta(procesoOperativoEstSec);
@@ -292,6 +315,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoEstSec.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoEstSecActualiza(EProcesoOperativoEstSec procesoOperativoEstSec)
         {
             return NProcesosOperativos.ProcesoOperativoEstSecActualiza(procesoOperativoEstSec);
@@ -299,6 +323,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoEstSec.
         /// </summary>
+        [HttpPost]
         public Boolean ProcesoOperativoEstSecElimina(EProcesoOperativoEstSec procesoOperativoEstSec)
         {
             return NProcesosOperativos.ProcesoOperativoEstSecElimina(procesoOperativoEstSec);
@@ -306,6 +331,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativoEstSec.
         /// </summary>
+        [HttpGet]
         public List<MEReglaNeg> ProcesoOperativoEstSecReglas()
         {
             return NProcesosOperativos.ProcesoOperativoEstSecReglas();

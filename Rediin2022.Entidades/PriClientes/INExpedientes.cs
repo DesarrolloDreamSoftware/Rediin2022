@@ -15,13 +15,28 @@ namespace Rediin2022.Entidades.PriClientes
 		#region Funciones para el cliente
 		Int64 ExpedienteInserta(EExpediente expediente);
 		Boolean ExpedienteElimina(Int64 expedienteId);
-		Int64 ObjetoInserta(EExpedienteObjeto expedienteObjeto);
-		/// <summary>
-		/// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
-		/// </summary>
-		/// <param name="expendienteDatCmb"></param>
-		/// <returns></returns>
-		List<MEElemento> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb);
+		Boolean ExpedienteActualiza(EExpediente expediente);
+        Int64 ObjetoInserta(EExpedienteObjeto expedienteObjeto);
+        /// <summary>
+        /// Sube el documento y modifica su nombre.
+		/// Es necesario cargar los campos ExpedienteId, ExpedienteObjetoId, ArchivoNombre y Archivo.
+        /// </summary>
+        /// <param name="documento"></param>
+        /// <returns></returns>
+        Boolean ObjetoActualiza(EExpedienteObjeto expedienteObjeto);
+        /// <summary>
+        /// Descargar solo el documento
+        /// </summary>
+        /// <param name="expendienteId"></param>
+        /// <param name="archivoNombre"></param>
+        /// <returns></returns>
+        EDocumento ObjectoDescargaDocto(Int64 expendienteId, String archivoNombre);		
+        /// <summary>
+        /// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
+        /// </summary>
+        /// <param name="expendienteDatCmb"></param>
+        /// <returns></returns>
+        List<MEElemento> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb);		
 		#endregion
 
 		//No config Proveedor
@@ -33,6 +48,12 @@ namespace Rediin2022.Entidades.PriClientes
 		/// <param name="usuarioId"></param>
 		/// <returns></returns>
 		EDatosProveedor ProveedorXUsuario(Int64 procesoOperativoIdProveedor, Int64 usuarioId);
+		/// <summary>
+		/// Actualiza el proveedor.
+		/// </summary>
+		/// <param name="proveedor"></param>
+		/// <returns></returns>
+		Boolean ProveedorActualiza(EProveedor proveedor);
 		/// <summary>
 		/// Pasa el expediente al siguiente estatus.
 		/// </summary>

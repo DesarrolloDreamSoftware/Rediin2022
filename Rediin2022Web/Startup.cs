@@ -16,6 +16,7 @@ using Rediin2022.Entidades.PriOperacion;
 using Rediin2022.Aplicacion.PriOperacion;
 using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Aplicacion.PriClientes;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Rediin2022Web
 {
@@ -45,6 +46,9 @@ namespace Rediin2022Web
             services.AddScoped<INCatalogos, APLCatalogos>();
             services.AddScoped<INProcesosOperativos, APLProcesosOperativos>();
             services.AddScoped<INAutorizaciones, APLAutorizaciones>();
+            services.AddScoped<INBancos, APLBancos>();
+            services.AddScoped<INIdentificaciones, APLIdentificaciones>();
+
             //Operacion
             services.AddScoped<INConExpedientes, APLConExpedientes>();
             //Clientes

@@ -65,6 +65,12 @@ namespace Rediin2022.Entidades.PriOperacion
         /// </summary>
         Int64 ConExpedienteObjetoInserta(EConExpedienteObjeto conExpedienteObjeto);
         /// <summary>
+        /// Permite actualizar la entidad ConExpedienteObjeto.
+        /// </summary>
+        /// <param name="conExpedienteObjeto"></param>
+        /// <returns></returns>
+        Boolean ConExpedienteObjetoActualiza(EConExpedienteObjeto conExpedienteObjeto);
+        /// <summary>
         /// Permite eliminar la entidad ConExpedienteObjeto.
         /// </summary>
         Boolean ConExpedienteObjetoElimina(EConExpedienteObjeto conExpedienteObjeto);

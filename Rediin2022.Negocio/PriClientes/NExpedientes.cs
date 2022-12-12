@@ -98,7 +98,7 @@ namespace Rediin2022.Negocio.PriClientes
                         if (vCol.Tipo == TiposColumna.Texto)
                             vValExp.ValorTexto = vVal.Valor;
                         else if (vCol.Tipo == TiposColumna.Boleano)
-                            vValExp.ValorTexto = (vVal.Valor == "1" ? "1" : String.Empty);
+                            vValExp.ValorTexto = (vVal.Valor == "1" || vVal.Valor == "true" ? "1" : String.Empty);
                         else if (vCol.Tipo == TiposColumna.Entero || vCol.Tipo == TiposColumna.Importe)
                             vValExp.ValorNumerico = XString.XToDecimal(vVal.Valor);
                         else if (vCol.Tipo == TiposColumna.Fecha || vCol.Tipo == TiposColumna.FechaYHora)
@@ -128,6 +128,93 @@ namespace Rediin2022.Negocio.PriClientes
             }
 
             return NConExpedientes.ConExpedienteInserta(vConExp);
+        }
+        public Boolean ExpedienteActualiza(EExpediente expediente)
+        {
+            //Validamos
+            if (expediente.ProcesoOperativoId <= 0)
+                Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ProcesoOperativoId);
+
+            //if (expediente.ExpendienteId <= 0)
+            //    Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ExpedienteId);
+
+            if (expediente.Valores == null || expediente.Valores.Count == 0)
+                Mensajes.AddError("No especificó los valores.");
+
+            if (!Mensajes.Ok)
+                return false;
+
+            List<EProcesoOperativoCol> vColumnas =
+                NProcesosOperativos.ProcesoOperativoColCT(expediente.ProcesoOperativoId);
+
+            foreach (EProcesoOperativoCol vCol in vColumnas)
+            {
+                Boolean vExiste = false;
+                foreach (EExpendienteValor vVal in expediente.Valores)
+                {
+                    if (vVal.ColumnaId == vCol.ColumnaId)
+                        vExiste = true;
+                }
+
+                if (!vExiste)
+                    Mensajes.AddError("La columna [{0}] no fue agregada a Valores.", vCol.ColumnaId);
+            }
+
+            if (!Mensajes.Ok)
+                return false;
+
+            //Proceso
+            EConExpediente vConExp = new EConExpediente();
+            vConExp.ProcesoOperativoId = expediente.ProcesoOperativoId;
+            vConExp.ExpedienteId = expediente.ExpendienteId;
+            vConExp.PermiteActualiza = true;
+            foreach (EProcesoOperativoCol vCol in vColumnas)
+            {
+                foreach (EExpendienteValor vVal in expediente.Valores)
+                {
+                    if (vVal.ColumnaId == vCol.ColumnaId)
+                    {
+                        var vValExp = new EConExpValores()
+                        {
+                            ExpedienteId = expediente.ExpendienteId,
+                            ColumnaId = vCol.ColumnaId
+                        };
+                        if (String.IsNullOrWhiteSpace(vVal.Valor))
+                            vVal.Valor = String.Empty;
+
+                        if (vCol.Tipo == TiposColumna.Texto)
+                            vValExp.ValorTexto = vVal.Valor;
+                        else if (vCol.Tipo == TiposColumna.Boleano)
+                            vValExp.ValorTexto = (vVal.Valor == "1" || vVal.Valor == "true" ? "1" : String.Empty);
+                        else if (vCol.Tipo == TiposColumna.Entero || vCol.Tipo == TiposColumna.Importe)
+                            vValExp.ValorNumerico = XString.XToDecimal(vVal.Valor);
+                        else if (vCol.Tipo == TiposColumna.Fecha || vCol.Tipo == TiposColumna.FechaYHora)
+                            vValExp.ValorFecha = XString.XToDateTime(vVal.Valor);
+                        else if (vCol.Tipo == TiposColumna.Hora)
+                        {
+                            DateTime vFecha = XString.XToDateTime(vVal.Valor);
+                            if (vFecha == DateTime.MinValue && vVal.Valor.Contains(":"))
+                            {
+                                String[] vVals = vVal.Valor.Split(":");
+                                Int32 vHora = 0;
+                                Int32 vMinuto = 0;
+                                if (vVals.Length > 0)
+                                    vHora = XString.XToInt32(vVals[0]);
+                                if (vVals.Length > 1)
+                                    vMinuto = XString.XToInt32(vVals[1]);
+                                vFecha = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, vHora, vMinuto, 0);
+                            }
+
+                            if (vFecha > DateTime.MinValue)
+                                vValExp.ValorFecha = vFecha;
+                        }
+
+                        vConExp.Valores.Add(vValExp);
+                    }
+                }
+            }
+
+            return NConExpedientes.ConExpedienteActualiza(vConExp);
         }
         public Boolean ExpedienteElimina(Int64 expedienteId)
         {
@@ -166,6 +253,46 @@ namespace Rediin2022.Negocio.PriClientes
             vConExpedienteObjeto.Ruta = expedienteObjeto.Ruta;
             vConExpedienteObjeto.Activo = expedienteObjeto.Activo;
             return NConExpedientes.ConExpedienteObjetoInserta(vConExpedienteObjeto);
+        }
+        /// <summary>
+        /// Sube el documento y modifica su nombre.
+		/// Es necesario cargar los campos ExpedienteId, ExpedienteObjetoId, ArchivoNombre y Archivo
+        /// </summary>
+        /// <param name="documento"></param>
+        /// <returns></returns>
+        public Boolean ObjetoActualiza(EExpedienteObjeto expedienteObjeto)
+        {
+            if (!ObjetoValida(expedienteObjeto))
+                return false;
+
+            //Proceso
+            EConExpedienteObjeto vConExpedienteObjeto = new EConExpedienteObjeto();
+            vConExpedienteObjeto.ExpedienteId = expedienteObjeto.ExpedienteId;
+            vConExpedienteObjeto.ProcesoOperativoObjetoId = expedienteObjeto.ProcesoOperativoObjetoId;
+            vConExpedienteObjeto.ArchivoNombre = expedienteObjeto.ArchivoNombre;
+            vConExpedienteObjeto.Ruta = expedienteObjeto.Ruta;
+            vConExpedienteObjeto.Activo = expedienteObjeto.Activo;
+            return NConExpedientes.ConExpedienteObjetoActualiza(vConExpedienteObjeto);
+        }
+
+        /// <summary>
+        /// Descargar solo el documento
+		/// </summary>
+		/// <param name="expendienteId"></param>
+		/// <param name="archivoNombre"></param>
+		/// <returns></returns>
+		public EDocumento ObjectoDescargaDocto(Int64 expendienteId, String archivoNombre)
+        {
+            return new EDocumento(); //Solo para el Api
+        }
+        /// <summary>
+        /// Sube el documento sin modificar datos
+        /// </summary>
+        /// <param name="documento"></param>
+        /// <returns></returns>
+        public Boolean ObjetoSubeDocto(EDocumento documento)
+        {
+            return true;
         }
         /// <summary>
         /// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
@@ -228,11 +355,15 @@ namespace Rediin2022.Negocio.PriClientes
             {
                 PropertyInfo vPI = vDP.Proveedor.GetType().GetProperty(vRelacion.Propiedad);
                 if (vPI != null)
-                    vPI.SetValue(vDP.Proveedor, UtilExpediente.ObtenValor(vColMD, vExpediente, vRelacion.ColumnaId));
+                    vPI.SetValue(vDP.Proveedor, UtilExpediente.ObtenValor(vColMD, vExpediente, vRelacion.ColumnaId, vPI.PropertyType));
             }
 
             //Creamos las reglas de negocio
             vDP.ReglasNegocio = new List<MEReglaNeg>();
+            vDP.Proveedor.ExpedienteId = vExpendienteId;
+            vDP.Proveedor.ProcesoOperativoId = procesoOperativoIdProveedor;
+            vDP.Proveedor.ProcesoOperativoEstId = vExpediente.ProcesoOperativoEstId;
+            vDP.Proveedor.UsuarioId = usuarioId;
             foreach (EProcesoOperativoCol vPOC in vColMD)
             {
                 vDP.ReglasNegocio.Add(new MEReglaNeg()
@@ -247,6 +378,48 @@ namespace Rediin2022.Negocio.PriClientes
             }
 
             return vDP;
+        }
+        /// <summary>
+        /// Actualiza el proveedor.
+        /// </summary>
+        /// <param name="proveedor"></param>
+        /// <returns></returns>
+        public Boolean ProveedorActualiza(EProveedor proveedor)
+        {
+            EExpediente vExp = new EExpediente();
+            vExp.ProcesoOperativoId = proveedor.ProcesoOperativoId;
+            vExp.ExpendienteId = proveedor.ExpedienteId;
+
+            List<ERelacionProcOper> vRelPO =
+                RelacionProcesoOperativo(proveedor.ProcesoOperativoId);
+
+            PropertyInfo[] vPIEnt = proveedor.GetType().GetProperties();
+            foreach (ERelacionProcOper vRel in vRelPO)
+            {
+                PropertyInfo vPI = vPIEnt.FirstOrDefault(e => e.Name == vRel.Propiedad, null);
+                if (vPI != null)
+                {
+                    String vValor = String.Empty;
+                    Object vValorOrg = vPI.GetValue(proveedor);
+
+                    if (vValorOrg == null)
+                        vValor = String.Empty;
+                    else if (vValorOrg is DateTime)
+                        vValor = String.Format("{0:dd/MM/yyyy HH:mm:ss}", vValorOrg);
+                    else if (vValorOrg is String)
+                        vValor = (String)vValorOrg;
+                    else
+                        vValor = vValorOrg.ToString();
+
+                    vExp.Valores.Add(new EExpendienteValor()
+                    {
+                        ColumnaId = vRel.ColumnaId,
+                        Valor = vValor
+                    }); ;
+                }
+            }
+
+            return ExpedienteActualiza(vExp);
         }
         /// <summary>
         /// Pasa el expediente al siguiente estatus.

@@ -15,7 +15,6 @@ namespace Rediin2022.Entidades.PriCatalogos
         [XMain] public Int16 Orden { get; set; } = 0;
         [XMain] public Boolean ControlEstatus { get; set; } = false;
         [XMain] public EsquemaObjetos EsquemaObjetos { get; set; } = EsquemaObjetos.Ninguno;
-		[XMain] public Boolean EsCatalogo { get; set; } = false;
 		[XMain] public Boolean Activo { get; set; } = false;
 
         //Columnas vista

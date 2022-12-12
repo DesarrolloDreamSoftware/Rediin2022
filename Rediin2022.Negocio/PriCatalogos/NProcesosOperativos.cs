@@ -141,7 +141,6 @@ namespace Rediin2022.Negocio.PriCatalogos
             _procesoOperativoReglas.AddSL(e => e.Orden, (Int16)0, Validaciones._int16Max);
             _procesoOperativoReglas.AddSL(e => e.ControlEstatus);
             _procesoOperativoReglas.AddSL(e => e.EsquemaObjetos, EsquemaObjetos.Ninguno, EsquemaObjetos.ListadoObjetos);
-			_procesoOperativoReglas.AddSL(e => e.EsCatalogo);
 			_procesoOperativoReglas.AddSL(e => e.Activo);
 
             return _procesoOperativoReglas;

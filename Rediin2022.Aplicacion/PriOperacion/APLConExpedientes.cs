@@ -104,10 +104,17 @@ namespace Rediin2022.Aplicacion.PriOperacion
 		{
 			return Call<Int64>(NomFn(), conExpedienteObjeto);
 		}
-		/// <summary>
-		/// Permite eliminar la entidad ConExpedienteObjeto.
-		/// </summary>
-		public Boolean ConExpedienteObjetoElimina(EConExpedienteObjeto conExpedienteObjeto)
+        /// <summary>
+        /// Permite actualizar la entidad ConExpedienteObjeto.
+        /// </summary>
+        public Boolean ConExpedienteObjetoActualiza(EConExpedienteObjeto conExpedienteObjeto)
+        {
+            return Call<Boolean>(NomFn(), conExpedienteObjeto);
+        }
+        /// <summary>
+        /// Permite eliminar la entidad ConExpedienteObjeto.
+        /// </summary>
+        public Boolean ConExpedienteObjetoElimina(EConExpedienteObjeto conExpedienteObjeto)
 		{
 			return Call<Boolean>(NomFn(), conExpedienteObjeto);
 		}

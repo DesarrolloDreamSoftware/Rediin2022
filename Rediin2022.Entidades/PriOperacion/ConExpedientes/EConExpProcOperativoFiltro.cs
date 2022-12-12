@@ -11,9 +11,6 @@ namespace Rediin2022.Entidades.PriOperacion
         #region Propiedades
         //Columnas principales
         public String FilProcesoOperativoNombre { get; set; } = String.Empty;
-
-		//Adi
-		public Boolean PermisoMostrarCatalogos { get; set; } = false;
 		#endregion
 	}
 }

@@ -155,6 +155,26 @@ namespace Rediin2022.Negocio.PriOperacion
             return base.ConExpedienteObjetoInserta(conExpedienteObjeto);
         }
         /// <summary>
+        /// Permite actualizar la entidad ConExpedienteObjeto.
+        /// </summary>
+        /// <param name="conExpedienteObjeto"></param>
+        /// <returns></returns>
+        public new Boolean ConExpedienteObjetoActualiza(EConExpedienteObjeto conExpedienteObjeto)
+        {
+            //Validacion
+            //if (!ConExpedienteObjetoValida(conExpedienteObjeto))
+            //    return false;
+
+            //ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ExpedienteId);
+            ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ExpedienteObjetoId);
+            ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ArchivoNombre);
+            if (!_mensajes.Ok)
+                return false;
+
+            //Persistencia
+            return base.ConExpedienteObjetoActualiza(conExpedienteObjeto);
+        }
+        /// <summary>
         /// Elimina un registro de la base de datos.
         /// </summary>
         /// <returns></returns>

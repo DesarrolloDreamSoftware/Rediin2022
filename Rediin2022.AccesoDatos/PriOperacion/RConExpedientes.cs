@@ -358,10 +358,18 @@ namespace Rediin2022.AccesoDatos.PriOperacion
 														  MensajesXId.ArchivoNombre);
 			return vResultado;
 		}
-		/// <summary>
-		/// Permite eliminar la entidad ConExpedienteObjeto.
-		/// </summary>
-		protected Boolean ConExpedienteObjetoElimina(EConExpedienteObjeto conExpedienteObjeto)
+        /// <summary>
+        /// Permite actualizar la entidad ConExpedienteObjeto.
+        /// </summary>
+        protected Boolean ConExpedienteObjetoActualiza(EConExpedienteObjeto conExpedienteObjeto)
+        {
+            _conexion.AddParamEntity(conExpedienteObjeto, MAccionesBd.Actualiza);
+            return _conexion.ExecuteNonQueryRet("NTExpObjsIAE");
+        }
+        /// <summary>
+        /// Permite eliminar la entidad ConExpedienteObjeto.
+        /// </summary>
+        protected Boolean ConExpedienteObjetoElimina(EConExpedienteObjeto conExpedienteObjeto)
 		{
 			_conexion.AddParamEntity(conExpedienteObjeto, MAccionesBd.Elimina);
 			return _conexion.ExecuteNonQueryRet("NTExpObjsIAE");

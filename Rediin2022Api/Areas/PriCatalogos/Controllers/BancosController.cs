@@ -47,6 +47,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad Banco.
         /// </summary>
+        [HttpPost]
         public EBancoPag BancoPag(EBancoFiltro bancoFiltro)
         {
             return NBancos.BancoPag(bancoFiltro);
@@ -62,6 +63,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta para combos de la entidad Banco.
         /// </summary>
+        [HttpGet]
         public List<MEElemento> BancoCmb()
         {
             return NBancos.BancoCmb();
@@ -69,6 +71,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite insertar la entidad Banco.
         /// </summary>
+        [HttpPost]
         public Int64 BancoInserta(EBanco banco)
         {
             return NBancos.BancoInserta(banco);
@@ -76,6 +79,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite actualizar la entidad Banco.
         /// </summary>
+        [HttpPost]
         public Boolean BancoActualiza(EBanco banco)
         {
             return NBancos.BancoActualiza(banco);
@@ -83,6 +87,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite eliminar la entidad Banco.
         /// </summary>
+        [HttpPost]
         public Boolean BancoElimina(EBanco banco)
         {
             return NBancos.BancoElimina(banco);
@@ -90,6 +95,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
+        [HttpPost]
         public MEDatosArchivo BancoExporta(EBancoFiltro bancoFiltro)
         {
             return NBancos.BancoExporta(bancoFiltro);
@@ -97,6 +103,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Reglas de negocio de la entidad Banco.
         /// </summary>
+        [HttpGet]
         public List<MEReglaNeg> BancoReglas()
         {
             return NBancos.BancoReglas();
