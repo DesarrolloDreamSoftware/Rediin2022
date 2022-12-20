@@ -150,6 +150,15 @@ namespace Rediin2022.Aplicacion.PriOperacion
 		{
 			return Call<EExpedienteEstatuPag>(NomFn(), expedienteEstatuFiltro);
 		}
+		/// <summary>
+		/// Consulta del utlimo estatus del expediente.
+		/// </summary>
+		/// <param name="expedienteId"></param>
+		/// <returns></returns>
+		public EExpedienteEstatu ExpedienteEstatusUltimo(Int64 expedienteId)
+		{
+			return Call<EExpedienteEstatu>(NomFn(), expedienteId);
+		}
 		#endregion
 
 		#endregion

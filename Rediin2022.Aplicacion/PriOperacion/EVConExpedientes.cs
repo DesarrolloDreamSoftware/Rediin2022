@@ -50,9 +50,12 @@ namespace Rediin2022.Aplicacion.PriOperacion
 
         //No config Proveedor
         public Int64 ParamProveedorProcesoOperativoId { get; set; }
-        public Int64 ParamProveedorColumnaIdNombre { get; set; }
+		public Int64 ParamEstIdCaptura { get; set; }
+		public Int64 ParamEstIdAutorizado { get; set; }
+		public Int64 ParamProveedorColumnaIdNombre { get; set; }
         public Int64 ParamProveedorColumnaIdCorreo { get; set; }
         public Int64 ParamPerfilIdNvoUsr { get; set; }
+        public Int64 ProveedorColumnaIdUsuario { get; set; }
         //No config Proveedor
         #endregion
     }

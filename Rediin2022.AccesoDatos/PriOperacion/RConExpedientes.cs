@@ -285,6 +285,9 @@ namespace Rediin2022.AccesoDatos.PriOperacion
 			//Insertamos los valores del expediente
 			foreach (EConExpValores vVal in conExpediente.Valores)
 			{
+				if (conExpediente.ExpedienteId > 0 && vVal.ExpedienteId == 0)
+					vVal.ExpedienteId = conExpediente.ExpedienteId;
+
 				_conexion.AddParamEntity(vVal, MAccionesBd.Inserta);
 				_conexion.ExecuteNonQuery("NTExpExpValoresIAE");
 				if (!_conexion.Messages.Ok)
@@ -404,6 +407,16 @@ namespace Rediin2022.AccesoDatos.PriOperacion
 			vExpedienteEstatuPag.Pagina = _conexion.LoadEntities<EExpedienteEstatu>("NTExpExpeEstaCP");
 
 			return vExpedienteEstatuPag;
+		}
+		/// <summary>
+		/// Consulta del utlimo estatus del expediente.
+		/// </summary>
+		/// <param name="expedienteId"></param>
+		/// <returns></returns>
+		public EExpedienteEstatu ExpedienteEstatusUltimo(Int64 expedienteId)
+		{
+			_conexion.AddParamIn(nameof(expedienteId), expedienteId);
+			return _conexion.LoadEntity<EExpedienteEstatu>("NTExpExpeEstaUltimo");
 		}
 		#endregion
 

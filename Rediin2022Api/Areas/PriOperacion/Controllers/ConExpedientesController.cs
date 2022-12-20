@@ -183,8 +183,18 @@ namespace Rediin2022Api.Areas.PriOperacion.Controllers
         {
             return NConExpedientes.ExpedienteEstatuPag(expedienteEstatuFiltro);
         }
-        #endregion
+		/// <summary>
+		/// Consulta del utlimo estatus del expediente.
+		/// </summary>
+		/// <param name="expedienteId"></param>
+		/// <returns></returns>
+        [HttpGet("{expedienteId}")]
+        public EExpedienteEstatu ExpedienteEstatusUltimo(Int64 expedienteId)
+		{
+            return NConExpedientes.ExpedienteEstatusUltimo(expedienteId);
+		}
+		#endregion
 
-        #endregion
-    }
+		#endregion
+	}
 }

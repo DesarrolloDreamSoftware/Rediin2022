@@ -19,6 +19,7 @@ namespace Rediin2022.Entidades.PriClientes
         /// </summary>
         public string Ruta { get; set; } = string.Empty;
         public byte[] Archivo { get; set; }
+        public Boolean Eliminar { get; set; } = false;
         #endregion
     }
 }

@@ -124,6 +124,15 @@ namespace Rediin2022.Entidades.Idioma {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Comentarios..
+        /// </summary>
+        public static string _ConExpedienteCambioEstatusTitCap {
+            get {
+                return ResourceManager.GetString("_ConExpedienteCambioEstatusTitCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Expedientes.
         /// </summary>
         public static string _ConExpedienteInicia {
@@ -588,6 +597,15 @@ namespace Rediin2022.Entidades.Idioma {
         public static string ColumnaId {
             get {
                 return ResourceManager.GetString("ColumnaId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Comentarios.
+        /// </summary>
+        public static string Comentarios {
+            get {
+                return ResourceManager.GetString("Comentarios", resourceCulture);
             }
         }
         

@@ -232,11 +232,14 @@ namespace Rediin2022.Negocio.PriClientes
             if (expedienteObjeto.ProcesoOperativoObjetoId <= 0)
                 Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ProcesoOperativoObjetoId);
 
-            if (String.IsNullOrWhiteSpace(expedienteObjeto.ArchivoNombre))
-                Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ArchivoNombre);
+            if (!expedienteObjeto.Eliminar)
+            {
+                if (String.IsNullOrWhiteSpace(expedienteObjeto.ArchivoNombre))
+                    Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ArchivoNombre);
 
-            if (expedienteObjeto.Archivo == null)
-                Mensajes.AddError("No se envio un archivo junto con el expediente.");
+                if (expedienteObjeto.Archivo == null)
+                    Mensajes.AddError("No se envio un archivo junto con el expediente.");
+            }
 
             return Mensajes.Ok;
         }
@@ -268,6 +271,7 @@ namespace Rediin2022.Negocio.PriClientes
             //Proceso
             EConExpedienteObjeto vConExpedienteObjeto = new EConExpedienteObjeto();
             vConExpedienteObjeto.ExpedienteId = expedienteObjeto.ExpedienteId;
+            vConExpedienteObjeto.ExpedienteObjetoId = expedienteObjeto.ExpedienteObjetoId;
             vConExpedienteObjeto.ProcesoOperativoObjetoId = expedienteObjeto.ProcesoOperativoObjetoId;
             vConExpedienteObjeto.ArchivoNombre = expedienteObjeto.ArchivoNombre;
             vConExpedienteObjeto.Ruta = expedienteObjeto.Ruta;
@@ -349,7 +353,7 @@ namespace Rediin2022.Negocio.PriClientes
             List<EProcesoOperativoCol> vColMD =
                 NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoIdProveedor);
 
-            //Cargamos las entidades
+            //Cargamos las propiedades
             vDP.Proveedor = new EProveedor();
             foreach (ERelacionProcOper vRelacion in vRelaciones)
             {
@@ -358,11 +362,16 @@ namespace Rediin2022.Negocio.PriClientes
                     vPI.SetValue(vDP.Proveedor, UtilExpediente.ObtenValor(vColMD, vExpediente, vRelacion.ColumnaId, vPI.PropertyType));
             }
 
+            //Cargamos el ultimo comentario
+            EExpedienteEstatu vEstatusUlt = NConExpedientes.ExpedienteEstatusUltimo(vExpendienteId);
+            vDP.Proveedor.Comentarios = vEstatusUlt.Comentarios;
+
             //Creamos las reglas de negocio
             vDP.ReglasNegocio = new List<MEReglaNeg>();
             vDP.Proveedor.ExpedienteId = vExpendienteId;
             vDP.Proveedor.ProcesoOperativoId = procesoOperativoIdProveedor;
             vDP.Proveedor.ProcesoOperativoEstId = vExpediente.ProcesoOperativoEstId;
+            vDP.Proveedor.EstatusNombre = vExpediente.EstatusNombre;
             vDP.Proveedor.UsuarioId = usuarioId;
             foreach (EProcesoOperativoCol vPOC in vColMD)
             {

@@ -99,6 +99,13 @@ namespace Rediin2022.Negocio.PriOperacion
         /// </summary>
         public new Boolean ConExpedienteCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
         {
+            //Validaciones
+            //Eli
+            //Validaciones.Valida(_mensajes, conExpedienteCambioEstatus.Comentarios, MensajesXId.Comentarios, 2, 2000);
+
+            //if (!_mensajes.Ok)
+            //    return false;
+
             return base.ConExpedienteCambioEstatus(conExpedienteCambioEstatus);
         }
         public List<MEReglaNeg> ConExpedienteReglas()
@@ -167,7 +174,8 @@ namespace Rediin2022.Negocio.PriOperacion
 
             //ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ExpedienteId);
             ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ExpedienteObjetoId);
-            ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ArchivoNombre);
+            //Se permitira que el nombre este vacio para cuando se elimina el objeto.
+            //ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ArchivoNombre);
             if (!_mensajes.Ok)
                 return false;
 

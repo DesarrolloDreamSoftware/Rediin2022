@@ -94,31 +94,31 @@
 				@if (vCol.CapCmbProcesoOperativoId > 0)
 				{
 					<select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-				xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio" 
-				xval-label="@vCol.Etiqueta"xval-group="@nameof(EConExpediente)"
+				xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+				xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
 				value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vCol.ElementosCmb"></select>
 				}
 				else if (vCol.Tipo == TiposColumna.Importe && vCol.Decimales > 0)
 				{
 					<input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-			   xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-			   xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-			   value="@vValorCadena" xval-dec="@vCol.Decimales" />
+				  xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+				  xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+				  value="@vValorCadena" xval-dec="@vCol.Decimales" />
 				}
 				else if (vCol.Tipo == TiposColumna.Boleano)
 				{
 					Boolean vChecado = (vValorCadena ?? String.Empty) == "1";
 					<input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-			   xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-			   xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-			   value="true" checked="@vChecado" />
+				  xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+				  xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+				  value="true" checked="@vChecado" />
 				}
 				else
 				{
 					<input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-			   xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-			   xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-			   value="@vValorCadena" />
+				  xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+				  xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+				  value="@Html.Raw(vValorCadena)" />
 				}
 			</div>
 			@if (vCol.CapColumnasVacias > 0)

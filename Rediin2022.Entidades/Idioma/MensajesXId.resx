@@ -417,4 +417,10 @@
   <data name="EsCatalogo" xml:space="preserve">
     <value>Es catálogo</value>
   </data>
+  <data name="Comentarios" xml:space="preserve">
+    <value>Comentarios</value>
+  </data>
+  <data name="_ConExpedienteCambioEstatusTitCap" xml:space="preserve">
+    <value>Comentarios.</value>
+  </data>
 </root>
