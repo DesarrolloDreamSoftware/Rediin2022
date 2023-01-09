@@ -1,0 +1,37 @@
+﻿@model ESapCondicionPago
+
+@{
+    ViewData["Title"] = "Captura";
+}
+
+<form asp-action="_SapCondicionPagoCaptura">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._SapCondicionPagoTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="SapCondicionPagoId" mval-accion="@ViewBag.Accion"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Activo"/>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="12">
+                    <input mval="Model" xval-for="SapCondicionPagoNombre"/>
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <button maccion="Guarda"
+                    asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(SapCondicionesPagoController.SapCondicionPagoInserta) : nameof(SapCondicionesPagoController.SapCondicionPagoActualiza))"
+                    xvalidate="@nameof(ESapCondicionPago)"></button>
+            &nbsp;
+            <a maccion="Regresa" asp-action="@nameof(SapCondicionesPagoController.SapCondicionPagoCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

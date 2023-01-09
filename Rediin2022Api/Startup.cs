@@ -47,6 +47,9 @@ namespace Rediin2022Api
             services.AddScoped<INBancos, NBancos>();
             services.AddScoped<INIdentificaciones, NIdentificaciones>();
 
+            services.AddScoped<INSapCondicionesPago, NSapCondicionesPago>();
+            services.AddScoped<INSapCuentasAsociadas, NSapCuentasAsociadas>();
+            services.AddScoped<INSapGrupoCuentas, NSapGrupoCuentas>();
             //Operacion
             services.AddScoped<INConExpedientes, NConExpedientes>();
             //Clientes

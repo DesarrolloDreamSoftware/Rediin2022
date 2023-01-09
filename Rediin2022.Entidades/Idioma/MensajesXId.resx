@@ -423,4 +423,40 @@
   <data name="_ConExpedienteCambioEstatusTitCap" xml:space="preserve">
     <value>Comentarios.</value>
   </data>
+  <data name="_SapCondicionPagoTitCon" xml:space="preserve">
+    <value>Condiciones pago</value>
+  </data>
+  <data name="_SapCondicionPagoTitCap" xml:space="preserve">
+    <value>Condici&#243;n de pago</value>
+  </data>
+  <data name="SapCondicionPagoId" xml:space="preserve">
+    <value>Cve condici&#243;n de pago</value>
+  </data>
+  <data name="SapCondicionPagoNombre" xml:space="preserve">
+    <value>Condici&#243;n de pago</value>
+  </data>
+  <data name="_SapCuentaAsociadaTitCon" xml:space="preserve">
+    <value>Cuentas asociadas</value>
+  </data>
+  <data name="_SapCuentaAsociadaTitCap" xml:space="preserve">
+    <value>Cuenta asociada</value>
+  </data>
+  <data name="SapCuentaAsociadaId" xml:space="preserve">
+    <value>Cve Cuenta asociada</value>
+  </data>
+  <data name="SapCuentaAsociadaNombre" xml:space="preserve">
+    <value>Cuenta asociada</value>
+  </data>
+  <data name="_SapGrupoCuentaTitCon" xml:space="preserve">
+    <value>Grupo de cuentas</value>
+  </data>
+  <data name="_SapGrupoCuentaTitCap" xml:space="preserve">
+    <value>Grupo de cuenta</value>
+  </data>
+  <data name="SapGrupoCuentaId" xml:space="preserve">
+    <value>Cve Grupo de cuenta</value>
+  </data>
+  <data name="SapGrupoCuentaNombre" xml:space="preserve">
+    <value>Grupo de cuenta</value>
+  </data>
 </root>
