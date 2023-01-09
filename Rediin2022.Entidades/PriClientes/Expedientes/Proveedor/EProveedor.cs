@@ -40,12 +40,21 @@ namespace Rediin2022.Entidades.PriClientes
 		public String ContactoCelular { get; set; }
 
 		public Int64 BancoId { get; set; }
-		public String Banco { get; set; } //Verificar si se queda
-
+		public String Banco { get; set; }
 		public String Cuenta { get; set; }
 		public String CuentaClabe { get; set; }
 
-		public String NotarioNombre { get; set; }
+        public Int64 BancoId2 { get; set; }
+        public String Banco2 { get; set; }
+        public String Cuenta2 { get; set; }
+        public String CuentaClabe2 { get; set; }
+
+        public Int64 BancoId3 { get; set; }
+        public String Banco3 { get; set; }
+        public String Cuenta3 { get; set; }
+        public String CuentaClabe3 { get; set; }
+
+        public String NotarioNombre { get; set; }
 		public String NumeroEscritura { get; set; }
 		public DateTime FechaEscritura { get; set; }
 		public String RepresentanteLegal { get; set; }

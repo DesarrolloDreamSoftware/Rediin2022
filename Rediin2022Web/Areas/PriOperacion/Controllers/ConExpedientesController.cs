@@ -5,6 +5,8 @@ using DSEntityNetX.Common.Security;
 using DSMetodNetX.Aplicacion;
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Mvc.Seguridad;
+using DSMetodNetX.Mvc.Seguridad.Correo;
+using MailKit.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
@@ -137,18 +139,18 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 		#region Acciones
 		public IActionResult ConExpedienteInicia(Int32 indice)
 		{
-			//Configuracion de inicio
-			if (String.IsNullOrWhiteSpace(EVConExpedientes.ConExpedienteColOrden))
-				EVConExpedientes.ConExpedienteColOrden = nameof(EConExpediente.ExpedienteId);
+            //Configuracion de inicio
+            if (String.IsNullOrWhiteSpace(EVConExpedientes.ConExpedienteColOrden))
+                EVConExpedientes.ConExpedienteColOrden = "-" + nameof(EConExpediente.ExpedienteId);
 
-			if (indice >= 0)
+            if (indice >= 0)
 			{
 				EVConExpedientes.ConExpProcOperativoIndice = indice;
 				EVConExpedientes.ConExpProcOperativoSel = EVConExpedientes.ConExpProcOperativoPag.Pagina[indice];
 			}
 
-			//Entidades adicionales
-			EVConExpedientes.ProcOperColumnasCon =
+            //Entidades adicionales
+            EVConExpedientes.ProcOperColumnasCon =
 				NProcesosOperativos.ProcesoOperativoColCT(EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId);
 
 			//Ordenar columnas para la captura
@@ -182,8 +184,10 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 				var vRelaciones = NExpedientes.RelacionProcesoOperativo(EVConExpedientes.ParamProveedorProcesoOperativoId);
 				EVConExpedientes.ParamEstIdCaptura = base.MParametroSist<Int64>("RediinProveedorProcesoOperativoEstIdCaptura");
 				EVConExpedientes.ParamEstIdAutorizado = base.MParametroSist<Int64>("RediinProveedorProcesoOperativoEstIdAutorizado");
+                EVConExpedientes.ParamUrlRediinProveedores = base.MParametroSist<String>("RediinProveedorUrl");
 
-				EVConExpedientes.ProveedorColumnaIdUsuario = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.UsuarioId)).ColumnaId;
+
+                EVConExpedientes.ProveedorColumnaIdUsuario = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.UsuarioId)).ColumnaId;
 				if (EVConExpedientes.ProveedorColumnaIdUsuario <= 0)
 				{
 					NConExpedientes.Mensajes.AddError($"No se configuro correctamente el usuarioId para un nuevo usuario.");
@@ -209,9 +213,9 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 					return ConExpProcOperativoCon();
 				}
 			}
-			//No config Proveedor
+            //No config Proveedor
 
-			return RedirectToAction(nameof(ConExpedienteCon));
+            return RedirectToAction(nameof(ConExpedienteCon));
 		}
 		[MValidaSeg(nameof(ConExpedienteInicia))]
 		public IActionResult ConExpedienteCon()
@@ -311,9 +315,9 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 					NConExpedientes.ConExpedienteActualiza(conExpediente);
 
 					EnviaCorreo(vUsuario.CorreoElectronico,
-								"Su usuario de Proveedores ha sido creado.",
-								String.Format("Bienvenido a Proveedores.<br/><br/>Su usuario es {0}<br/>Su contraseña es {1}<br/>La URL donde puede acceder a sus sistema es:<br/>{2}",
-										vUsuario.Usuario, vCve.ClaveVerif, "PENDIENTE LA URL"));
+								"Su usuario de Rediin Proveedores ha sido creado.",
+								String.Format("Bienvenido a Rediin Proveedores.<br/><br/>Su usuario es {0}<br/>Su contraseña es {1}<br/><br/>La URL donde puede acceder a sus sistema es:<br/>{2}",
+										vUsuario.Usuario, vCve.ClaveVerif, EVConExpedientes.ParamUrlRediinProveedores));
 				}
 
 				MMensajesTemp = NExpedientes.Mensajes.ToString();
@@ -411,14 +415,14 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 					if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EVConExpedientes.ParamEstIdCaptura)
 					{
 						EnviaCorreo(vCorreo,
-									"Seguimiento en Portal de Proveedores",
-									$"Estimado {vProveedor},<br/>Su alta como proveedor tiene las siguientes observaciones:<br/>{conExpedienteCambioEstatus.Comentarios}");
+									"Seguimiento en Portal de Rediin Proveedores",
+									$"Estimado {vProveedor}:<br/><br/>Su alta como proveedor tiene las siguientes observaciones:<br/>{conExpedienteCambioEstatus.Comentarios}");
 					}
 					else if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EVConExpedientes.ParamEstIdAutorizado)
 					{
 						EnviaCorreo(vCorreo,
-									"Seguimiento en Portal de Proveedores",
-									$"Estimado {vProveedor},<br/>Su alta como proveedor ha sido satisfactoria.");
+									"Seguimiento en Portal de Rediin Proveedores",
+									$"Estimado {vProveedor}:<br/><br/>Su alta como proveedor ha sido satisfactoria.");
 					}
 				}
 
@@ -529,61 +533,11 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 				return null;
 			}
 		}
-		private async void EnviaCorreo(String correoDestino, String subject, String body)
+		private void EnviaCorreo(String correoDestino, String subject, String body)
 		{
-			MailAddress vCorreoOrig;
-			SmtpClient vServidor = base.ServidorCorreo("RediinProveedoresMail", out vCorreoOrig);
-			NetworkCredential vCred = (NetworkCredential)vServidor.Credentials;
-
-			var mail = new MimeMessage();
-			mail.From.Add(new MailboxAddress(vCorreoOrig.DisplayName, vCorreoOrig.Address));
-			mail.Sender = new MailboxAddress(vCorreoOrig.DisplayName, vCorreoOrig.Address);
-			mail.To.Add(new MailboxAddress("A quien corresponda.", correoDestino));
-
-			var vBodyB = new BodyBuilder();
-			vBodyB.HtmlBody = body;
-			mail.Subject = subject;
-			mail.Body = vBodyB.ToMessageBody();
-
-			using var smtp = new MailKit.Net.Smtp.SmtpClient();
-			try
-			{
-				smtp.Connect(vServidor.Host, vServidor.Port, vServidor.EnableSsl);
-				smtp.Authenticate(vCred.UserName, vCred.Password);
-				smtp.Send(mail);
-				smtp.Disconnect(true);
-			}
-			catch (Exception ex)
-			{
-				NExpedientes.Mensajes.AddError(ex.Message);
-				if (ex.InnerException != null)
-					NExpedientes.Mensajes.AddError(ex.InnerException.Message);
-			}
-
-
-
-			//MailAddress vCorreoOrig;
-			//SmtpClient vServidor = base.ServidorCorreo("RediinProveedoresMail", out vCorreoOrig);
-			////var vCorreoDest = base.DatosUsuarioCorreo("UmsoftRegistroClientes", 7);
-
-			//MailMessage vMensaje = new MailMessage();
-			//vMensaje.From = vCorreoOrig;
-			//vMensaje.To.Add(correoDestino);
-			//vMensaje.Subject = subject;
-			//vMensaje.Body = body;
-			//vMensaje.IsBodyHtml = true;
-			//vMensaje.Priority = MailPriority.Normal;
-
-			//try
-			//{
-			//	//vServidor.Send(vMensaje);
-			//}
-			//catch (Exception ex)
-			//{
-			//	NExpedientes.Mensajes.AddError(ex.Message);
-			//	if (ex.InnerException != null)
-			//		NExpedientes.Mensajes.AddError(ex.InnerException.Message);
-			//}
+			var vCorreo = base.ServidorCorreo("RediinProveedoresMail");
+			vCorreo.To.Add(vCorreo.NewUser("Cliente", correoDestino));
+			vCorreo.Send(subject, body);
 		}
 		private Object ObtenValor(EConExpediente conExpediente, Int64 columnaId)
 		{

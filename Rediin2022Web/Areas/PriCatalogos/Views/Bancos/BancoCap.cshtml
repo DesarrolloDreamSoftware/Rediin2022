@@ -5,7 +5,8 @@
 }
 
 <form asp-action="_BancoCaptura">
-    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" 
+    xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
         <div msub-panel="CapTitulo">
             @MensajesXId._BancoTitCap
         </div>

@@ -56,6 +56,7 @@ namespace Rediin2022.Aplicacion.PriOperacion
         public Int64 ParamProveedorColumnaIdCorreo { get; set; }
         public Int64 ParamPerfilIdNvoUsr { get; set; }
         public Int64 ProveedorColumnaIdUsuario { get; set; }
+        public String ParamUrlRediinProveedores { get; set; }
         //No config Proveedor
         #endregion
     }
