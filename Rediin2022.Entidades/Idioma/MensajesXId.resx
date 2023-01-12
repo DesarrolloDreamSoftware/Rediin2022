@@ -459,4 +459,88 @@
   <data name="SapGrupoCuentaNombre" xml:space="preserve">
     <value>Grupo de cuenta</value>
   </data>
+  <data name="_SapGrupoTesoreriaTitCon" xml:space="preserve">
+    <value>Grupos de tesorer&#237;a</value>
+  </data>
+  <data name="_SapGrupoTesoreriaTitCap" xml:space="preserve">
+    <value>Grupo de tesorer&#237;a</value>
+  </data>
+  <data name="SapGrupoTesoreriaId" xml:space="preserve">
+    <value>Cve Grupo de tesorer&#237;a</value>
+  </data>
+  <data name="SapGrupoTesoreriaNombre" xml:space="preserve">
+    <value>Grupo de tesorer&#237;a</value>
+  </data>
+  <data name="_SapGrupoToleranciaTitCon" xml:space="preserve">
+    <value>Grupos de tolerancia</value>
+  </data>
+  <data name="_SapGrupoToleranciaTitCap" xml:space="preserve">
+    <value>Grupo de tolerancia</value>
+  </data>
+  <data name="SapGrupoToleranciaId" xml:space="preserve">
+    <value>Cve Grupo tolerancia</value>
+  </data>
+  <data name="SapGrupoToleranciaNombre" xml:space="preserve">
+    <value>Grupo de tolerancia</value>
+  </data>
+  <data name="_SapOrganizacionCompraTitCon" xml:space="preserve">
+    <value>Organizaciones de compra</value>
+  </data>
+  <data name="_SapOrganizacionCompraTitCap" xml:space="preserve">
+    <value>Organizaci&#243;n de compra</value>
+  </data>
+  <data name="SapOrganizacionCompraId" xml:space="preserve">
+    <value>Cve Organizaci&#243;n de compra</value>
+  </data>
+  <data name="SapOrganizacionCompraNombre" xml:space="preserve">
+    <value>Organizaci&#243;n de compra</value>
+  </data>
+  <data name="_SapSociedadTitCon" xml:space="preserve">
+    <value>Sociedades</value>
+  </data>
+  <data name="_SapSociedadTitCap" xml:space="preserve">
+    <value>Sociedad</value>
+  </data>
+  <data name="SapSociedadId" xml:space="preserve">
+    <value>Cve Sociedad</value>
+  </data>
+  <data name="SapSociedadNombre" xml:space="preserve">
+    <value>Sociedad</value>
+  </data>
+  <data name="_SapSociedadGLTitCon" xml:space="preserve">
+    <value>Sociedades GL</value>
+  </data>
+  <data name="_SapSociedadGLTitCap" xml:space="preserve">
+    <value>Sociedad GL</value>
+  </data>
+  <data name="SapSociedadGLId" xml:space="preserve">
+    <value>Cve Sociedad GL</value>
+  </data>
+  <data name="SapSociedadGLNombre" xml:space="preserve">
+    <value>Sociedad GL</value>
+  </data>
+  <data name="_SapTratamientoTitCon" xml:space="preserve">
+    <value>Tratamientos</value>
+  </data>
+  <data name="_SapTratamientoTitCap" xml:space="preserve">
+    <value>Tratamiento</value>
+  </data>
+  <data name="SapTratamientoId" xml:space="preserve">
+    <value>Cve Tratamiento</value>
+  </data>
+  <data name="SapTratamientoNombre" xml:space="preserve">
+    <value>Tratamiento</value>
+  </data>
+  <data name="_SapViaPagoTitCon" xml:space="preserve">
+    <value>V&#237;as de pago</value>
+  </data>
+  <data name="_SapViaPagoTitCap" xml:space="preserve">
+    <value>V&#237;a de pago</value>
+  </data>
+  <data name="SapViaPagoId" xml:space="preserve">
+    <value>Cve V&#237;a de pago</value>
+  </data>
+  <data name="SapViaPagoNombre" xml:space="preserve">
+    <value>V&#237;a de pago</value>
+  </data>
 </root>

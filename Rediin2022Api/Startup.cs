@@ -50,6 +50,13 @@ namespace Rediin2022Api
             services.AddScoped<INSapCondicionesPago, NSapCondicionesPago>();
             services.AddScoped<INSapCuentasAsociadas, NSapCuentasAsociadas>();
             services.AddScoped<INSapGrupoCuentas, NSapGrupoCuentas>();
+            services.AddScoped<INSapGruposTesoreria, NSapGruposTesoreria>();
+            services.AddScoped<INSapGruposTolerancia, NSapGruposTolerancia>();
+            services.AddScoped<INSapOrganizacionesCompra, NSapOrganizacionesCompra>();
+            services.AddScoped<INSapSociedades, NSapSociedades>();
+            services.AddScoped<INSapSociedadesGL, NSapSociedadesGL>();
+            services.AddScoped<INSapTratamientos, NSapTratamientos>();
+            services.AddScoped<INSapViasPago, NSapViasPago>();
             //Operacion
             services.AddScoped<INConExpedientes, NConExpedientes>();
             //Clientes
