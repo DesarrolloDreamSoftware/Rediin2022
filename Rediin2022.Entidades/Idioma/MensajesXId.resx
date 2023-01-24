@@ -543,4 +543,16 @@
   <data name="SapViaPagoNombre" xml:space="preserve">
     <value>V&#237;a de pago</value>
   </data>
+  <data name="_SapBancoTitCon" xml:space="preserve">
+    <value>Bancos</value>
+  </data>
+  <data name="_SapBancoTitCap" xml:space="preserve">
+    <value>Banco</value>
+  </data>
+  <data name="SapBancoId" xml:space="preserve">
+    <value>Cve Banco</value>
+  </data>
+  <data name="SapBancoNombre" xml:space="preserve">
+    <value>Banco</value>
+  </data>
 </root>

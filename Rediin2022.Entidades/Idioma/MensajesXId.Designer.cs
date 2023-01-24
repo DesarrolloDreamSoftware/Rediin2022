@@ -1297,5 +1297,37 @@ namespace Rediin2022.Entidades.Idioma {
                 return ResourceManager.GetString("SapViaPagoNombre", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Bancos.
+        /// </summary>
+        public static string _SapBancoTitCon {
+            get {
+                return ResourceManager.GetString("_SapBancoTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string _SapBancoTitCap {
+            get {
+                return ResourceManager.GetString("_SapBancoTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Banco.
+        /// </summary>
+        public static string SapBancoId {
+            get {
+                return ResourceManager.GetString("SapBancoId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string SapBancoNombre {
+            get {
+                return ResourceManager.GetString("SapBancoNombre", resourceCulture);
+            }
+        }
     }
 }

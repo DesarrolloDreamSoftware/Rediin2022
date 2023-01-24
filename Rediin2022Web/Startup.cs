@@ -59,6 +59,7 @@ namespace Rediin2022Web
             services.AddScoped<INSapSociedadesGL, APLSapSociedadesGL>();
             services.AddScoped<INSapTratamientos, APLSapTratamientos>();
             services.AddScoped<INSapViasPago, APLSapViasPago>();
+            services.AddScoped<INSapBancos, APLSapBancos>();
             //Operacion
             services.AddScoped<INConExpedientes, APLConExpedientes>();
             //Clientes
