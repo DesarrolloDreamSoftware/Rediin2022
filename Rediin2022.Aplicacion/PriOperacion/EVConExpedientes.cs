@@ -2,6 +2,7 @@ using DSMetodNetX.Aplicacion;
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Negocio;
 using Rediin2022.Entidades.PriCatalogos;
+using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Entidades.PriOperacion;
 using System;
 using System.Collections.Generic;
@@ -50,6 +51,11 @@ namespace Rediin2022.Aplicacion.PriOperacion
 
         //No config Proveedor
         public Int64 ParamProveedorProcesoOperativoId { get; set; }
+        public Dictionary<Int64, List<MEElemento>> CombosProveedores { get; set; }
+		public Int64 ParamProveedorColumnaIdPais { get; set; }
+		public Int64 ParamProveedorColumnaIdEstado { get; set; }
+		public Int64 ParamProveedorColumnaIdMunicipio { get; set; }
+		public Int64 ParamProveedorColumnaIdColonia { get; set; }
 		public Int64 ParamEstIdCaptura { get; set; }
 		public Int64 ParamEstIdAutorizado { get; set; }
 		public Int64 ParamProveedorColumnaIdNombre { get; set; }

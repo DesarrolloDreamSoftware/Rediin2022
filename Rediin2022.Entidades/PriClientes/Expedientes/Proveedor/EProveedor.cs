@@ -26,13 +26,9 @@ namespace Rediin2022.Entidades.PriClientes
 		public String NumeroExterior { get; set; }
 		public String NumeroInterior { get; set; }
 		public Int64 ColoniaId { get; set; }
-		public String Colonia { get; set; } //Verificar si se queda
 		public Int64 MunicipioId { get; set; }
-		public String Municipio { get; set; } //Verificar si se queda
 		public Int64 EstadoId { get; set; }
-		public String Estado { get; set; } //Verificar si se queda
 		public Int64 PaisId { get; set; }
-		public String Pais { get; set; } //Verificar si se queda
 
 		public String ContactoNombre { get; set; }
 		public String ContactoCorreoElectronico { get; set; }
@@ -40,17 +36,14 @@ namespace Rediin2022.Entidades.PriClientes
 		public String ContactoCelular { get; set; }
 
 		public Int64 BancoId { get; set; }
-		public String Banco { get; set; }
 		public String Cuenta { get; set; }
 		public String CuentaClabe { get; set; }
 
         public Int64 BancoId2 { get; set; }
-        public String Banco2 { get; set; }
         public String Cuenta2 { get; set; }
         public String CuentaClabe2 { get; set; }
 
         public Int64 BancoId3 { get; set; }
-        public String Banco3 { get; set; }
         public String Cuenta3 { get; set; }
         public String CuentaClabe3 { get; set; }
 
@@ -59,7 +52,6 @@ namespace Rediin2022.Entidades.PriClientes
 		public DateTime FechaEscritura { get; set; }
 		public String RepresentanteLegal { get; set; }
 		public Int64 IdentificacionId { get; set; }
-		public String Identificacion { get; set; }
 		public String NumIdentificacion { get; set; }
 
 		public String PoderNotarialNotarioNombre { get; set; }
@@ -67,7 +59,18 @@ namespace Rediin2022.Entidades.PriClientes
 		public DateTime PoderNotarialFechaEscritura { get; set; }
 		public String PoderNotarialRepresentanteLegal { get; set; }
 		public Int64 PoderNotarialIdentificacionId { get; set; }
-		public String PoderNotarialIdentificacion { get; set; }
 		public String PoderNotarialNumIdentificacion { get; set; }
-	}
+
+        public String SapSociedadId { get; set; }
+        public String SapSociedadGLId { get; set; }
+		public String SapGrupoCuentaId { get; set; }
+		public String SapOrganizacionCompraId { get; set; }
+		public String SapTratamientoId { get; set; }
+		public String SapCuentaAsociadaId { get; set; }
+		public String SapGrupoTesoreriaId { get; set; }
+		public String SapBancoId { get; set; }
+		public String SapCondicionPagoId { get; set; }
+		public String SapViaPagoId { get; set; }
+		public String SapGrupoToleranciaId { get; set; }
+    }
 }
