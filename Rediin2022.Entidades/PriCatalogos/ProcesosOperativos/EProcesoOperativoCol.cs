@@ -1,6 +1,7 @@
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.Entidades;
 using System;
+using System.Collections.Generic;
 
 namespace Rediin2022.Entidades.PriCatalogos
 {
@@ -24,7 +25,12 @@ namespace Rediin2022.Entidades.PriCatalogos
         [XMain] public Boolean CapObligatorio { get; set; } = false;
         [XMain] public String CapRangoIni { get; set; } = String.Empty;
         [XMain] public String CapRangoFin { get; set; } = String.Empty;
-        [XMain] public Boolean Activo { get; set; } = false;
+		[XMain(true)] public Int64 CapCmbProcesoOperativoId { get; set; } = 0L;
+		[XMain(true)] public Int64 CapCmbIdColumnaId { get; set; } = 0L;
+		[XMain(true)] public Int64 CapCmbTextoColumnaId { get; set; } = 0L;
+		[XMain] public Boolean Activo { get; set; } = false;
+
+        public List<MEElemento> ElementosCmb { get; set; } = null;
         #endregion
     }
 }

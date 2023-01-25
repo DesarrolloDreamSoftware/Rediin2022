@@ -106,6 +106,33 @@ namespace Rediin2022.Entidades.Idioma {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string _BancoTitCap {
+            get {
+                return ResourceManager.GetString("_BancoTitCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Bancos.
+        /// </summary>
+        public static string _BancoTitCon {
+            get {
+                return ResourceManager.GetString("_BancoTitCon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Comentarios..
+        /// </summary>
+        public static string _ConExpedienteCambioEstatusTitCap {
+            get {
+                return ResourceManager.GetString("_ConExpedienteCambioEstatusTitCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Expedientes.
         /// </summary>
         public static string _ConExpedienteInicia {
@@ -205,6 +232,24 @@ namespace Rediin2022.Entidades.Idioma {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Identificacion.
+        /// </summary>
+        public static string _IdentificacionTitCap {
+            get {
+                return ResourceManager.GetString("_IdentificacionTitCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Identificaciones.
+        /// </summary>
+        public static string _IdentificacionTitCon {
+            get {
+                return ResourceManager.GetString("_IdentificacionTitCon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Columnas.
         /// </summary>
         public static string _ProcesoOperativoColInicia {
@@ -228,6 +273,15 @@ namespace Rediin2022.Entidades.Idioma {
         public static string _ProcesoOperativoColST2 {
             get {
                 return ResourceManager.GetString("_ProcesoOperativoColST2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Combo (opcional).
+        /// </summary>
+        public static string _ProcesoOperativoColST3 {
+            get {
+                return ResourceManager.GetString("_ProcesoOperativoColST3", resourceCulture);
             }
         }
         
@@ -412,6 +466,24 @@ namespace Rediin2022.Entidades.Idioma {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Cve banco.
+        /// </summary>
+        public static string BancoId {
+            get {
+                return ResourceManager.GetString("BancoId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string BancoNombre {
+            get {
+                return ResourceManager.GetString("BancoNombre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Buscador.
         /// </summary>
         public static string BusquedaTexto {
@@ -426,6 +498,33 @@ namespace Rediin2022.Entidades.Idioma {
         public static string Cantidad {
             get {
                 return ResourceManager.GetString("Cantidad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Columna Cve.
+        /// </summary>
+        public static string CapCmbIdColumnaId {
+            get {
+                return ResourceManager.GetString("CapCmbIdColumnaId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve proc. oper. catálogo.
+        /// </summary>
+        public static string CapCmbProcesoOperativoId {
+            get {
+                return ResourceManager.GetString("CapCmbProcesoOperativoId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Columna Texto.
+        /// </summary>
+        public static string CapCmbTextoColumnaId {
+            get {
+                return ResourceManager.GetString("CapCmbTextoColumnaId", resourceCulture);
             }
         }
         
@@ -502,6 +601,15 @@ namespace Rediin2022.Entidades.Idioma {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Comentarios.
+        /// </summary>
+        public static string Comentarios {
+            get {
+                return ResourceManager.GetString("Comentarios", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Longitud.
         /// </summary>
         public static string ConLongitud {
@@ -552,6 +660,15 @@ namespace Rediin2022.Entidades.Idioma {
         public static string DiasVencimiento {
             get {
                 return ResourceManager.GetString("DiasVencimiento", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Es catálogo.
+        /// </summary>
+        public static string EsCatalogo {
+            get {
+                return ResourceManager.GetString("EsCatalogo", resourceCulture);
             }
         }
         
@@ -624,6 +741,24 @@ namespace Rediin2022.Entidades.Idioma {
         public static string ExpedienteObjetoId {
             get {
                 return ResourceManager.GetString("ExpedienteObjetoId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve identificación.
+        /// </summary>
+        public static string IdentificacionId {
+            get {
+                return ResourceManager.GetString("IdentificacionId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Identificación.
+        /// </summary>
+        public static string IdentificacionNombre {
+            get {
+                return ResourceManager.GetString("IdentificacionNombre", resourceCulture);
             }
         }
         
@@ -840,6 +975,358 @@ namespace Rediin2022.Entidades.Idioma {
         public static string UsuarioId {
             get {
                 return ResourceManager.GetString("UsuarioId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Condiciones pago.
+        /// </summary>
+        public static string _SapCondicionPagoTitCon {
+            get {
+                return ResourceManager.GetString("_SapCondicionPagoTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Condici&#243;n de pago.
+        /// </summary>
+        public static string _SapCondicionPagoTitCap {
+            get {
+                return ResourceManager.GetString("_SapCondicionPagoTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve condici&#243;n de pago.
+        /// </summary>
+        public static string SapCondicionPagoId {
+            get {
+                return ResourceManager.GetString("SapCondicionPagoId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Condici&#243;n de pago.
+        /// </summary>
+        public static string SapCondicionPagoNombre {
+            get {
+                return ResourceManager.GetString("SapCondicionPagoNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cuentas asociadas.
+        /// </summary>
+        public static string _SapCuentaAsociadaTitCon {
+            get {
+                return ResourceManager.GetString("_SapCuentaAsociadaTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cuenta asociada.
+        /// </summary>
+        public static string _SapCuentaAsociadaTitCap {
+            get {
+                return ResourceManager.GetString("_SapCuentaAsociadaTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Cuenta asociada.
+        /// </summary>
+        public static string SapCuentaAsociadaId {
+            get {
+                return ResourceManager.GetString("SapCuentaAsociadaId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cuenta asociada.
+        /// </summary>
+        public static string SapCuentaAsociadaNombre {
+            get {
+                return ResourceManager.GetString("SapCuentaAsociadaNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Grupo de cuentas.
+        /// </summary>
+        public static string _SapGrupoCuentaTitCon {
+            get {
+                return ResourceManager.GetString("_SapGrupoCuentaTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Grupo de cuenta.
+        /// </summary>
+        public static string _SapGrupoCuentaTitCap {
+            get {
+                return ResourceManager.GetString("_SapGrupoCuentaTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Grupo de cuenta.
+        /// </summary>
+        public static string SapGrupoCuentaId {
+            get {
+                return ResourceManager.GetString("SapGrupoCuentaId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Grupo de cuenta.
+        /// </summary>
+        public static string SapGrupoCuentaNombre {
+            get {
+                return ResourceManager.GetString("SapGrupoCuentaNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Grupos de tesorer&#237;a.
+        /// </summary>
+        public static string _SapGrupoTesoreriaTitCon {
+            get {
+                return ResourceManager.GetString("_SapGrupoTesoreriaTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Grupo de tesorer&#237;a.
+        /// </summary>
+        public static string _SapGrupoTesoreriaTitCap {
+            get {
+                return ResourceManager.GetString("_SapGrupoTesoreriaTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Grupo de tesorer&#237;a.
+        /// </summary>
+        public static string SapGrupoTesoreriaId {
+            get {
+                return ResourceManager.GetString("SapGrupoTesoreriaId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Grupo de tesorer&#237;a.
+        /// </summary>
+        public static string SapGrupoTesoreriaNombre {
+            get {
+                return ResourceManager.GetString("SapGrupoTesoreriaNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Grupos de tolerancia.
+        /// </summary>
+        public static string _SapGrupoToleranciaTitCon {
+            get {
+                return ResourceManager.GetString("_SapGrupoToleranciaTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Grupo de tolerancia.
+        /// </summary>
+        public static string _SapGrupoToleranciaTitCap {
+            get {
+                return ResourceManager.GetString("_SapGrupoToleranciaTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Grupo tolerancia.
+        /// </summary>
+        public static string SapGrupoToleranciaId {
+            get {
+                return ResourceManager.GetString("SapGrupoToleranciaId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Grupo de tolerancia.
+        /// </summary>
+        public static string SapGrupoToleranciaNombre {
+            get {
+                return ResourceManager.GetString("SapGrupoToleranciaNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Organizaciones de compra.
+        /// </summary>
+        public static string _SapOrganizacionCompraTitCon {
+            get {
+                return ResourceManager.GetString("_SapOrganizacionCompraTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Organizaci&#243;n de compra.
+        /// </summary>
+        public static string _SapOrganizacionCompraTitCap {
+            get {
+                return ResourceManager.GetString("_SapOrganizacionCompraTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Organizaci&#243;n de compra.
+        /// </summary>
+        public static string SapOrganizacionCompraId {
+            get {
+                return ResourceManager.GetString("SapOrganizacionCompraId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Organizaci&#243;n de compra.
+        /// </summary>
+        public static string SapOrganizacionCompraNombre {
+            get {
+                return ResourceManager.GetString("SapOrganizacionCompraNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Sociedades.
+        /// </summary>
+        public static string _SapSociedadTitCon {
+            get {
+                return ResourceManager.GetString("_SapSociedadTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Sociedad.
+        /// </summary>
+        public static string _SapSociedadTitCap {
+            get {
+                return ResourceManager.GetString("_SapSociedadTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Sociedad.
+        /// </summary>
+        public static string SapSociedadId {
+            get {
+                return ResourceManager.GetString("SapSociedadId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Sociedad.
+        /// </summary>
+        public static string SapSociedadNombre {
+            get {
+                return ResourceManager.GetString("SapSociedadNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Sociedades GL.
+        /// </summary>
+        public static string _SapSociedadGLTitCon {
+            get {
+                return ResourceManager.GetString("_SapSociedadGLTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Sociedad GL.
+        /// </summary>
+        public static string _SapSociedadGLTitCap {
+            get {
+                return ResourceManager.GetString("_SapSociedadGLTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Sociedad GL.
+        /// </summary>
+        public static string SapSociedadGLId {
+            get {
+                return ResourceManager.GetString("SapSociedadGLId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Sociedad GL.
+        /// </summary>
+        public static string SapSociedadGLNombre {
+            get {
+                return ResourceManager.GetString("SapSociedadGLNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Tratamientos.
+        /// </summary>
+        public static string _SapTratamientoTitCon {
+            get {
+                return ResourceManager.GetString("_SapTratamientoTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Tratamiento.
+        /// </summary>
+        public static string _SapTratamientoTitCap {
+            get {
+                return ResourceManager.GetString("_SapTratamientoTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Tratamiento.
+        /// </summary>
+        public static string SapTratamientoId {
+            get {
+                return ResourceManager.GetString("SapTratamientoId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Tratamiento.
+        /// </summary>
+        public static string SapTratamientoNombre {
+            get {
+                return ResourceManager.GetString("SapTratamientoNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a V&#237;as de pago.
+        /// </summary>
+        public static string _SapViaPagoTitCon {
+            get {
+                return ResourceManager.GetString("_SapViaPagoTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a V&#237;a de pago.
+        /// </summary>
+        public static string _SapViaPagoTitCap {
+            get {
+                return ResourceManager.GetString("_SapViaPagoTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve V&#237;a de pago.
+        /// </summary>
+        public static string SapViaPagoId {
+            get {
+                return ResourceManager.GetString("SapViaPagoId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a V&#237;a de pago.
+        /// </summary>
+        public static string SapViaPagoNombre {
+            get {
+                return ResourceManager.GetString("SapViaPagoNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Bancos.
+        /// </summary>
+        public static string _SapBancoTitCon {
+            get {
+                return ResourceManager.GetString("_SapBancoTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string _SapBancoTitCap {
+            get {
+                return ResourceManager.GetString("_SapBancoTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve Banco.
+        /// </summary>
+        public static string SapBancoId {
+            get {
+                return ResourceManager.GetString("SapBancoId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Banco.
+        /// </summary>
+        public static string SapBancoNombre {
+            get {
+                return ResourceManager.GetString("SapBancoNombre", resourceCulture);
             }
         }
     }

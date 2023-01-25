@@ -141,7 +141,7 @@ namespace Rediin2022.Negocio.PriCatalogos
             _procesoOperativoReglas.AddSL(e => e.Orden, (Int16)0, Validaciones._int16Max);
             _procesoOperativoReglas.AddSL(e => e.ControlEstatus);
             _procesoOperativoReglas.AddSL(e => e.EsquemaObjetos, EsquemaObjetos.Ninguno, EsquemaObjetos.ListadoObjetos);
-            _procesoOperativoReglas.AddSL(e => e.Activo);
+			_procesoOperativoReglas.AddSL(e => e.Activo);
 
             return _procesoOperativoReglas;
         }
@@ -221,7 +221,20 @@ namespace Rediin2022.Negocio.PriCatalogos
                 _mensajes.AddError("El campo [{0}] debe ser <= al campo [{1}]",
                         MensajesXId.ConLongitud, MensajesXId.CapRangoFin);
 
-            return _mensajes.Ok;
+            if (procesoOperativoCol.CapCmbProcesoOperativoId > 0)
+            {
+                if (procesoOperativoCol.CapCmbProcesoOperativoId == procesoOperativoCol.ProcesoOperativoId)
+                    _mensajes.AddError("El proceso operativo del combo no puede ser hacia si mismo (seleccione otro proceso operativo en el combo).");
+                else
+                {
+                    if (procesoOperativoCol.CapCmbIdColumnaId <= 0)
+                        _mensajes.AddError("Debe elegir una columna de Clave para el combo.");
+                    if (procesoOperativoCol.CapCmbTextoColumnaId <= 0)
+                        _mensajes.AddError("Debe elegir una columna de Texto para el combo.");
+                }
+            }
+
+			return _mensajes.Ok;
         }
         private IMReglasNeg<EProcesoOperativoCol> ProcesoOperativoColReglasNeg()
         {
@@ -243,7 +256,10 @@ namespace Rediin2022.Negocio.PriCatalogos
             _procesoOperativoColReglas.AddSL(e => e.CapObligatorio);
             _procesoOperativoColReglas.AddSL(e => e.CapRangoIni, 0, 60, false);
             _procesoOperativoColReglas.AddSL(e => e.CapRangoFin, 0, 60, false);
-            _procesoOperativoColReglas.AddSL(e => e.Activo);
+			_procesoOperativoColReglas.AddSL(e => e.CapCmbProcesoOperativoId, 0L, Validaciones._int64Max, false).MessageForRange = MMensajesXId.ValidaSeleccion;
+			_procesoOperativoColReglas.AddSL(e => e.CapCmbIdColumnaId, 0L, Validaciones._int64Max, false).MessageForRange = MMensajesXId.ValidaSeleccion;
+			_procesoOperativoColReglas.AddSL(e => e.CapCmbTextoColumnaId, 0L, Validaciones._int64Max, false).MessageForRange = MMensajesXId.ValidaSeleccion;
+			_procesoOperativoColReglas.AddSL(e => e.Activo);
 
             return _procesoOperativoColReglas;
         }

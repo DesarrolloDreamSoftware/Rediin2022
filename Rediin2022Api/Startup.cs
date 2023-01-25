@@ -17,6 +17,7 @@ using Rediin2022.Entidades.PriOperacion;
 using Rediin2022.Negocio.PriOperacion;
 using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Negocio.PriClientes;
+using Sisegui2020.Entidades.PriSeguridad;
 
 namespace Rediin2022Api
 {
@@ -35,12 +36,28 @@ namespace Rediin2022Api
             //Configuracion personalizada
             MStartUpApi.ConfiguraServicios(services, Configuration);
 
+            services.AddSwaggerGen();
+
             //Inyeccion Negocios
             //services.AddScoped<INPaises, NPaises>();
             //Catalogos
             services.AddScoped<INCatalogos, NCatalogos>();
             services.AddScoped<INProcesosOperativos, NProcesosOperativos>();
             services.AddScoped<INAutorizaciones, NAutorizaciones>();
+            services.AddScoped<INBancos, NBancos>();
+            services.AddScoped<INIdentificaciones, NIdentificaciones>();
+
+            services.AddScoped<INSapCondicionesPago, NSapCondicionesPago>();
+            services.AddScoped<INSapCuentasAsociadas, NSapCuentasAsociadas>();
+            services.AddScoped<INSapGrupoCuentas, NSapGrupoCuentas>();
+            services.AddScoped<INSapGruposTesoreria, NSapGruposTesoreria>();
+            services.AddScoped<INSapGruposTolerancia, NSapGruposTolerancia>();
+            services.AddScoped<INSapOrganizacionesCompra, NSapOrganizacionesCompra>();
+            services.AddScoped<INSapSociedades, NSapSociedades>();
+            services.AddScoped<INSapSociedadesGL, NSapSociedadesGL>();
+            services.AddScoped<INSapTratamientos, NSapTratamientos>();
+            services.AddScoped<INSapViasPago, NSapViasPago>();
+            services.AddScoped<INSapBancos, NSapBancos>();
             //Operacion
             services.AddScoped<INConExpedientes, NConExpedientes>();
             //Clientes
@@ -49,7 +66,13 @@ namespace Rediin2022Api
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {            
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
             //Configuracion personalizada
             MStartUpApi.Configura(app, env);
 

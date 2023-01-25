@@ -378,4 +378,181 @@
   <data name="_ConExpedienteObjetoSelArchivoTitCap" xml:space="preserve">
     <value>Seleccionar el archivo</value>
   </data>
+  <data name="_BancoTitCon" xml:space="preserve">
+    <value>Bancos</value>
+  </data>
+  <data name="_BancoTitCap" xml:space="preserve">
+    <value>Banco</value>
+  </data>
+  <data name="BancoId" xml:space="preserve">
+    <value>Cve banco</value>
+  </data>
+  <data name="BancoNombre" xml:space="preserve">
+    <value>Banco</value>
+  </data>
+  <data name="_IdentificacionTitCon" xml:space="preserve">
+    <value>Identificaciones</value>
+  </data>
+  <data name="_IdentificacionTitCap" xml:space="preserve">
+    <value>Identificacion</value>
+  </data>
+  <data name="IdentificacionId" xml:space="preserve">
+    <value>Cve identificación</value>
+  </data>
+  <data name="IdentificacionNombre" xml:space="preserve">
+    <value>Identificación</value>
+  </data>
+  <data name="CapCmbIdColumnaId" xml:space="preserve">
+    <value>Columna Cve</value>
+  </data>
+  <data name="CapCmbProcesoOperativoId" xml:space="preserve">
+    <value>Cve proc. oper. catálogo</value>
+  </data>
+  <data name="CapCmbTextoColumnaId" xml:space="preserve">
+    <value>Columna Texto</value>
+  </data>
+  <data name="_ProcesoOperativoColST3" xml:space="preserve">
+    <value>Combo (opcional)</value>
+  </data>
+  <data name="EsCatalogo" xml:space="preserve">
+    <value>Es catálogo</value>
+  </data>
+  <data name="Comentarios" xml:space="preserve">
+    <value>Comentarios</value>
+  </data>
+  <data name="_ConExpedienteCambioEstatusTitCap" xml:space="preserve">
+    <value>Comentarios.</value>
+  </data>
+  <data name="_SapCondicionPagoTitCon" xml:space="preserve">
+    <value>Condiciones pago</value>
+  </data>
+  <data name="_SapCondicionPagoTitCap" xml:space="preserve">
+    <value>Condici&#243;n de pago</value>
+  </data>
+  <data name="SapCondicionPagoId" xml:space="preserve">
+    <value>Cve condici&#243;n de pago</value>
+  </data>
+  <data name="SapCondicionPagoNombre" xml:space="preserve">
+    <value>Condici&#243;n de pago</value>
+  </data>
+  <data name="_SapCuentaAsociadaTitCon" xml:space="preserve">
+    <value>Cuentas asociadas</value>
+  </data>
+  <data name="_SapCuentaAsociadaTitCap" xml:space="preserve">
+    <value>Cuenta asociada</value>
+  </data>
+  <data name="SapCuentaAsociadaId" xml:space="preserve">
+    <value>Cve Cuenta asociada</value>
+  </data>
+  <data name="SapCuentaAsociadaNombre" xml:space="preserve">
+    <value>Cuenta asociada</value>
+  </data>
+  <data name="_SapGrupoCuentaTitCon" xml:space="preserve">
+    <value>Grupo de cuentas</value>
+  </data>
+  <data name="_SapGrupoCuentaTitCap" xml:space="preserve">
+    <value>Grupo de cuenta</value>
+  </data>
+  <data name="SapGrupoCuentaId" xml:space="preserve">
+    <value>Cve Grupo de cuenta</value>
+  </data>
+  <data name="SapGrupoCuentaNombre" xml:space="preserve">
+    <value>Grupo de cuenta</value>
+  </data>
+  <data name="_SapGrupoTesoreriaTitCon" xml:space="preserve">
+    <value>Grupos de tesorer&#237;a</value>
+  </data>
+  <data name="_SapGrupoTesoreriaTitCap" xml:space="preserve">
+    <value>Grupo de tesorer&#237;a</value>
+  </data>
+  <data name="SapGrupoTesoreriaId" xml:space="preserve">
+    <value>Cve Grupo de tesorer&#237;a</value>
+  </data>
+  <data name="SapGrupoTesoreriaNombre" xml:space="preserve">
+    <value>Grupo de tesorer&#237;a</value>
+  </data>
+  <data name="_SapGrupoToleranciaTitCon" xml:space="preserve">
+    <value>Grupos de tolerancia</value>
+  </data>
+  <data name="_SapGrupoToleranciaTitCap" xml:space="preserve">
+    <value>Grupo de tolerancia</value>
+  </data>
+  <data name="SapGrupoToleranciaId" xml:space="preserve">
+    <value>Cve Grupo tolerancia</value>
+  </data>
+  <data name="SapGrupoToleranciaNombre" xml:space="preserve">
+    <value>Grupo de tolerancia</value>
+  </data>
+  <data name="_SapOrganizacionCompraTitCon" xml:space="preserve">
+    <value>Organizaciones de compra</value>
+  </data>
+  <data name="_SapOrganizacionCompraTitCap" xml:space="preserve">
+    <value>Organizaci&#243;n de compra</value>
+  </data>
+  <data name="SapOrganizacionCompraId" xml:space="preserve">
+    <value>Cve Organizaci&#243;n de compra</value>
+  </data>
+  <data name="SapOrganizacionCompraNombre" xml:space="preserve">
+    <value>Organizaci&#243;n de compra</value>
+  </data>
+  <data name="_SapSociedadTitCon" xml:space="preserve">
+    <value>Sociedades</value>
+  </data>
+  <data name="_SapSociedadTitCap" xml:space="preserve">
+    <value>Sociedad</value>
+  </data>
+  <data name="SapSociedadId" xml:space="preserve">
+    <value>Cve Sociedad</value>
+  </data>
+  <data name="SapSociedadNombre" xml:space="preserve">
+    <value>Sociedad</value>
+  </data>
+  <data name="_SapSociedadGLTitCon" xml:space="preserve">
+    <value>Sociedades GL</value>
+  </data>
+  <data name="_SapSociedadGLTitCap" xml:space="preserve">
+    <value>Sociedad GL</value>
+  </data>
+  <data name="SapSociedadGLId" xml:space="preserve">
+    <value>Cve Sociedad GL</value>
+  </data>
+  <data name="SapSociedadGLNombre" xml:space="preserve">
+    <value>Sociedad GL</value>
+  </data>
+  <data name="_SapTratamientoTitCon" xml:space="preserve">
+    <value>Tratamientos</value>
+  </data>
+  <data name="_SapTratamientoTitCap" xml:space="preserve">
+    <value>Tratamiento</value>
+  </data>
+  <data name="SapTratamientoId" xml:space="preserve">
+    <value>Cve Tratamiento</value>
+  </data>
+  <data name="SapTratamientoNombre" xml:space="preserve">
+    <value>Tratamiento</value>
+  </data>
+  <data name="_SapViaPagoTitCon" xml:space="preserve">
+    <value>V&#237;as de pago</value>
+  </data>
+  <data name="_SapViaPagoTitCap" xml:space="preserve">
+    <value>V&#237;a de pago</value>
+  </data>
+  <data name="SapViaPagoId" xml:space="preserve">
+    <value>Cve V&#237;a de pago</value>
+  </data>
+  <data name="SapViaPagoNombre" xml:space="preserve">
+    <value>V&#237;a de pago</value>
+  </data>
+  <data name="_SapBancoTitCon" xml:space="preserve">
+    <value>Bancos</value>
+  </data>
+  <data name="_SapBancoTitCap" xml:space="preserve">
+    <value>Banco</value>
+  </data>
+  <data name="SapBancoId" xml:space="preserve">
+    <value>Cve Banco</value>
+  </data>
+  <data name="SapBancoNombre" xml:space="preserve">
+    <value>Banco</value>
+  </data>
 </root>

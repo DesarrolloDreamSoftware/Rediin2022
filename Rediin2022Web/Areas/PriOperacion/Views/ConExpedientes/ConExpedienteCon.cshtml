@@ -59,19 +59,19 @@
 						<tr class="@(ViewBag.Indice == i ? "conTablaLinSel" : null)">
 							<td nowrap>
 								<a maccion="IniciaActualiza" asp-action="@nameof(ConExpedientesController.ConExpedienteActualizaIni)" asp-route-indice="@i"
-						   xvisible="@Model[i].PermiteActualiza"></a>
+				 xvisible="@Model[i].PermiteActualiza"></a>
 								<a maccion="PorRegistro" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoInicia)" asp-route-indice="@i">@MensajesXId._ConExpedienteObjetoInicia</a>
 								@if (Model[i].EstatusValidosSig != null && Model[i].EstatusValidosSig.Count > 0)
 								{
-									foreach(EEstatusValidoSig vEst in Model[i].EstatusValidosSig)
+									foreach (EEstatusValidoSig vEst in Model[i].EstatusValidosSig)
 									{
-										<a maccion="PorRegistroRiesgo" asp-action="@nameof(ConExpedientesController.ConExpedienteCambioEstatus)" asp-route-indice="@i" asp-route-procesoOperativoEstIdSig="@vEst.ProcesoOperativoEstIdSig" title="Cambia al estatus indicado">@vEst.EstatusNombre</a>
+										<a maccion="PorRegistroRiesgo" asp-action="@nameof(ConExpedientesController.ConExpedienteCambioEstatusIni)" asp-route-indice="@i" asp-route-procesoOperativoEstIdSig="@vEst.ProcesoOperativoEstIdSig" title="Cambia al estatus indicado">@vEst.EstatusNombre</a>
 									}
 								}
 								<div msub-panel="ConAccionesXReg" id="@vDivAcciones">
 									<a maccion="ConsultaXIdList" asp-action="@nameof(ConExpedientesController.ConExpedienteXId)" asp-route-indice="@i"></a>
 									<a maccion="PorRegistroList" asp-action="@nameof(ConExpedientesController.ExpedienteEstatuInicia)" asp-route-indice="@i"
-										xvisible="@Model[i].PermiteIrAExpedienteEstatu">@MensajesXId._ExpedienteEstatuInicia</a>
+				  xvisible="@Model[i].PermiteIrAExpedienteEstatu">@MensajesXId._ExpedienteEstatuInicia</a>
 									<a maccion="EliminaList" asp-action="@nameof(ConExpedientesController.ConExpedienteElimina)" asp-route-indice="@i"></a>
 								</div>
 							</td>
@@ -173,3 +173,30 @@
 		<a maccion="Regresa" asp-action="@nameof(ConExpedientesController.ConExpProcOperativoInicia)" asp-route-indice="-1"></a>
 	</div>
 </div>
+@if (ViewBag.CambioEstatus ?? false == true)
+{
+	EConExpedienteCambioEstatus vConExpedienteCambioEstatus = ViewBag.ConExpedienteCambioEstatus;
+	<div id="mdlAcciones" mmodal="true">
+		<form asp-action="_ConExpedienteCambioEstatus">
+			<div mpanel="Edit" mpnl-mensajes="@ViewBag.CAESMensajes">
+				<div msub-panel="CapTitulo">
+					@MensajesXId._ConExpedienteCambioEstatusTitCap
+				</div>
+				<div msub-panel="CapDatos">
+					<div melemento="CapLin">
+						<div melemento="CapCol" melem-cols="12">
+							<input type="hidden" name="@nameof(vConExpedienteCambioEstatus.ProcesoOperativoEstId)" value="@vConExpedienteCambioEstatus.ProcesoOperativoEstId" />
+							<textarea mval="Model" style="height:200px" xval-for="@vConExpedienteCambioEstatus.Comentarios" xval-min="2" xval-max="2000" xval-req="true" xval-group="CambioEstatus"></textarea>
+						</div>
+					</div>
+				</div>
+				<div msub-panel="CapAccionesGen">
+					<button maccion="Guarda" asp-action="@nameof(ConExpedientesController.ConExpedienteCambioEstatus)"
+						xvalidate="CambioEstatus"></button>
+					&nbsp;
+					<button type="button" maccion="Regresa" onclick="xfModal('mdlAcciones', false)"></button>
+				</div>
+			</div>
+		</form>
+	</div>
+}

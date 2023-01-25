@@ -1,9 +1,13 @@
 ﻿@using DSEntityNetX.Common.Language
 @using DSEntityNetX.Mvc.TagHelpers
+@using Rediin2022.Aplicacion.PriOperacion;
 @using Rediin2022.Entidades.PriCatalogos
 @model EConExpediente
 
 @{
+	//Int64 vPaisId = 0; //Para proveedores
+	//Int64 vEstadoId = 0; //Para proveedores
+	//Int64 vMunicipioId = 0; //Para proveedores
 	List<EProcesoOperativoCol> vProcOperColumnas = ViewBag.ProcOperColumnasXTab;
 	EConExpValores vValor = null;
 	List<List<EProcesoOperativoCol>> vLineas = new List<List<EProcesoOperativoCol>>();
@@ -91,27 +95,66 @@
 			}
 
 			<div melemento="CapCol" melem-cols="@vCol.CapColumnas * 3">
-				@if (vCol.Tipo == TiposColumna.Importe && vCol.Decimales > 0)
+				@{
+					EVConExpedientes vEVConExpedientes = ViewBag.EVConExpedientes;
+				}
+				@if (vCol.ProcesoOperativoId == ViewBag.ParamProveedorProcesoOperativoId &&
+						vEVConExpedientes.CombosProveedores != null &&
+						vEVConExpedientes.CombosProveedores.ContainsKey(vCol.ColumnaId))
+				{
+					List<MEElemento> vElementos = vEVConExpedientes.CombosProveedores[vCol.ColumnaId];
+
+					Boolean vActivar = vElementos != null; // && vElementos.Count > 0;
+
+					if (vCol.ColumnaId == vEVConExpedientes.ParamProveedorColumnaIdPais ||
+					vCol.ColumnaId == vEVConExpedientes.ParamProveedorColumnaIdEstado ||
+					vCol.ColumnaId == vEVConExpedientes.ParamProveedorColumnaIdMunicipio)
+					{
+						String vAccion = (ViewBag.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInsertaCap2) : nameof(ConExpedientesController.ConExpedienteActualizaCap2));
+						vAccion += $"?PEMColumnaId={vCol.ColumnaId}";
+						<select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
+					xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+					xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+					value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vElementos"
+					xval-enabled="@vActivar" xval-action="@vAccion"></select>
+					}
+					else
+					{
+						<select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
+					xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+					xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+					value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vElementos"
+					xval-enabled="@vActivar"></select>
+					}
+				}
+				else if (vCol.CapCmbProcesoOperativoId > 0)
+				{
+					<select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
+				xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+				xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+				value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vCol.ElementosCmb"></select>
+				}
+				else if (vCol.Tipo == TiposColumna.Importe && vCol.Decimales > 0)
 				{
 					<input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-			   xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-			   xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-			   value="@vValorCadena" xval-dec="@vCol.Decimales" />
+				  xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+				  xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+				  value="@vValorCadena" xval-dec="@vCol.Decimales" />
 				}
 				else if (vCol.Tipo == TiposColumna.Boleano)
 				{
 					Boolean vChecado = (vValorCadena ?? String.Empty) == "1";
 					<input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-			   xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-			   xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-			   value="true" checked="@vChecado" />
+				  xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+				  xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+				  value="true" checked="@vChecado" />
 				}
 				else
 				{
 					<input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-			   xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-			   xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-			   value="@vValorCadena" />
+				  xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+				  xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+				  value="@Html.Raw(vValorCadena)" />
 				}
 			</div>
 			@if (vCol.CapColumnasVacias > 0)

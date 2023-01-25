@@ -99,6 +99,13 @@ namespace Rediin2022.Negocio.PriOperacion
         /// </summary>
         public new Boolean ConExpedienteCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
         {
+            //Validaciones
+            //Eli
+            //Validaciones.Valida(_mensajes, conExpedienteCambioEstatus.Comentarios, MensajesXId.Comentarios, 2, 2000);
+
+            //if (!_mensajes.Ok)
+            //    return false;
+
             return base.ConExpedienteCambioEstatus(conExpedienteCambioEstatus);
         }
         public List<MEReglaNeg> ConExpedienteReglas()
@@ -153,6 +160,27 @@ namespace Rediin2022.Negocio.PriOperacion
 
             //Persistencia
             return base.ConExpedienteObjetoInserta(conExpedienteObjeto);
+        }
+        /// <summary>
+        /// Permite actualizar la entidad ConExpedienteObjeto.
+        /// </summary>
+        /// <param name="conExpedienteObjeto"></param>
+        /// <returns></returns>
+        public new Boolean ConExpedienteObjetoActualiza(EConExpedienteObjeto conExpedienteObjeto)
+        {
+            //Validacion
+            //if (!ConExpedienteObjetoValida(conExpedienteObjeto))
+            //    return false;
+
+            //ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ExpedienteId);
+            ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ExpedienteObjetoId);
+            //Se permitira que el nombre este vacio para cuando se elimina el objeto.
+            //ConExpedienteObjetoReglasNeg().ValidateProperty(conExpedienteObjeto, e => e.ArchivoNombre);
+            if (!_mensajes.Ok)
+                return false;
+
+            //Persistencia
+            return base.ConExpedienteObjetoActualiza(conExpedienteObjeto);
         }
         /// <summary>
         /// Elimina un registro de la base de datos.

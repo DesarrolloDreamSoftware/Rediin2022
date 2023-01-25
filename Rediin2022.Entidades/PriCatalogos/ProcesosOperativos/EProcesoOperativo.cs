@@ -15,7 +15,7 @@ namespace Rediin2022.Entidades.PriCatalogos
         [XMain] public Int16 Orden { get; set; } = 0;
         [XMain] public Boolean ControlEstatus { get; set; } = false;
         [XMain] public EsquemaObjetos EsquemaObjetos { get; set; } = EsquemaObjetos.Ninguno;
-        [XMain] public Boolean Activo { get; set; } = false;
+		[XMain] public Boolean Activo { get; set; } = false;
 
         //Columnas vista
         public String EstablecimientoNombre { get; set; } = String.Empty;

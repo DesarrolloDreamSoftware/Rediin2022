@@ -35,6 +35,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad Autorizacion.
         /// </summary>
+        [HttpPost]
         public EAutorizacionPag AutorizacionPag(EAutorizacionFiltro autorizacionFiltro)
         {
             return NAutorizaciones.AutorizacionPag(autorizacionFiltro);
@@ -50,6 +51,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite insertar la entidad Autorizacion.
         /// </summary>
+        [HttpPost]
         public Int64 AutorizacionInserta(EAutorizacion autorizacion)
         {
             return NAutorizaciones.AutorizacionInserta(autorizacion);
@@ -57,6 +59,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite actualizar la entidad Autorizacion.
         /// </summary>
+        [HttpPost]
         public Boolean AutorizacionActualiza(EAutorizacion autorizacion)
         {
             return NAutorizaciones.AutorizacionActualiza(autorizacion);
@@ -64,6 +67,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite eliminar la entidad Autorizacion.
         /// </summary>
+        [HttpPost]
         public Boolean AutorizacionElimina(EAutorizacion autorizacion)
         {
             return NAutorizaciones.AutorizacionElimina(autorizacion);
@@ -71,6 +75,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Reglas de negocio de la entidad Autorizacion.
         /// </summary>
+        [HttpGet]
         public List<MEReglaNeg> AutorizacionReglas()
         {
             return NAutorizaciones.AutorizacionReglas();
@@ -81,6 +86,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad AutorizacionUsuario.
         /// </summary>
+        [HttpPost]
         public EAutorizacionUsuarioPag AutorizacionUsuarioPag(EAutorizacionUsuarioFiltro autorizacionUsuarioFiltro)
         {
             return NAutorizaciones.AutorizacionUsuarioPag(autorizacionUsuarioFiltro);
@@ -96,6 +102,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite insertar la entidad AutorizacionUsuario.
         /// </summary>
+        [HttpPost]
         public Int64 AutorizacionUsuarioInserta(EAutorizacionUsuario autorizacionUsuario)
         {
             return NAutorizaciones.AutorizacionUsuarioInserta(autorizacionUsuario);
@@ -103,6 +110,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite actualizar la entidad AutorizacionUsuario.
         /// </summary>
+        [HttpPost]
         public Boolean AutorizacionUsuarioActualiza(EAutorizacionUsuario autorizacionUsuario)
         {
             return NAutorizaciones.AutorizacionUsuarioActualiza(autorizacionUsuario);
@@ -110,6 +118,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Permite eliminar la entidad AutorizacionUsuario.
         /// </summary>
+        [HttpPost]
         public Boolean AutorizacionUsuarioElimina(EAutorizacionUsuario autorizacionUsuario)
         {
             return NAutorizaciones.AutorizacionUsuarioElimina(autorizacionUsuario);
@@ -117,6 +126,7 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Reglas de negocio de la entidad AutorizacionUsuario.
         /// </summary>
+        [HttpGet]
         public List<MEReglaNeg> AutorizacionUsuarioReglas()
         {
             return NAutorizaciones.AutorizacionUsuarioReglas();
