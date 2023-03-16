@@ -56,7 +56,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
                                         INSapTratamientos nSapTratamientos,
                                         INSapCuentasAsociadas nSapCuentasAsociadas,
                                         INSapGruposTesoreria nSapGruposTesoreria,
-                                        //Falta sap bancos
+                                        INSapBancos nSapBancos,
                                         INSapCondicionesPago nSapCondicionesPago,
                                         INSapViasPago nSapViasPago,
                                         INSapGruposTolerancia nSapGruposTolerancia)
@@ -76,7 +76,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             NSapTratamientos = nSapTratamientos;
             NSapCuentasAsociadas = nSapCuentasAsociadas;
             NSapGruposTesoreria = nSapGruposTesoreria;
-            //Falta sap bancos
+            NSapBancos = nSapBancos;
             NSapCondicionesPago = nSapCondicionesPago;
             NSapViasPago = nSapViasPago;
             NSapGruposTolerancia = nSapGruposTolerancia;
@@ -98,7 +98,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         private INSapTratamientos NSapTratamientos { get; set; } //Proveedores
         private INSapCuentasAsociadas NSapCuentasAsociadas { get; set; } //Proveedores
         private INSapGruposTesoreria NSapGruposTesoreria { get; set; } //Proveedores
-        //Falta sap bancos
+        private INSapBancos NSapBancos { get; set; } //Proveedores
         private INSapCondicionesPago NSapCondicionesPago { get; set; } //Proveedores
         private INSapViasPago NSapViasPago { get; set; } //Proveedores
         private INSapGruposTolerancia NSapGruposTolerancia { get; set; } //Proveedores
@@ -279,7 +279,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
                     { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapTratamientoId)).ColumnaId, NSapTratamientos.SapTratamientoCmb() },
                     { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCuentaAsociadaId)).ColumnaId, NSapCuentasAsociadas.SapCuentaAsociadaCmb() },
                     { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoTesoreriaId)).ColumnaId, NSapGruposTesoreria.SapGrupoTesoreriaCmb() },
-                    //falta banco
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapBancoId)).ColumnaId, NSapBancos.SapBancoCmb() },
                     { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCondicionPagoId)).ColumnaId, NSapCondicionesPago.SapCondicionPagoCmb() },
                     { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapViaPagoId)).ColumnaId, NSapViasPago.SapViaPagoCmb() },
                     { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoToleranciaId)).ColumnaId, NSapGruposTolerancia.SapGrupoToleranciaCmb() },
@@ -887,9 +887,22 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             //return RedirectToAction(nameof(ConExpedienteObjetoCon));
         }
         /// <summary>
-        /// Acción personalizada SelArchivo.
+        /// Acción personalizada Descarga.
         /// </summary>
-        [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
+        [HttpGet("{nombreArchivo}")]
+        [MValidaSeg("ConExpedienteObjetoDescarga")]
+		public Task<IActionResult> ConExpedienteObjetoDescarga2(String nombreArchivo, Int32 indice)
+		{
+			EConExpedienteObjeto vObj = EVConExpedientes.ConExpedienteObjetoPag.Pagina[indice];
+			return base.MEnviaArchivoACliente(NConExpedientes.Mensajes, Path.Combine(vObj.Ruta, vObj.ArchivoNombre));
+			//NConExpedientes.ConExpedienteObjetoDescarga();
+			//base.MMensajesTemp = NConExpedientes.Mensajes.ToString();
+			//return RedirectToAction(nameof(ConExpedienteObjetoCon));
+		}
+		/// <summary>
+		/// Acción personalizada SelArchivo.
+		/// </summary>
+		[MValidaSeg(nameof(ConExpedienteObjetoInicia))]
         public IActionResult ConExpedienteObjetoSelArchivoIni(Int32 indice)
         {
             EVConExpedientes.ConExpedienteObjetoIndice = indice;

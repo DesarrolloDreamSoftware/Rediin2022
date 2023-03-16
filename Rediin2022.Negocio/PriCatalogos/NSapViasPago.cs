@@ -119,7 +119,7 @@ namespace Rediin2022.Negocio.PriCatalogos
                 return _sapViaPagoReglas;
 
             _sapViaPagoReglas = Validaciones.CreaReglasNeg<ESapViaPago>(_mensajes);
-            _sapViaPagoReglas.AddSL(e => e.SapViaPagoId, 2, 50);
+            _sapViaPagoReglas.AddSL(e => e.SapViaPagoId, 1, 50);
             _sapViaPagoReglas.AddSL(e => e.SapViaPagoNombre, 2, 120);
             _sapViaPagoReglas.AddSL(e => e.Activo);
 
