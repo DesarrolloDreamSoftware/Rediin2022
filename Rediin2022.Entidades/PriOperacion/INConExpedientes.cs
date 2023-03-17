@@ -87,6 +87,11 @@ namespace Rediin2022.Entidades.PriOperacion
 		/// Reglas de negocio de la entidad ConExpedienteObjeto.
 		/// </summary>
 		List<MEReglaNeg> ConExpedienteObjetoReglas();
+
+		///// <summary>
+		///// Reglas de negocio de la entidad ConExpedienteObjeto.
+		///// </summary>
+		//Byte[] ConExpedienteDescarga(String entidad, Int32 expedienteId, String nombreArchivo);
 		#endregion
 
 		#region ExpedienteEstatu (ExpeEsta)

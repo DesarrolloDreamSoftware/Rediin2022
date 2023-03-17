@@ -2,6 +2,33 @@
 @{
 	ViewData["Title"] = "Consulta";
 }
+
+
+<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+<script src="~/prioperacion/conexpedientes/conexpedienteobjeto.js"></script>
+<script type="text/javascript">
+	$(window).load(function () {
+		$("#loader").fadeOut(1000);
+	});
+</script>
+<div class="row">
+	<div class="col-md-3">
+		<div class="sidenav">
+			<div id="loader"></div>
+			<h2 style="padding-left:15px">Files</h2>
+			@for (int i = 0; i < Model.Count(); i++)
+			{
+				<a href="#" onclick="ViewDocument('@i')">@Model[i].ArchivoNombre</a>
+			}
+		</div>
+	</div>
+	<div class="col-md-9">
+		<h2>Preview</h2>
+		<div id="content"></div>
+	</div>
+</div>
+
+
 <div mpanel="Display" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas">
 	<div msub-panel="ConTitulo">
 		@MensajesXId._ConExpedienteObjetoTitCon
@@ -60,11 +87,7 @@
 								}
 								else
 								{
-									String vRuta = $"{nameof(ConExpedientesController.ConExpedienteObjetoDescarga2)}/{Model[i].ArchivoNombre}";
 									<a asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoDescarga)" asp-route-indice="@i" title="Descargar">
-										<span mcell-for="@Model[i].ArchivoNombre" xcell-first="30" style="color:blue"></span>
-									</a>
-									<a href="@vRuta" title="Descargar">
 										<span mcell-for="@Model[i].ArchivoNombre" xcell-first="30" style="color:blue"></span>
 									</a>
 								}
@@ -110,14 +133,14 @@
 						</div>
 						<div melemento="CapCol" melem-cols="6">
 							<input type="file" id="ArchivoFisico" mval="Text" xval-req="true"
-							   xval-min="1" xval-max="1000" xval-group="EConExpedienteObjeto" />
+								   xval-min="1" xval-max="1000" xval-group="EConExpedienteObjeto" />
 						</div>
 					</div>
 				</div>
 				<div msub-panel="CapAccionesGen">
 					<button maccion="Guarda"
-						asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoSelArchivo)"
-						xvalidate="SelArchivo"></button>
+							asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoSelArchivo)"
+							xvalidate="SelArchivo"></button>
 					&nbsp;
 					<button type="button" maccion="Regresa" onclick="xfModal('mdlAcciones', false)"></button>
 				</div>

@@ -175,6 +175,33 @@ input[type="checkbox"] {
     color: #9a9a9a;
     font-weight: bold;
 }
+.panelConMensajesOk {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: green;
+}
+
+.panelConMensajesError {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: red;
+}
+
+.panelConMensajesAdvertencia {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: orange;
+}
+
+.panelConMensajesNormal {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: blue;
+}
 
 .panelConMensajesCont {
     font-family: Arial;
@@ -224,7 +251,33 @@ input[type="checkbox"] {
     color: #9a9a9a;
     font-weight: bold;
 }
+.panelCapMensajesOk {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: green;
+}
 
+.panelCapMensajesError {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: red;
+}
+
+.panelCapMensajesAdvertencia {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: orange;
+}
+
+.panelCapMensajesNormal {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: blue;
+}
 .panelCapMensajesCont {
     font-family: Arial;
     font-size: 12pt;

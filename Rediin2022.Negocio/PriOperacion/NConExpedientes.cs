@@ -146,13 +146,21 @@ namespace Rediin2022.Negocio.PriOperacion
         {
             return conExpediente.ControlEstatus;
         }
-        #endregion
+		#endregion
 
-        #region ConExpedienteObjeto (Objs)
-        /// <summary>
-        /// Esta funcion valida e inserta un registro en la base de datos.
-        /// </summary>
-        public new Int64 ConExpedienteObjetoInserta(EConExpedienteObjeto conExpedienteObjeto)
+		#region ConExpedienteObjeto (Objs)
+		///// <summary>
+		///// Reglas de negocio de la entidad ConExpedienteObjeto.
+		///// </summary>
+		//public Byte[] ConExpedienteDescarga(String entidad, Int32 expedienteId, String nombreArchivo)
+  //      {
+  //          return null;
+  //      }
+
+		/// <summary>
+		/// Esta funcion valida e inserta un registro en la base de datos.
+		/// </summary>
+		public new Int64 ConExpedienteObjetoInserta(EConExpedienteObjeto conExpedienteObjeto)
         {
             //Validacion
             if (!ConExpedienteObjetoValida(conExpedienteObjeto))
