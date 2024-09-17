@@ -903,7 +903,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 
 			using MemoryStream vMS = new MemoryStream();
 			using FileStream vFS = new FileStream(Path.Combine(vObj.Ruta, vObj.ArchivoNombre), FileMode.Open);
-			//vFS.CopyTo(vMS);
+			vFS.CopyTo(vMS);
 			//return vMS.ToArray();
 			return File(vMS.ToArray(), vCont, "Archivo" + Path.GetExtension(vObj.ArchivoNombre));
 
@@ -924,6 +924,17 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 			v.View(o);
 			return new JsonResult(totalPaginas);
 		}
+		[MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
+		public IActionResult ConExpedienteObjetoDescargaImg(Int32 indice, Int32 pagina)
+		{
+			EConExpedienteObjeto vObj = EVConExpedientes.ConExpedienteObjetoPag.Pagina[indice];
+			String vRutaImgTemp = Path.Combine(vObj.Ruta, "temp", $"page-{pagina}.png");
+			using MemoryStream vMS = new MemoryStream();
+			using FileStream vFS = new FileStream(vRutaImgTemp, FileMode.Open);
+			vFS.CopyTo(vMS);
+			return File(vMS.ToArray(), "image/png");
+		}
+
 		/// <summary>
 		/// Acción personalizada SelArchivo.
 		/// </summary>

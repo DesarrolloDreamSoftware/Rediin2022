@@ -1,16 +1,15 @@
-﻿function ViewDocument(i) {
+﻿function ViewDocument(indice) {
 	$("#loader").fadeIn();
-	var data = { indice: i };
+	var data = { indice: indice };
 	$.ajax({
 		type: "POST",
-		url: '/ConExpedientes/ConExpedienteObjetoDescarga2',
+		url: '/PriOperacion/ConExpedientes/ConExpedienteObjetoDescarga2',
 		data: data,
 		dataType: "text"
 	}).done(function (data) {
-		var folderName = file.replace(".", "_");
 		$("#content").empty();
 		for (var i = 1; i <= data; i++) {
-			$("#content").append("<img src='Content/" + folderName + "/page-" + i + ".png'/>");
+			$("#content").append("<img style='width:100%' src='/PriOperacion/ConExpedientes/ConExpedienteObjetoDescargaImg?indice=" + indice + "&pagina=" + i + "'/>");
 		}
 		$("#loader").fadeOut();
 	})

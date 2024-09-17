@@ -126,7 +126,9 @@ public static class UtilExpediente
     }
     public static ERelacionProcOper ObtenRelacion(List<ERelacionProcOper> relaciones, String propiedad)
     {
-        return relaciones.FirstOrDefault(e => e.Propiedad == propiedad, new ERelacionProcOper());
+        //JRD PENDIENTE 17/9/2024
+        return null;
+        //return relaciones.FirstOrDefault(e => e.Propiedad == propiedad, new ERelacionProcOper());
     }
 }
 
