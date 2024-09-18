@@ -43,27 +43,27 @@ namespace Rediin2022Web
             //Inyeccion Negocios
             //services.AddScoped<INPaises, APLPaises>();
             //Catalogos
-            services.AddScoped<INCatalogos, APLCatalogos>();
-            services.AddScoped<INProcesosOperativos, APLProcesosOperativos>();
-            services.AddScoped<INAutorizaciones, APLAutorizaciones>();
-            services.AddScoped<INBancos, APLBancos>();
-            services.AddScoped<INIdentificaciones, APLIdentificaciones>();
+            services.AddScoped<INCatalogos, NRCatalogos>();
+            services.AddScoped<INProcesosOperativos, NRProcesosOperativos>();
+            services.AddScoped<INAutorizaciones, NRAutorizaciones>();
+            services.AddScoped<INBancos, NRBancos>();
+            services.AddScoped<INIdentificaciones, NRIdentificaciones>();
 
-            services.AddScoped<INSapCondicionesPago, APLSapCondicionesPago>();
-            services.AddScoped<INSapCuentasAsociadas, APLSapCuentasAsociadas>();
-            services.AddScoped<INSapGrupoCuentas, APLSapGrupoCuentas>();
-            services.AddScoped<INSapGruposTesoreria, APLSapGruposTesoreria>();
-            services.AddScoped<INSapGruposTolerancia, APLSapGruposTolerancia>();
-            services.AddScoped<INSapOrganizacionesCompra, APLSapOrganizacionesCompra>();
-            services.AddScoped<INSapSociedades, APLSapSociedades>();
-            services.AddScoped<INSapSociedadesGL, APLSapSociedadesGL>();
-            services.AddScoped<INSapTratamientos, APLSapTratamientos>();
-            services.AddScoped<INSapViasPago, APLSapViasPago>();
-            services.AddScoped<INSapBancos, APLSapBancos>();
+            services.AddScoped<INSapCondicionesPago, NRSapCondicionesPago>();
+            services.AddScoped<INSapCuentasAsociadas, NRSapCuentasAsociadas>();
+            services.AddScoped<INSapGrupoCuentas, NRSapGrupoCuentas>();
+            services.AddScoped<INSapGruposTesoreria, NRSapGruposTesoreria>();
+            services.AddScoped<INSapGruposTolerancia, NRSapGruposTolerancia>();
+            services.AddScoped<INSapOrganizacionesCompra, NRSapOrganizacionesCompra>();
+            services.AddScoped<INSapSociedades, NRSapSociedades>();
+            services.AddScoped<INSapSociedadesGL, NRSapSociedadesGL>();
+            services.AddScoped<INSapTratamientos, NRSapTratamientos>();
+            services.AddScoped<INSapViasPago, NRSapViasPago>();
+            services.AddScoped<INSapBancos, NRSapBancos>();
             //Operacion
-            services.AddScoped<INConExpedientes, APLConExpedientes>();
+            services.AddScoped<INConExpedientes, NRConExpedientes>();
             //Clientes
-            services.AddScoped<INExpedientes, APLExpedientes>();
+            services.AddScoped<INExpedientes, NRExpedientes>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

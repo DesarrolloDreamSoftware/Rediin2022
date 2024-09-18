@@ -1,20 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="x\**" />
+    <EmbeddedResource Remove="x\**" />
+    <None Remove="x\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Rediin2022.AccesoDatos\Rediin2022.AccesoDatos.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DSEntityNetX">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.dll</HintPath>
+    <Reference Include="DSEntityNetX.Business">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Business.dll</HintPath>
     </Reference>
-    <Reference Include="DSMetodNetX">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.dll</HintPath>
+    <Reference Include="DSEntityNetX.Common">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.DataAccess">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Entities">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.AccesoDatos">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.AccesoDatos.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Comun">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Comun.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Entidades">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Entidades.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Negocio">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Negocio.dll</HintPath>
     </Reference>
     <Reference Include="Sisegui2020.Entidades">
       <HintPath>..\..\2 Librerias\DreamSoftware\Metod\Sisegui2020.Entidades.dll</HintPath>

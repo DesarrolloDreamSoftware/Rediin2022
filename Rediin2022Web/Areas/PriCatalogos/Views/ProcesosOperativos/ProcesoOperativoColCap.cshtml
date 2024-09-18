@@ -1,12 +1,14 @@
-﻿@model EProcesoOperativoCol
+@model EProcesoOperativoCol
 
 @{
 	ViewData["Title"] = "Captura";
+    EVProcesosOperativos EV = ViewBag.EV;
 	Boolean vTieneExpedientes = ViewBag.TieneExpedientes;
 }
 
 <form asp-action="_ProcesoOperativoColCaptura">
-	<div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+	<div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.ProcesoOperativoCol.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
 		<div msub-panel="CapTitulo">
 			@MensajesXId._ProcesoOperativoColTitCap
 		</div>
@@ -133,7 +135,7 @@
 			<div melemento="CapLin">
 				<div melemento="CapCol" melem-cols="3">
 					<select mval="Model" xval-for="CapCmbProcesoOperativoId" xval-items="ViewBag.ProcesosOperativos"
-							xval-group-select="ProcesoOperativoColPO" xval-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoColInsertaCap) : nameof(ProcesosOperativosController.ProcesoOperativoColActualizaCap))"></select>
+							xval-group-select="ProcesoOperativoColPO" xval-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoColInsertaCap) : nameof(ProcesosOperativosController.ProcesoOperativoColActualizaCap))"></select>
 				</div>
 				<div melemento="CapCol" melem-cols="3">
 					<select mval="Model" xval-for="CapCmbIdColumnaId" xval-items="ViewBag.IdProcesosOperativosCols"
@@ -149,7 +151,7 @@
 		</div>
 		<div msub-panel="CapAccionesGen">
 			<button maccion="Guarda"
-					asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoColInserta) : nameof(ProcesosOperativosController.ProcesoOperativoColActualiza))"
+					asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoColInserta) : nameof(ProcesosOperativosController.ProcesoOperativoColActualiza))"
 					xvalidate="@nameof(EProcesoOperativoCol)"></button>
 			&nbsp;
 			<a maccion="Regresa" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoColCon)"></a>

@@ -1,21 +1,31 @@
-ï»¿using Rediin2022.Entidades.Idioma;
+using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using DSMetodNetX.Comun;
 
 namespace Rediin2022.AccesoDatos.PriCatalogos
 {
     [Serializable]
     public class RCatalogos : MRepositorio
     {
+        #region Variables
+        /// <summary>
+        /// Conexión.
+        /// </summary>
+        private IMConexionEntidad _conexion;
+        #endregion
+
         #region Constructores
         public RCatalogos(IMConexionEntidad conexion)
             : base(conexion)
         {
+            _conexion = conexion;
         }
         #endregion
 
@@ -23,10 +33,10 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta de combo para la tabla NCProcesosOperativosEst.
         /// </summary>
-        public List<MEElemento> ProcesoOperativoEstCmb(Int64 procesoOperativoId)
+        public async Task<List<MEElemento>> ProcesoOperativoEstCmb(Int64 procesoOperativoId)
         {
-            _conexion.AddParamInOpt(nameof(procesoOperativoId), procesoOperativoId);
-            return _conexion.LoadCmb<MEElemento>("NCProcesosOperativosEstCCmb1");
+            _conexion.AddParamInOpt(procesoOperativoId);
+            return await _conexion.EntidadCmbAsync("NCProcesosOperativosEstCCmb1");
         }
         #endregion
 

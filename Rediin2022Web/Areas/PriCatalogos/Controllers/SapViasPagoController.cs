@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapViasPago EVSapViasPago
+        private EVSapViasPago EV
         {
-            get
-            {
-                if (base.MSesion<EVSapViasPago>() == null)
-                    base.MSesion(new EVSapViasPago());
-
-                return base.MSesionAuto<EVSapViasPago>();
-            }
+            get { return base.MEVCtrl<EVSapViasPago>(); }
         }
         #endregion
 
@@ -63,14 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapViaPagoInicia()
+        public async Task<IActionResult> SapViaPagoInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapViasPago.SapViaPagoColOrden))
-                EVSapViasPago.SapViaPagoColOrden = nameof(ESapViaPago.SapViaPagoId);
-
-            if (EVSapViasPago.SapViaPagoReglas == null)
-                EVSapViasPago.SapViaPagoReglas = NSapViasPago.SapViaPagoReglas();
+            await Servicios.Gen.InicializaSF(EV.SapViaPago, nameof(ESapViaPago.SapViaPagoId),
+                async () => await NSapViasPago.SapViaPagoReglas());
 
             return RedirectToAction(nameof(SapViaPagoCon));
         }
@@ -78,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapViaPagoInicia))]
-        public IActionResult SapViaPagoCon()
+        public async Task<IActionResult> SapViaPagoCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapViasPago.SapViaPagoFiltro,
-                                     EVSapViasPago.SapViaPagoPag,
-                                     EVSapViasPago.SapViaPagoColOrden,
-                                     nameof(ESapViaPago));
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapViaPago);
+            EV.SapViaPago.Pag = await NSapViasPago.SapViaPagoPag(EV.SapViaPago.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapViaPago);
 
-            EVSapViasPago.SapViaPagoPag = NSapViasPago.SapViaPagoPag(EVSapViasPago.SapViaPagoFiltro);
-            base.MActualizaTamPag(EVSapViasPago.SapViaPagoPag?.DatPag);
+            ViewBag.Mensajes = NSapViasPago.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = NSapViasPago.Mensajes.Copy();
-            ViewBag.Reglas = EVSapViasPago.SapViaPagoReglas;
-            ViewBag.DatPag = EVSapViasPago.SapViaPagoPag?.DatPag;
-            ViewBag.Orden = EVSapViasPago.SapViaPagoColOrden;
-            ViewBag.Filtro = EVSapViasPago.SapViaPagoFiltro;
-            ViewBag.Indice = EVSapViasPago.SapViaPagoIndice;
-
-            return View(nameof(SapViaPagoCon), EVSapViasPago.SapViaPagoPag?.Pagina);
+            return View(nameof(SapViaPagoCon), EV.SapViaPago.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapViaPagoXId(Int32 indice)
+        public async Task<IActionResult> SapViaPagoXId(Int32 indice)
         {
-            EVSapViasPago.Accion = MAccionesGen.Consulta;
-            EVSapViasPago.SapViaPagoIndice = indice;
-            return SapViaPagoCaptura(EVSapViasPago.SapViaPagoPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapViaPago.Indice = indice;
+            return await SapViaPagoCaptura(EV.SapViaPago.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapViaPagoInserta))]
-        public IActionResult SapViaPagoInsertaIni()
+        public async Task<IActionResult> SapViaPagoInsertaIni()
         {
-            EVSapViasPago.Accion = MAccionesGen.Inserta;
-            return SapViaPagoInsertaCap(new ESapViaPago()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapViaPagoInsertaCap(new ESapViaPago()
             {
                 Activo = true
             });
@@ -123,58 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapViaPagoInserta))]
-        public IActionResult SapViaPagoInsertaCap(ESapViaPago sapViaPago)
+        public async Task<IActionResult> SapViaPagoInsertaCap(ESapViaPago sapViaPago)
         {
-            return SapViaPagoCaptura(sapViaPago);
+            return await SapViaPagoCaptura(sapViaPago);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapViaPagoInserta(ESapViaPago sapViaPago)
+        public async Task<IActionResult> SapViaPagoInserta(ESapViaPago sapViaPago)
         {
-            if (NSapViasPago.SapViaPagoInserta(sapViaPago))
+            if (await NSapViasPago.SapViaPagoInserta(sapViaPago))
                 return RedirectToAction(nameof(SapViaPagoCon));
 
-            return SapViaPagoInsertaCap(sapViaPago);
+            return await SapViaPagoInsertaCap(sapViaPago);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapViaPagoActualiza))]
-        public IActionResult SapViaPagoActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapViaPagoActualizaIni(Int32 indice)
         {
-            EVSapViasPago.Accion = MAccionesGen.Actualiza;
-            EVSapViasPago.SapViaPagoIndice = indice;
-            EVSapViasPago.SapViaPagoSel = EVSapViasPago.SapViaPagoPag.Pagina[indice];
-            return SapViaPagoActualizaCap(EVSapViasPago.SapViaPagoSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapViaPago.Indice = indice;
+            EV.SapViaPago.Sel = EV.SapViaPago.Pag.Pagina[indice];
+            return await SapViaPagoActualizaCap(EV.SapViaPago.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapViaPagoActualiza))]
-        public IActionResult SapViaPagoActualizaCap(ESapViaPago sapViaPago)
+        public async Task<IActionResult> SapViaPagoActualizaCap(ESapViaPago sapViaPago)
         {
-            return SapViaPagoCaptura(sapViaPago);
+            return await SapViaPagoCaptura(sapViaPago);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapViaPagoActualiza(ESapViaPago sapViaPago)
+        public async Task<IActionResult> SapViaPagoActualiza(ESapViaPago sapViaPago)
         {
-            if (NSapViasPago.SapViaPagoActualiza(sapViaPago))
+            if (await NSapViasPago.SapViaPagoActualiza(sapViaPago))
                 return RedirectToAction(nameof(SapViaPagoCon));
 
-            return SapViaPagoActualizaCap(sapViaPago);
+            return await SapViaPagoActualizaCap(sapViaPago);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapViaPagoElimina(Int32 indice)
+        public async Task<IActionResult> SapViaPagoElimina(Int32 indice)
         {
-            NSapViasPago.SapViaPagoElimina(EVSapViasPago.SapViaPagoPag.Pagina[indice]);
+            await NSapViasPago.SapViaPagoElimina(EV.SapViaPago.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapViaPagoCon));
         }
         /// <summary>
@@ -182,18 +165,18 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapViaPagoExporta()
         {
-            EVSapViasPago.SapViaPagoFiltro.ColumnaOrden = EVSapViasPago.SapViaPagoColOrden;
-            EVSapViasPago.SapViaPagoFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapViaPago.Filtro.ColumnaOrden = EV.SapViaPago.ColOrden;
+            EV.SapViaPago.Filtro.Columnas = new Dictionary<String, String>()
                            {
                                { nameof(ESapViaPago.Activo), String.Empty },
                                { nameof(ESapViaPago.SapViaPagoId), String.Empty },
                                { nameof(ESapViaPago.SapViaPagoNombre), String.Empty }
                            };
 
-            MEDatosArchivo vDA = NSapViasPago.SapViaPagoExporta(EVSapViasPago.SapViaPagoFiltro);
-            EVSapViasPago.SapViaPagoFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NSapViasPago.SapViaPagoExporta(EV.SapViaPago.Filtro);
+            EV.SapViaPago.Filtro.Columnas = null;
             if (NSapViasPago.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapViasPago.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
             return RedirectToAction(nameof(SapViaPagoCon));
         }
@@ -203,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapViaPagoCaptura(ESapViaPago sapViaPago)
+        private async Task<IActionResult> SapViaPagoCaptura(ESapViaPago sapViaPago)
         {
             ViewBag.Mensajes = NSapViasPago.Mensajes.Copy();
-            ViewBag.Accion = EVSapViasPago.Accion;
-            ViewBag.Reglas = EVSapViasPago.SapViaPagoReglas;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapViaPagoCaptura), sapViaPago);
+            return await Task.FromResult(ViewCap(nameof(SapViaPagoCaptura), sapViaPago));
         }
         #endregion
 
@@ -220,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapViaPagoInicia))]
         public IActionResult SapViaPagoPaginacion(MEDatosPaginador datPag)
         {
-            EVSapViasPago.SapViaPagoPag.DatPag = datPag;
+            EV.SapViaPago.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapViaPagoCon));
         }
         /// <summary>
@@ -229,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapViaPagoInicia))]
         public IActionResult SapViaPagoOrdena(String orden)
         {
-            EVSapViasPago.SapViaPagoColOrden = orden;
+            EV.SapViaPago.ColOrden = orden;
             return RedirectToAction(nameof(SapViaPagoCon));
         }
         /// <summary>
@@ -238,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapViaPagoInicia))]
         public IActionResult SapViaPagoFiltra(ESapViaPagoFiltro filtro)
         {
-            EVSapViasPago.SapViaPagoFiltro = filtro;
+            EV.SapViaPago.Filtro = filtro;
             return RedirectToAction(nameof(SapViaPagoCon));
         }
         /// <summary>
@@ -247,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapViaPagoInicia))]
         public IActionResult SapViaPagoLimpiaFiltros()
         {
-            EVSapViasPago.SapViaPagoFiltro = new ESapViaPagoFiltro();
+            EV.SapViaPago.Filtro = new ESapViaPagoFiltro();
             return RedirectToAction(nameof(SapViaPagoCon));
         }
         #endregion

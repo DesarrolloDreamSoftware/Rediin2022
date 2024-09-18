@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.VisualBasic;
 using Rediin2022.Aplicacion.PriCatalogos;
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
@@ -40,124 +41,102 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         private INAutorizaciones NAutorizaciones { get; set; }
         private INProcesosOperativos NProcesosOperativos { get; set; }
         private INUsuarios NUsuarios { get; set; }
-        private EVAutorizaciones EVAutorizaciones
+        private EVAutorizaciones EV
         {
-            get
-            {
-                if (base.MSesion<EVAutorizaciones>() == null)
-                    base.MSesion(new EVAutorizaciones());
-
-                return base.MSesionAuto<EVAutorizaciones>();
-            }
+            get { return base.MEVCtrl<EVAutorizaciones>(); }
         }
         #endregion
 
         #region Autorizacion (Autorizaciones)
 
         #region Acciones
-        public IActionResult AutorizacionInicia()
+        public async Task<IActionResult> AutorizacionInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVAutorizaciones.AutorizacionColOrden))
-                EVAutorizaciones.AutorizacionColOrden = nameof(EAutorizacion.AutorizacionId);
-
-            if (EVAutorizaciones.AutorizacionReglas == null)
-            {
-                EVAutorizaciones.AutorizacionReglas = NAutorizaciones.AutorizacionReglas();
-                base.MMensajesTemp = NAutorizaciones.Mensajes.ToString();
-            }
+            await Servicios.Gen.InicializaSF(EV.Autorizacion, nameof(EAutorizacion.AutorizacionId),
+                async () => await NAutorizaciones.AutorizacionReglas());
 
             return RedirectToAction(nameof(AutorizacionCon));
         }
         [MValidaSeg(nameof(AutorizacionInicia))]
-        public IActionResult AutorizacionCon()
+        public async Task<IActionResult> AutorizacionCon()
         {
-            base.MCargaFiltroPagYOrd(EVAutorizaciones.AutorizacionFiltro,
-                                     EVAutorizaciones.AutorizacionPag,
-                                     EVAutorizaciones.AutorizacionColOrden,
-                                     nameof(EAutorizacion));
+            await Servicios.Pag.CargaPagOrdYFil(EV.Autorizacion);
+            EV.Autorizacion.Pag = await NAutorizaciones.AutorizacionPag(EV.Autorizacion.Filtro);
+            await Servicios.Pag.ActTamPag(EV.Autorizacion);
 
-            EVAutorizaciones.AutorizacionPag = NAutorizaciones.AutorizacionPag(EVAutorizaciones.AutorizacionFiltro);
-            base.MActualizaTamPag(EVAutorizaciones.AutorizacionPag?.DatPag);
+            ViewBag.Mensajes = NAutorizaciones.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = base.MObtenMensajes(NAutorizaciones.Mensajes);
-            ViewBag.Reglas = EVAutorizaciones.AutorizacionReglas;
-            ViewBag.DatPag = EVAutorizaciones.AutorizacionPag?.DatPag;
-            ViewBag.Orden = EVAutorizaciones.AutorizacionColOrden;
-            ViewBag.Filtro = EVAutorizaciones.AutorizacionFiltro;
-            ViewBag.Indice = EVAutorizaciones.AutorizacionIndice;
+            ViewBag.ProcesosOperativos = await NProcesosOperativos.ProcesoOperativoCmb();
 
-            ViewBag.ProcesosOperativos = NProcesosOperativos.ProcesoOperativoCmb();
-
-            return View(nameof(AutorizacionCon), EVAutorizaciones.AutorizacionPag?.Pagina);
+            return View(nameof(AutorizacionCon), EV.Autorizacion.Pag?.Pagina);
         }
-        public IActionResult AutorizacionXId(Int32 indice)
+        public async Task<IActionResult> AutorizacionXId(Int32 indice)
         {
-            EVAutorizaciones.Accion = MAccionesGen.Consulta;
-            EVAutorizaciones.AutorizacionIndice = indice;
-            return AutorizacionCaptura(EVAutorizaciones.AutorizacionPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.Autorizacion.Indice = indice;
+            return await AutorizacionCaptura(EV.Autorizacion.Pag.Pagina[indice]);
         }
         [MValidaSeg(nameof(AutorizacionInserta))]
-        public IActionResult AutorizacionInsertaIni()
+        public async Task<IActionResult> AutorizacionInsertaIni()
         {
-            EVAutorizaciones.Accion = MAccionesGen.Inserta;
-            return AutorizacionInsertaCap(new EAutorizacion());
+            EV.Accion = MAccionesGen.Inserta;
+            return await AutorizacionInsertaCap(new EAutorizacion());
         }
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(AutorizacionInserta))]
-        public IActionResult AutorizacionInsertaCap(EAutorizacion autorizacion)
+        public async Task<IActionResult> AutorizacionInsertaCap(EAutorizacion autorizacion)
         {
-            return AutorizacionCaptura(autorizacion);
+            return await AutorizacionCaptura(autorizacion);
         }
         [ValidateAntiForgeryToken]
-        public IActionResult AutorizacionInserta(EAutorizacion autorizacion)
+        public async Task<IActionResult> AutorizacionInserta(EAutorizacion autorizacion)
         {
-            NAutorizaciones.AutorizacionInserta(autorizacion);
+            await NAutorizaciones.AutorizacionInserta(autorizacion);
             if (NAutorizaciones.Mensajes.Ok)
                 return RedirectToAction(nameof(AutorizacionCon));
 
-            return AutorizacionInsertaCap(autorizacion);
+            return await AutorizacionInsertaCap(autorizacion);
         }
         [MValidaSeg(nameof(AutorizacionActualiza))]
-        public IActionResult AutorizacionActualizaIni(Int32 indice)
+        public async Task<IActionResult> AutorizacionActualizaIni(Int32 indice)
         {
-            EVAutorizaciones.Accion = MAccionesGen.Actualiza;
-            EVAutorizaciones.AutorizacionIndice = indice;
-            EVAutorizaciones.AutorizacionSel = EVAutorizaciones.AutorizacionPag.Pagina[indice];
-            return AutorizacionActualizaCap(EVAutorizaciones.AutorizacionSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.Autorizacion.Indice = indice;
+            EV.Autorizacion.Sel = EV.Autorizacion.Pag.Pagina[indice];
+            return await AutorizacionActualizaCap(EV.Autorizacion.Sel);
         }
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(AutorizacionActualiza))]
-        public IActionResult AutorizacionActualizaCap(EAutorizacion autorizacion)
+        public async Task<IActionResult> AutorizacionActualizaCap(EAutorizacion autorizacion)
         {
-            return AutorizacionCaptura(autorizacion);
+            return await AutorizacionCaptura(autorizacion);
         }
         [ValidateAntiForgeryToken]
-        public IActionResult AutorizacionActualiza(EAutorizacion autorizacion)
+        public async Task<IActionResult> AutorizacionActualiza(EAutorizacion autorizacion)
         {
-            if (NAutorizaciones.AutorizacionActualiza(autorizacion))
+            if (await NAutorizaciones.AutorizacionActualiza(autorizacion))
                 return RedirectToAction(nameof(AutorizacionCon));
 
-            return AutorizacionActualizaCap(autorizacion);
+            return await AutorizacionActualizaCap(autorizacion);
         }
-        public IActionResult AutorizacionElimina(Int32 indice)
+        public async Task<IActionResult> AutorizacionElimina(Int32 indice)
         {
-            NAutorizaciones.AutorizacionElimina(EVAutorizaciones.AutorizacionPag.Pagina[indice]);
-            base.MMensajesTemp = NAutorizaciones.Mensajes.ToString();
+            await NAutorizaciones.AutorizacionElimina(EV.Autorizacion.Pag.Pagina[indice]);
             return RedirectToAction(nameof(AutorizacionCon));
         }
         #endregion
 
         #region Funciones
-        private IActionResult AutorizacionCaptura(EAutorizacion autorizacion)
+        private async Task<IActionResult> AutorizacionCaptura(EAutorizacion autorizacion)
         {
-            ViewBag.Mensajes = base.MObtenMensajes(NAutorizaciones.Mensajes);
-            ViewBag.Accion = EVAutorizaciones.Accion;
-            ViewBag.Reglas = EVAutorizaciones.AutorizacionReglas;
+            ViewBag.Mensajes = NAutorizaciones.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.ProcesosOperativos = NProcesosOperativos.ProcesoOperativoCmb();
+            ViewBag.ProcesosOperativos = await NProcesosOperativos.ProcesoOperativoCmb();
 
-            return ViewCap(nameof(AutorizacionCaptura), autorizacion);
+            return await Task.FromResult(ViewCap(nameof(AutorizacionCaptura), autorizacion));
         }
         #endregion
 
@@ -165,25 +144,25 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(AutorizacionInicia))]
         public IActionResult AutorizacionPaginacion(MEDatosPaginador datPag)
         {
-            EVAutorizaciones.AutorizacionPag.DatPag = datPag;
+            EV.Autorizacion.Pag.DatPag = datPag;
             return RedirectToAction(nameof(AutorizacionCon));
         }
         [MValidaSeg(nameof(AutorizacionInicia))]
         public IActionResult AutorizacionOrdena(String orden)
         {
-            EVAutorizaciones.AutorizacionColOrden = orden;
+            EV.Autorizacion.ColOrden = orden;
             return RedirectToAction(nameof(AutorizacionCon));
         }
         [MValidaSeg(nameof(AutorizacionInicia))]
         public IActionResult AutorizacionFiltra(EAutorizacionFiltro filtro)
         {
-            EVAutorizaciones.AutorizacionFiltro = filtro;
+            EV.Autorizacion.Filtro = filtro;
             return RedirectToAction(nameof(AutorizacionCon));
         }
         [MValidaSeg(nameof(AutorizacionInicia))]
         public IActionResult AutorizacionLimpiaFiltros()
         {
-            EVAutorizaciones.AutorizacionFiltro = new EAutorizacionFiltro();
+            EV.Autorizacion.Filtro = new EAutorizacionFiltro();
             return RedirectToAction(nameof(AutorizacionCon));
         }
         #endregion
@@ -193,116 +172,97 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         #region AutorizacionUsuario (AutorizacionesUsuarios)
 
         #region Acciones
-        public IActionResult AutorizacionUsuarioInicia(Int32 indice)
+        public async Task<IActionResult> AutorizacionUsuarioInicia(Int32 indice)
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVAutorizaciones.AutorizacionUsuarioColOrden))
-                EVAutorizaciones.AutorizacionUsuarioColOrden = nameof(EAutorizacionUsuario.AutorizacionUsuarioId);
+            await Servicios.Gen.InicializaSF(EV.AutorizacionUsuario, nameof(EAutorizacionUsuario.AutorizacionUsuarioId),
+                async () => await NAutorizaciones.AutorizacionUsuarioReglas());
 
-            if (EVAutorizaciones.AutorizacionUsuarioReglas == null)
-            {
-                EVAutorizaciones.AutorizacionUsuarioReglas = NAutorizaciones.AutorizacionUsuarioReglas();
-                base.MMensajesTemp = NAutorizaciones.Mensajes.ToString();
-            }
-
-            if (indice >= 0)
-            {
-                EVAutorizaciones.AutorizacionIndice = indice;
-                EVAutorizaciones.AutorizacionSel = EVAutorizaciones.AutorizacionPag.Pagina[indice];
-            }
+            Servicios.Gen.InicializaSFInd(EV.Autorizacion, indice);
 
             return RedirectToAction(nameof(AutorizacionUsuarioCon));
         }
         [MValidaSeg(nameof(AutorizacionUsuarioInicia))]
-        public IActionResult AutorizacionUsuarioCon()
+        public async Task<IActionResult> AutorizacionUsuarioCon()
         {
-            EVAutorizaciones.AutorizacionUsuarioFiltro.AutorizacionId = EVAutorizaciones.AutorizacionSel.AutorizacionId;
-            base.MCargaFiltroPagYOrd(EVAutorizaciones.AutorizacionUsuarioFiltro,
-                                     EVAutorizaciones.AutorizacionUsuarioPag,
-                                     EVAutorizaciones.AutorizacionUsuarioColOrden,
-                                     nameof(EAutorizacionUsuario));
+            EV.AutorizacionUsuario.Filtro.AutorizacionId = EV.Autorizacion.Sel.AutorizacionId;
+            
+            await Servicios.Pag.CargaPagOrdYFil(EV.AutorizacionUsuario);
+            EV.AutorizacionUsuario.Pag = await NAutorizaciones.AutorizacionUsuarioPag(EV.AutorizacionUsuario.Filtro);
+            await Servicios.Pag.ActTamPag(EV.AutorizacionUsuario);
 
-            EVAutorizaciones.AutorizacionUsuarioPag = NAutorizaciones.AutorizacionUsuarioPag(EVAutorizaciones.AutorizacionUsuarioFiltro);
-            base.MActualizaTamPag(EVAutorizaciones.AutorizacionUsuarioPag?.DatPag);
+            ViewBag.Mensajes = NAutorizaciones.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = base.MObtenMensajes(NAutorizaciones.Mensajes);
-            ViewBag.Reglas = EVAutorizaciones.AutorizacionUsuarioReglas;
-            ViewBag.DatPag = EVAutorizaciones.AutorizacionUsuarioPag?.DatPag;
-            ViewBag.Orden = EVAutorizaciones.AutorizacionUsuarioColOrden;
-            ViewBag.Filtro = EVAutorizaciones.AutorizacionUsuarioFiltro;
-            ViewBag.Indice = EVAutorizaciones.AutorizacionUsuarioIndice;
-
-            return View(nameof(AutorizacionUsuarioCon), EVAutorizaciones.AutorizacionUsuarioPag?.Pagina);
+            return View(nameof(AutorizacionUsuarioCon), EV.AutorizacionUsuario.Pag?.Pagina);
         }
-        public IActionResult AutorizacionUsuarioXId(Int32 indice)
+        public async Task<IActionResult> AutorizacionUsuarioXId(Int32 indice)
         {
-            EVAutorizaciones.Accion = MAccionesGen.Consulta;
-            EVAutorizaciones.AutorizacionUsuarioIndice = indice;
-            return AutorizacionUsuarioCaptura(EVAutorizaciones.AutorizacionUsuarioPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.AutorizacionUsuario.Indice = indice;
+            return await AutorizacionUsuarioCaptura(EV.AutorizacionUsuario.Pag.Pagina[indice]);
         }
         [MValidaSeg(nameof(AutorizacionUsuarioInserta))]
-        public IActionResult AutorizacionUsuarioInsertaIni()
+        public async Task<IActionResult> AutorizacionUsuarioInsertaIni()
         {
-            EVAutorizaciones.Accion = MAccionesGen.Inserta;
-            return AutorizacionUsuarioInsertaCap(new EAutorizacionUsuario());
+            EV.Accion = MAccionesGen.Inserta;
+            return await AutorizacionUsuarioInsertaCap(new EAutorizacionUsuario());
         }
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(AutorizacionUsuarioInserta))]
-        public IActionResult AutorizacionUsuarioInsertaCap(EAutorizacionUsuario autorizacionUsuario)
+        public async Task<IActionResult> AutorizacionUsuarioInsertaCap(EAutorizacionUsuario autorizacionUsuario)
         {
-            return AutorizacionUsuarioCaptura(autorizacionUsuario);
+            return await AutorizacionUsuarioCaptura(autorizacionUsuario);
         }
         [ValidateAntiForgeryToken]
-        public IActionResult AutorizacionUsuarioInserta(EAutorizacionUsuario autorizacionUsuario)
+        public async Task<IActionResult> AutorizacionUsuarioInserta(EAutorizacionUsuario autorizacionUsuario)
         {
-            autorizacionUsuario.AutorizacionId = EVAutorizaciones.AutorizacionSel.AutorizacionId; //Llave padre
-            NAutorizaciones.AutorizacionUsuarioInserta(autorizacionUsuario);
+            autorizacionUsuario.AutorizacionId = EV.Autorizacion.Sel.AutorizacionId; //Llave padre
+            await NAutorizaciones.AutorizacionUsuarioInserta(autorizacionUsuario);
             if (NAutorizaciones.Mensajes.Ok)
                 return RedirectToAction(nameof(AutorizacionUsuarioCon));
 
-            return AutorizacionUsuarioInsertaCap(autorizacionUsuario);
+            return await AutorizacionUsuarioInsertaCap(autorizacionUsuario);
         }
         [MValidaSeg(nameof(AutorizacionUsuarioActualiza))]
-        public IActionResult AutorizacionUsuarioActualizaIni(Int32 indice)
+        public async Task<IActionResult> AutorizacionUsuarioActualizaIni(Int32 indice)
         {
-            EVAutorizaciones.Accion = MAccionesGen.Actualiza;
-            EVAutorizaciones.AutorizacionUsuarioIndice = indice;
-            EVAutorizaciones.AutorizacionUsuarioSel = EVAutorizaciones.AutorizacionUsuarioPag.Pagina[indice];
-            return AutorizacionUsuarioActualizaCap(EVAutorizaciones.AutorizacionUsuarioSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.AutorizacionUsuario.Indice = indice;
+            EV.AutorizacionUsuario.Sel = EV.AutorizacionUsuario.Pag.Pagina[indice];
+            return await AutorizacionUsuarioActualizaCap(EV.AutorizacionUsuario.Sel);
         }
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(AutorizacionUsuarioActualiza))]
-        public IActionResult AutorizacionUsuarioActualizaCap(EAutorizacionUsuario autorizacionUsuario)
+        public async Task<IActionResult> AutorizacionUsuarioActualizaCap(EAutorizacionUsuario autorizacionUsuario)
         {
-            return AutorizacionUsuarioCaptura(autorizacionUsuario);
+            return await AutorizacionUsuarioCaptura(autorizacionUsuario);
         }
         [ValidateAntiForgeryToken]
-        public IActionResult AutorizacionUsuarioActualiza(EAutorizacionUsuario autorizacionUsuario)
+        public async Task<IActionResult> AutorizacionUsuarioActualiza(EAutorizacionUsuario autorizacionUsuario)
         {
-            autorizacionUsuario.AutorizacionId = EVAutorizaciones.AutorizacionSel.AutorizacionId; //Llave padre
-            if (NAutorizaciones.AutorizacionUsuarioActualiza(autorizacionUsuario))
+            autorizacionUsuario.AutorizacionId = EV.Autorizacion.Sel.AutorizacionId; //Llave padre
+            if (await NAutorizaciones.AutorizacionUsuarioActualiza(autorizacionUsuario))
                 return RedirectToAction(nameof(AutorizacionUsuarioCon));
 
-            return AutorizacionUsuarioActualizaCap(autorizacionUsuario);
+            return await AutorizacionUsuarioActualizaCap(autorizacionUsuario);
         }
-        public IActionResult AutorizacionUsuarioElimina(Int32 indice)
+        public async Task<IActionResult> AutorizacionUsuarioElimina(Int32 indice)
         {
-            NAutorizaciones.AutorizacionUsuarioElimina(EVAutorizaciones.AutorizacionUsuarioPag.Pagina[indice]);
-            base.MMensajesTemp = NAutorizaciones.Mensajes.ToString();
+            await NAutorizaciones.AutorizacionUsuarioElimina(EV.AutorizacionUsuario.Pag.Pagina[indice]);
             return RedirectToAction(nameof(AutorizacionUsuarioCon));
         }
         #endregion
 
         #region Funciones
-        private IActionResult AutorizacionUsuarioCaptura(EAutorizacionUsuario autorizacionUsuario)
+        private async Task<IActionResult> AutorizacionUsuarioCaptura(EAutorizacionUsuario autorizacionUsuario)
         {
-            ViewBag.Mensajes = base.MObtenMensajes(NAutorizaciones.Mensajes);
-            ViewBag.Accion = EVAutorizaciones.Accion;
-            ViewBag.Reglas = EVAutorizaciones.AutorizacionUsuarioReglas;
+            ViewBag.Mensajes = NAutorizaciones.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.ProcesosOperativosEst = NProcesosOperativos.ProcesoOperativoEstCmb(EVAutorizaciones.AutorizacionSel.ProcesoOperativoId);
+            ViewBag.ProcesosOperativosEst = await NProcesosOperativos.ProcesoOperativoEstCmb(EV.Autorizacion.Sel.ProcesoOperativoId);
 
-            return ViewCap(nameof(AutorizacionUsuarioCaptura), autorizacionUsuario);
+            return await Task.FromResult(ViewCap(nameof(AutorizacionUsuarioCaptura), autorizacionUsuario));
         }
         #endregion
 
@@ -310,25 +270,25 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(AutorizacionUsuarioInicia))]
         public IActionResult AutorizacionUsuarioPaginacion(MEDatosPaginador datPag)
         {
-            EVAutorizaciones.AutorizacionUsuarioPag.DatPag = datPag;
+            EV.AutorizacionUsuario.Pag.DatPag = datPag;
             return RedirectToAction(nameof(AutorizacionUsuarioCon));
         }
         [MValidaSeg(nameof(AutorizacionUsuarioInicia))]
         public IActionResult AutorizacionUsuarioOrdena(String orden)
         {
-            EVAutorizaciones.AutorizacionUsuarioColOrden = orden;
+            EV.AutorizacionUsuario.ColOrden = orden;
             return RedirectToAction(nameof(AutorizacionUsuarioCon));
         }
         [MValidaSeg(nameof(AutorizacionUsuarioInicia))]
         public IActionResult AutorizacionUsuarioFiltra(EAutorizacionUsuarioFiltro filtro)
         {
-            EVAutorizaciones.AutorizacionUsuarioFiltro = filtro;
+            EV.AutorizacionUsuario.Filtro = filtro;
             return RedirectToAction(nameof(AutorizacionUsuarioCon));
         }
         [MValidaSeg(nameof(AutorizacionUsuarioInicia))]
         public IActionResult AutorizacionUsuarioLimpiaFiltros()
         {
-            EVAutorizaciones.AutorizacionUsuarioFiltro = new EAutorizacionUsuarioFiltro();
+            EV.AutorizacionUsuario.Filtro = new EAutorizacionUsuarioFiltro();
             return RedirectToAction(nameof(AutorizacionUsuarioCon));
         }
         #endregion
@@ -337,10 +297,10 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
 
         #region Combos Filtro
         [MValidaSeg(nameof(AutorizacionUsuarioInicia))]
-        public IActionResult OpcUsuarioId(String usuarioId)
+        public async Task<IActionResult> OpcUsuarioId(String usuarioId)
         {
-            return Ok(MUtilPres.ElementosAHtml(NUsuarios.UsuarioCmb(EVAutorizaciones.AutorizacionSel.EstablecimientoId,
-                                                                    usuarioId)));
+            return Ok(MUtilMvc.ElementosAHtml(await NUsuarios.UsuarioCmb(EV.Autorizacion.Sel.EstablecimientoId,
+                                                                         usuarioId)));
         }
         #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using DSMetodNetX.Api.Seguridad;
+using DSMetodNetX.Api.Seguridad.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;

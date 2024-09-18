@@ -22,758 +22,672 @@ using System.Threading.Tasks;
 
 namespace Rediin2022Web.Areas.PriCatalogos.Controllers
 {
-	[Area("PriCatalogos")]
-	public class ProcesosOperativosController : MControllerMvcPri
-	{
-		#region Constructores
-		public ProcesosOperativosController(INProcesosOperativos nProcesosOperativos,
-											INCatalogos nCatalogos)
-		{
-			NProcesosOperativos = nProcesosOperativos;
-			NCatalogos = nCatalogos;
-		}
-		#endregion
-
-		#region Propiedades
-		private INProcesosOperativos NProcesosOperativos { get; set; }
-		private INCatalogos NCatalogos { get; set; }
-		private EVProcesosOperativos EVProcesosOperativos
-		{
-			get
-			{
-				if (base.MSesion<EVProcesosOperativos>() == null)
-					base.MSesion(new EVProcesosOperativos());
-
-				return base.MSesionAuto<EVProcesosOperativos>();
-			}
-		}
-		#endregion
-
-		#region ProcesoOperativo (ProcesosOperativos)
-
-		#region Acciones
-		public IActionResult ProcesoOperativoInicia()
-		{
-			//Configuracion de inicio
-			if (String.IsNullOrWhiteSpace(EVProcesosOperativos.ProcesoOperativoColOrden))
-				EVProcesosOperativos.ProcesoOperativoColOrden = nameof(EProcesoOperativo.Orden);
-
-			if (EVProcesosOperativos.ProcesoOperativoReglas == null)
-			{
-				EVProcesosOperativos.ProcesoOperativoReglas = NProcesosOperativos.ProcesoOperativoReglas();
-				base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			}
-
-			return RedirectToAction(nameof(ProcesoOperativoCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoInicia))]
-		public IActionResult ProcesoOperativoCon()
-		{
-			base.MCargaFiltroPagYOrd(EVProcesosOperativos.ProcesoOperativoFiltro,
-									 EVProcesosOperativos.ProcesoOperativoPag,
-									 EVProcesosOperativos.ProcesoOperativoColOrden,
-									 nameof(EProcesoOperativo));
-
-			EVProcesosOperativos.ProcesoOperativoPag = NProcesosOperativos.ProcesoOperativoPag(EVProcesosOperativos.ProcesoOperativoFiltro);
-			base.MActualizaTamPag(EVProcesosOperativos.ProcesoOperativoPag?.DatPag);
-
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoReglas;
-			ViewBag.DatPag = EVProcesosOperativos.ProcesoOperativoPag?.DatPag;
-			ViewBag.Orden = EVProcesosOperativos.ProcesoOperativoColOrden;
-			ViewBag.Filtro = EVProcesosOperativos.ProcesoOperativoFiltro;
-			ViewBag.Indice = EVProcesosOperativos.ProcesoOperativoIndice;
-
-			return View(nameof(ProcesoOperativoCon), EVProcesosOperativos.ProcesoOperativoPag?.Pagina);
-		}
-		public IActionResult ProcesoOperativoXId(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Consulta;
-			EVProcesosOperativos.ProcesoOperativoIndice = indice;
-			return ProcesoOperativoCaptura(EVProcesosOperativos.ProcesoOperativoPag.Pagina[indice]);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoInserta))]
-		public IActionResult ProcesoOperativoInsertaIni()
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Inserta;
-			return ProcesoOperativoInsertaCap(new EProcesoOperativo()
-			{
-				Activo = true
-			});
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoInserta))]
-		public IActionResult ProcesoOperativoInsertaCap(EProcesoOperativo procesoOperativo)
-		{
-			return ProcesoOperativoCaptura(procesoOperativo);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoInserta(EProcesoOperativo procesoOperativo)
-		{
-			NProcesosOperativos.ProcesoOperativoInserta(procesoOperativo);
-			if (NProcesosOperativos.Mensajes.Ok)
-				return RedirectToAction(nameof(ProcesoOperativoCon));
-
-			return ProcesoOperativoInsertaCap(procesoOperativo);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoActualiza))]
-		public IActionResult ProcesoOperativoActualizaIni(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Actualiza;
-			EVProcesosOperativos.ProcesoOperativoIndice = indice;
-			EVProcesosOperativos.ProcesoOperativoSel = EVProcesosOperativos.ProcesoOperativoPag.Pagina[indice];
-			return ProcesoOperativoActualizaCap(EVProcesosOperativos.ProcesoOperativoSel);
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoActualiza))]
-		public IActionResult ProcesoOperativoActualizaCap(EProcesoOperativo procesoOperativo)
-		{
-			return ProcesoOperativoCaptura(procesoOperativo);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoActualiza(EProcesoOperativo procesoOperativo)
-		{
-			if (NProcesosOperativos.ProcesoOperativoActualiza(procesoOperativo))
-				return RedirectToAction(nameof(ProcesoOperativoCon));
-
-			return ProcesoOperativoActualizaCap(procesoOperativo);
-		}
-		public IActionResult ProcesoOperativoElimina(Int32 indice)
-		{
-			NProcesosOperativos.ProcesoOperativoElimina(EVProcesosOperativos.ProcesoOperativoPag.Pagina[indice]);
-			base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			return RedirectToAction(nameof(ProcesoOperativoCon));
-		}
-		#endregion
-
-		#region Funciones
-		private IActionResult ProcesoOperativoCaptura(EProcesoOperativo procesoOperativo)
-		{
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Accion = EVProcesosOperativos.Accion;
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoReglas;
-
-			return ViewCap(nameof(ProcesoOperativoCaptura), procesoOperativo);
-		}
-		#endregion
-
-		#region Acciones de Paginacion Orden y Filtro
-		[MValidaSeg(nameof(ProcesoOperativoInicia))]
-		public IActionResult ProcesoOperativoPaginacion(MEDatosPaginador datPag)
-		{
-			EVProcesosOperativos.ProcesoOperativoPag.DatPag = datPag;
-			return RedirectToAction(nameof(ProcesoOperativoCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoInicia))]
-		public IActionResult ProcesoOperativoOrdena(String orden)
-		{
-			EVProcesosOperativos.ProcesoOperativoColOrden = orden;
-			return RedirectToAction(nameof(ProcesoOperativoCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoInicia))]
-		public IActionResult ProcesoOperativoFiltra(EProcesoOperativoFiltro filtro)
-		{
-			EVProcesosOperativos.ProcesoOperativoFiltro = filtro;
-			return RedirectToAction(nameof(ProcesoOperativoCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoInicia))]
-		public IActionResult ProcesoOperativoLimpiaFiltros()
-		{
-			EVProcesosOperativos.ProcesoOperativoFiltro = new EProcesoOperativoFiltro();
-			return RedirectToAction(nameof(ProcesoOperativoCon));
-		}
-		#endregion
-
-		#endregion
-
-		#region ProcesoOperativoCol (ProcesosOperativosCols)
-
-		#region Acciones
-		public IActionResult ProcesoOperativoColInicia(Int32 indice)
-		{
-			//Configuracion de inicio
-			if (String.IsNullOrWhiteSpace(EVProcesosOperativos.ProcesoOperativoColColOrden))
-				EVProcesosOperativos.ProcesoOperativoColColOrden = nameof(EProcesoOperativoCol.ConOrden);
-
-			if (EVProcesosOperativos.ProcesoOperativoColReglas == null)
-			{
-				EVProcesosOperativos.ProcesoOperativoColReglas = NProcesosOperativos.ProcesoOperativoColReglas();
-				base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			}
-
-			if (indice >= 0)
-			{
-				EVProcesosOperativos.ProcesoOperativoIndice = indice;
-				EVProcesosOperativos.ProcesoOperativoSel = EVProcesosOperativos.ProcesoOperativoPag.Pagina[indice];
-			}
-
-			return RedirectToAction(nameof(ProcesoOperativoColCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoColInicia))]
-		public IActionResult ProcesoOperativoColCon()
-		{
-			EVProcesosOperativos.ProcesoOperativoColFiltro.ProcesoOperativoId = EVProcesosOperativos.ProcesoOperativoSel.ProcesoOperativoId;
-			base.MCargaFiltroPagYOrd(EVProcesosOperativos.ProcesoOperativoColFiltro,
-									 EVProcesosOperativos.ProcesoOperativoColPag,
-									 EVProcesosOperativos.ProcesoOperativoColColOrden,
-									 nameof(EProcesoOperativoCol));
-
-			EVProcesosOperativos.ProcesoOperativoColPag = NProcesosOperativos.ProcesoOperativoColPag(EVProcesosOperativos.ProcesoOperativoColFiltro);
-			base.MActualizaTamPag(EVProcesosOperativos.ProcesoOperativoColPag?.DatPag);
-
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoColReglas;
-			ViewBag.DatPag = EVProcesosOperativos.ProcesoOperativoColPag?.DatPag;
-			ViewBag.Orden = EVProcesosOperativos.ProcesoOperativoColColOrden;
-			ViewBag.Filtro = EVProcesosOperativos.ProcesoOperativoColFiltro;
-			ViewBag.Indice = EVProcesosOperativos.ProcesoOperativoColIndice;
-			//Adi
-			ViewBag.PermiteInserta = !EVProcesosOperativos.ProcesoOperativoSel.TieneExpedientes;
-
-			return View(nameof(ProcesoOperativoColCon), EVProcesosOperativos.ProcesoOperativoColPag?.Pagina);
-		}
-		public IActionResult ProcesoOperativoColXId(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Consulta;
-			EVProcesosOperativos.ProcesoOperativoColIndice = indice;
-			return ProcesoOperativoColCaptura(EVProcesosOperativos.ProcesoOperativoColPag.Pagina[indice]);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoColInserta))]
-		public IActionResult ProcesoOperativoColInsertaIni()
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Inserta;
-			return ProcesoOperativoColInsertaCap(new EProcesoOperativoCol()
-			{
-				ConOrdenar = true,
-				CapColumnas = 1,
-				CapObligatorio = true,
-				Activo = true
-			});
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoColInserta))]
-		public IActionResult ProcesoOperativoColInsertaCap(EProcesoOperativoCol procesoOperativoCol)
-		{
-			return ProcesoOperativoColCaptura(procesoOperativoCol);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoColInserta(EProcesoOperativoCol procesoOperativoCol)
-		{
-			procesoOperativoCol.ProcesoOperativoId = EVProcesosOperativos.ProcesoOperativoSel.ProcesoOperativoId; //Llave padre
-			NProcesosOperativos.ProcesoOperativoColInserta(procesoOperativoCol);
-			if (NProcesosOperativos.Mensajes.Ok)
-				return RedirectToAction(nameof(ProcesoOperativoColCon));
-
-			return ProcesoOperativoColInsertaCap(procesoOperativoCol);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoColActualiza))]
-		public IActionResult ProcesoOperativoColActualizaIni(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Actualiza;
-			EVProcesosOperativos.ProcesoOperativoColIndice = indice;
-			EVProcesosOperativos.ProcesoOperativoColSel = EVProcesosOperativos.ProcesoOperativoColPag.Pagina[indice];
-			return ProcesoOperativoColActualizaCap(EVProcesosOperativos.ProcesoOperativoColSel);
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoColActualiza))]
-		public IActionResult ProcesoOperativoColActualizaCap(EProcesoOperativoCol procesoOperativoCol)
-		{
-			return ProcesoOperativoColCaptura(procesoOperativoCol);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoColActualiza(EProcesoOperativoCol procesoOperativoCol)
-		{
-			procesoOperativoCol.ProcesoOperativoId = EVProcesosOperativos.ProcesoOperativoSel.ProcesoOperativoId; //Llave padre
-			if (NProcesosOperativos.ProcesoOperativoColActualiza(procesoOperativoCol))
-				return RedirectToAction(nameof(ProcesoOperativoColCon));
-
-			return ProcesoOperativoColActualizaCap(procesoOperativoCol);
-		}
-		public IActionResult ProcesoOperativoColElimina(Int32 indice)
-		{
-			NProcesosOperativos.ProcesoOperativoColElimina(EVProcesosOperativos.ProcesoOperativoColPag.Pagina[indice]);
-			base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			return RedirectToAction(nameof(ProcesoOperativoColCon));
-		}
-		#endregion
-
-		#region Funciones
-		private IActionResult ProcesoOperativoColCaptura(EProcesoOperativoCol procesoOperativoCol)
-		{
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Accion = EVProcesosOperativos.Accion;
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoColReglas;
-			ViewBag.TieneExpedientes = EVProcesosOperativos.ProcesoOperativoSel.TieneExpedientes;
-
-			//Mod
-			CargaCombosPO("Id",
-						  procesoOperativoCol.CapCmbProcesoOperativoId);
-
-			CargaCombosPO("Texto",
-						  procesoOperativoCol.CapCmbProcesoOperativoId);
-
-			return ViewCap(nameof(ProcesoOperativoColCaptura), procesoOperativoCol);
-		}
-		#endregion
-
-		#region Acciones de Paginacion Orden y Filtro
-		[MValidaSeg(nameof(ProcesoOperativoColInicia))]
-		public IActionResult ProcesoOperativoColPaginacion(MEDatosPaginador datPag)
-		{
-			EVProcesosOperativos.ProcesoOperativoColPag.DatPag = datPag;
-			return RedirectToAction(nameof(ProcesoOperativoColCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoColInicia))]
-		public IActionResult ProcesoOperativoColOrdena(String orden)
-		{
-			EVProcesosOperativos.ProcesoOperativoColColOrden = orden;
-			return RedirectToAction(nameof(ProcesoOperativoColCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoColInicia))]
-		public IActionResult ProcesoOperativoColFiltra(EProcesoOperativoColFiltro filtro)
-		{
-			EVProcesosOperativos.ProcesoOperativoColFiltro = filtro;
-			return RedirectToAction(nameof(ProcesoOperativoColCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoColInicia))]
-		public IActionResult ProcesoOperativoColLimpiaFiltros()
-		{
-			EVProcesosOperativos.ProcesoOperativoColFiltro = new EProcesoOperativoColFiltro();
-			return RedirectToAction(nameof(ProcesoOperativoColCon));
-		}
-		#endregion
-
-		#endregion
-
-		#region ProcesoOperativoObjeto (ProcesosOperativosObjetos)
-
-		#region Acciones
-		public IActionResult ProcesoOperativoObjetoInicia(Int32 indice)
-		{
-			//Configuracion de inicio
-			if (String.IsNullOrWhiteSpace(EVProcesosOperativos.ProcesoOperativoObjetoColOrden))
-				EVProcesosOperativos.ProcesoOperativoObjetoColOrden = nameof(EProcesoOperativoObjeto.ProcesoOperativoObjetoId);
-
-			if (EVProcesosOperativos.ProcesoOperativoObjetoReglas == null)
-			{
-				EVProcesosOperativos.ProcesoOperativoObjetoReglas = NProcesosOperativos.ProcesoOperativoObjetoReglas();
-				base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			}
-
-			if (indice >= 0)
-			{
-				EVProcesosOperativos.ProcesoOperativoIndice = indice;
-				EVProcesosOperativos.ProcesoOperativoSel = EVProcesosOperativos.ProcesoOperativoPag.Pagina[indice];
-			}
-
-			return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
-		public IActionResult ProcesoOperativoObjetoCon()
-		{
-			EVProcesosOperativos.ProcesoOperativoObjetoFiltro.ProcesoOperativoId = EVProcesosOperativos.ProcesoOperativoSel.ProcesoOperativoId;
-			base.MCargaFiltroPagYOrd(EVProcesosOperativos.ProcesoOperativoObjetoFiltro,
-									 EVProcesosOperativos.ProcesoOperativoObjetoPag,
-									 EVProcesosOperativos.ProcesoOperativoObjetoColOrden,
-									 nameof(EProcesoOperativoObjeto));
-
-			EVProcesosOperativos.ProcesoOperativoObjetoPag = NProcesosOperativos.ProcesoOperativoObjetoPag(EVProcesosOperativos.ProcesoOperativoObjetoFiltro);
-			base.MActualizaTamPag(EVProcesosOperativos.ProcesoOperativoObjetoPag?.DatPag);
-
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoObjetoReglas;
-			ViewBag.DatPag = EVProcesosOperativos.ProcesoOperativoObjetoPag?.DatPag;
-			ViewBag.Orden = EVProcesosOperativos.ProcesoOperativoObjetoColOrden;
-			ViewBag.Filtro = EVProcesosOperativos.ProcesoOperativoObjetoFiltro;
-			ViewBag.Indice = EVProcesosOperativos.ProcesoOperativoObjetoIndice;
-
-			return View(nameof(ProcesoOperativoObjetoCon), EVProcesosOperativos.ProcesoOperativoObjetoPag?.Pagina);
-		}
-		public IActionResult ProcesoOperativoObjetoXId(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Consulta;
-			EVProcesosOperativos.ProcesoOperativoObjetoIndice = indice;
-			return ProcesoOperativoObjetoCaptura(EVProcesosOperativos.ProcesoOperativoObjetoPag.Pagina[indice]);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoObjetoInserta))]
-		public IActionResult ProcesoOperativoObjetoInsertaIni()
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Inserta;
-			return ProcesoOperativoObjetoInsertaCap(new EProcesoOperativoObjeto()
-			{
-				Activo = true
-			});
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoObjetoInserta))]
-		public IActionResult ProcesoOperativoObjetoInsertaCap(EProcesoOperativoObjeto procesoOperativoObjeto)
-		{
-			return ProcesoOperativoObjetoCaptura(procesoOperativoObjeto);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoObjetoInserta(EProcesoOperativoObjeto procesoOperativoObjeto)
-		{
-			procesoOperativoObjeto.ProcesoOperativoId = EVProcesosOperativos.ProcesoOperativoSel.ProcesoOperativoId; //Llave padre
-			NProcesosOperativos.ProcesoOperativoObjetoInserta(procesoOperativoObjeto);
-			if (NProcesosOperativos.Mensajes.Ok)
-				return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
-
-			return ProcesoOperativoObjetoInsertaCap(procesoOperativoObjeto);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoObjetoActualiza))]
-		public IActionResult ProcesoOperativoObjetoActualizaIni(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Actualiza;
-			EVProcesosOperativos.ProcesoOperativoObjetoIndice = indice;
-			EVProcesosOperativos.ProcesoOperativoObjetoSel = EVProcesosOperativos.ProcesoOperativoObjetoPag.Pagina[indice];
-			return ProcesoOperativoObjetoActualizaCap(EVProcesosOperativos.ProcesoOperativoObjetoSel);
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoObjetoActualiza))]
-		public IActionResult ProcesoOperativoObjetoActualizaCap(EProcesoOperativoObjeto procesoOperativoObjeto)
-		{
-			return ProcesoOperativoObjetoCaptura(procesoOperativoObjeto);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoObjetoActualiza(EProcesoOperativoObjeto procesoOperativoObjeto)
-		{
-			procesoOperativoObjeto.ProcesoOperativoId = EVProcesosOperativos.ProcesoOperativoSel.ProcesoOperativoId; //Llave padre
-			if (NProcesosOperativos.ProcesoOperativoObjetoActualiza(procesoOperativoObjeto))
-				return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
-
-			return ProcesoOperativoObjetoActualizaCap(procesoOperativoObjeto);
-		}
-		public IActionResult ProcesoOperativoObjetoElimina(Int32 indice)
-		{
-			NProcesosOperativos.ProcesoOperativoObjetoElimina(EVProcesosOperativos.ProcesoOperativoObjetoPag.Pagina[indice]);
-			base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
-		}
-		#endregion
-
-		#region Funciones
-		private IActionResult ProcesoOperativoObjetoCaptura(EProcesoOperativoObjeto procesoOperativoObjeto)
-		{
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Accion = EVProcesosOperativos.Accion;
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoObjetoReglas;
-
-			return ViewCap(nameof(ProcesoOperativoObjetoCaptura), procesoOperativoObjeto);
-		}
-		#endregion
-
-		#region Acciones de Paginacion Orden y Filtro
-		[MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
-		public IActionResult ProcesoOperativoObjetoPaginacion(MEDatosPaginador datPag)
-		{
-			EVProcesosOperativos.ProcesoOperativoObjetoPag.DatPag = datPag;
-			return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
-		public IActionResult ProcesoOperativoObjetoOrdena(String orden)
-		{
-			EVProcesosOperativos.ProcesoOperativoObjetoColOrden = orden;
-			return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
-		public IActionResult ProcesoOperativoObjetoFiltra(EProcesoOperativoObjetoFiltro filtro)
-		{
-			EVProcesosOperativos.ProcesoOperativoObjetoFiltro = filtro;
-			return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
-		public IActionResult ProcesoOperativoObjetoLimpiaFiltros()
-		{
-			EVProcesosOperativos.ProcesoOperativoObjetoFiltro = new EProcesoOperativoObjetoFiltro();
-			return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
-		}
-		#endregion
-
-		#endregion
-
-		#region ProcesoOperativoEst (ProcesosOperativosEst)
-
-		#region Acciones
-		public IActionResult ProcesoOperativoEstInicia(Int32 indice)
-		{
-			//Configuracion de inicio
-			if (String.IsNullOrWhiteSpace(EVProcesosOperativos.ProcesoOperativoEstColOrden))
-				EVProcesosOperativos.ProcesoOperativoEstColOrden = nameof(EProcesoOperativoEst.Orden);
-
-			if (EVProcesosOperativos.ProcesoOperativoEstReglas == null)
-			{
-				EVProcesosOperativos.ProcesoOperativoEstReglas = NProcesosOperativos.ProcesoOperativoEstReglas();
-				base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			}
-
-			if (indice >= 0)
-			{
-				EVProcesosOperativos.ProcesoOperativoIndice = indice;
-				EVProcesosOperativos.ProcesoOperativoSel = EVProcesosOperativos.ProcesoOperativoPag.Pagina[indice];
-			}
-
-			return RedirectToAction(nameof(ProcesoOperativoEstCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoEstInicia))]
-		public IActionResult ProcesoOperativoEstCon()
-		{
-			EVProcesosOperativos.ProcesoOperativoEstFiltro.ProcesoOperativoId = EVProcesosOperativos.ProcesoOperativoSel.ProcesoOperativoId;
-			base.MCargaFiltroPagYOrd(EVProcesosOperativos.ProcesoOperativoEstFiltro,
-									 EVProcesosOperativos.ProcesoOperativoEstPag,
-									 EVProcesosOperativos.ProcesoOperativoEstColOrden,
-									 nameof(EProcesoOperativoEst));
-
-			EVProcesosOperativos.ProcesoOperativoEstPag = NProcesosOperativos.ProcesoOperativoEstPag(EVProcesosOperativos.ProcesoOperativoEstFiltro);
-			base.MActualizaTamPag(EVProcesosOperativos.ProcesoOperativoEstPag?.DatPag);
-
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoEstReglas;
-			ViewBag.DatPag = EVProcesosOperativos.ProcesoOperativoEstPag?.DatPag;
-			ViewBag.Orden = EVProcesosOperativos.ProcesoOperativoEstColOrden;
-			ViewBag.Indice = EVProcesosOperativos.ProcesoOperativoEstIndice;
-
-			return View(nameof(ProcesoOperativoEstCon), EVProcesosOperativos.ProcesoOperativoEstPag?.Pagina);
-		}
-		public IActionResult ProcesoOperativoEstXId(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Consulta;
-			EVProcesosOperativos.ProcesoOperativoEstIndice = indice;
-			return ProcesoOperativoEstCaptura(EVProcesosOperativos.ProcesoOperativoEstPag.Pagina[indice]);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoEstInserta))]
-		public IActionResult ProcesoOperativoEstInsertaIni()
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Inserta;
-			return ProcesoOperativoEstInsertaCap(new EProcesoOperativoEst()
-			{
-				Activo = true
-			});
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoEstInserta))]
-		public IActionResult ProcesoOperativoEstInsertaCap(EProcesoOperativoEst procesoOperativoEst)
-		{
-			return ProcesoOperativoEstCaptura(procesoOperativoEst);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoEstInserta(EProcesoOperativoEst procesoOperativoEst)
-		{
-			procesoOperativoEst.ProcesoOperativoId = EVProcesosOperativos.ProcesoOperativoSel.ProcesoOperativoId; //Llave padre
-			NProcesosOperativos.ProcesoOperativoEstInserta(procesoOperativoEst);
-			if (NProcesosOperativos.Mensajes.Ok)
-				return RedirectToAction(nameof(ProcesoOperativoEstCon));
-
-			return ProcesoOperativoEstInsertaCap(procesoOperativoEst);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoEstActualiza))]
-		public IActionResult ProcesoOperativoEstActualizaIni(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Actualiza;
-			EVProcesosOperativos.ProcesoOperativoEstIndice = indice;
-			EVProcesosOperativos.ProcesoOperativoEstSel = EVProcesosOperativos.ProcesoOperativoEstPag.Pagina[indice];
-			return ProcesoOperativoEstActualizaCap(EVProcesosOperativos.ProcesoOperativoEstSel);
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoEstActualiza))]
-		public IActionResult ProcesoOperativoEstActualizaCap(EProcesoOperativoEst procesoOperativoEst)
-		{
-			return ProcesoOperativoEstCaptura(procesoOperativoEst);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoEstActualiza(EProcesoOperativoEst procesoOperativoEst)
-		{
-			procesoOperativoEst.ProcesoOperativoId = EVProcesosOperativos.ProcesoOperativoSel.ProcesoOperativoId; //Llave padre
-			if (NProcesosOperativos.ProcesoOperativoEstActualiza(procesoOperativoEst))
-				return RedirectToAction(nameof(ProcesoOperativoEstCon));
-
-			return ProcesoOperativoEstActualizaCap(procesoOperativoEst);
-		}
-		public IActionResult ProcesoOperativoEstElimina(Int32 indice)
-		{
-			NProcesosOperativos.ProcesoOperativoEstElimina(EVProcesosOperativos.ProcesoOperativoEstPag.Pagina[indice]);
-			base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			return RedirectToAction(nameof(ProcesoOperativoEstCon));
-		}
-		#endregion
-
-		#region Funciones
-		private IActionResult ProcesoOperativoEstCaptura(EProcesoOperativoEst procesoOperativoEst)
-		{
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Accion = EVProcesosOperativos.Accion;
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoEstReglas;
-
-			return ViewCap(nameof(ProcesoOperativoEstCaptura), procesoOperativoEst);
-		}
-		#endregion
-
-		#region Acciones de Paginacion Orden y Filtro
-		[MValidaSeg(nameof(ProcesoOperativoEstInicia))]
-		public IActionResult ProcesoOperativoEstPaginacion(MEDatosPaginador datPag)
-		{
-			EVProcesosOperativos.ProcesoOperativoEstPag.DatPag = datPag;
-			return RedirectToAction(nameof(ProcesoOperativoEstCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoEstInicia))]
-		public IActionResult ProcesoOperativoEstOrdena(String orden)
-		{
-			EVProcesosOperativos.ProcesoOperativoEstColOrden = orden;
-			return RedirectToAction(nameof(ProcesoOperativoEstCon));
-		}
-		#endregion
-
-		#endregion
-
-		#region ProcesoOperativoEstSec (ProcesosOperativosEstSec)
-
-		#region Acciones
-		public IActionResult ProcesoOperativoEstSecInicia(Int32 indice)
-		{
-			//Configuracion de inicio
-			if (String.IsNullOrWhiteSpace(EVProcesosOperativos.ProcesoOperativoEstSecColOrden))
-				EVProcesosOperativos.ProcesoOperativoEstSecColOrden = nameof(EProcesoOperativoEstSec.ProcesoOperativoEstSecId);
-
-			if (EVProcesosOperativos.ProcesoOperativoEstSecReglas == null)
-			{
-				EVProcesosOperativos.ProcesoOperativoEstSecReglas = NProcesosOperativos.ProcesoOperativoEstSecReglas();
-				base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			}
-
-			if (indice >= 0)
-			{
-				EVProcesosOperativos.ProcesoOperativoEstIndice = indice;
-				EVProcesosOperativos.ProcesoOperativoEstSel = EVProcesosOperativos.ProcesoOperativoEstPag.Pagina[indice];
-			}
-
-			return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoEstSecInicia))]
-		public IActionResult ProcesoOperativoEstSecCon()
-		{
-			EVProcesosOperativos.ProcesoOperativoEstSecFiltro.ProcesoOperativoEstId = EVProcesosOperativos.ProcesoOperativoEstSel.ProcesoOperativoEstId;
-			base.MCargaFiltroPagYOrd(EVProcesosOperativos.ProcesoOperativoEstSecFiltro,
-									 EVProcesosOperativos.ProcesoOperativoEstSecPag,
-									 EVProcesosOperativos.ProcesoOperativoEstSecColOrden,
-									 nameof(EProcesoOperativoEstSec));
-
-			EVProcesosOperativos.ProcesoOperativoEstSecPag = NProcesosOperativos.ProcesoOperativoEstSecPag(EVProcesosOperativos.ProcesoOperativoEstSecFiltro);
-			base.MActualizaTamPag(EVProcesosOperativos.ProcesoOperativoEstSecPag?.DatPag);
-
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoEstSecReglas;
-			ViewBag.DatPag = EVProcesosOperativos.ProcesoOperativoEstSecPag?.DatPag;
-			ViewBag.Orden = EVProcesosOperativos.ProcesoOperativoEstSecColOrden;
-			ViewBag.Indice = EVProcesosOperativos.ProcesoOperativoEstSecIndice;
-
-			return View(nameof(ProcesoOperativoEstSecCon), EVProcesosOperativos.ProcesoOperativoEstSecPag?.Pagina);
-		}
-		public IActionResult ProcesoOperativoEstSecXId(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Consulta;
-			EVProcesosOperativos.ProcesoOperativoEstSecIndice = indice;
-			return ProcesoOperativoEstSecCaptura(EVProcesosOperativos.ProcesoOperativoEstSecPag.Pagina[indice]);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoEstSecInserta))]
-		public IActionResult ProcesoOperativoEstSecInsertaIni()
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Inserta;
-			return ProcesoOperativoEstSecInsertaCap(new EProcesoOperativoEstSec());
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoEstSecInserta))]
-		public IActionResult ProcesoOperativoEstSecInsertaCap(EProcesoOperativoEstSec procesoOperativoEstSec)
-		{
-			return ProcesoOperativoEstSecCaptura(procesoOperativoEstSec);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoEstSecInserta(EProcesoOperativoEstSec procesoOperativoEstSec)
-		{
-			procesoOperativoEstSec.ProcesoOperativoEstId = EVProcesosOperativos.ProcesoOperativoEstSel.ProcesoOperativoEstId; //Llave padre
-			NProcesosOperativos.ProcesoOperativoEstSecInserta(procesoOperativoEstSec);
-			if (NProcesosOperativos.Mensajes.Ok)
-				return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
-
-			return ProcesoOperativoEstSecInsertaCap(procesoOperativoEstSec);
-		}
-		[MValidaSeg(nameof(ProcesoOperativoEstSecActualiza))]
-		public IActionResult ProcesoOperativoEstSecActualizaIni(Int32 indice)
-		{
-			EVProcesosOperativos.Accion = MAccionesGen.Actualiza;
-			EVProcesosOperativos.ProcesoOperativoEstSecIndice = indice;
-			EVProcesosOperativos.ProcesoOperativoEstSecSel = EVProcesosOperativos.ProcesoOperativoEstSecPag.Pagina[indice];
-			return ProcesoOperativoEstSecActualizaCap(EVProcesosOperativos.ProcesoOperativoEstSecSel);
-		}
-		[ValidateAntiForgeryToken]
-		[MValidaSeg(nameof(ProcesoOperativoEstSecActualiza))]
-		public IActionResult ProcesoOperativoEstSecActualizaCap(EProcesoOperativoEstSec procesoOperativoEstSec)
-		{
-			return ProcesoOperativoEstSecCaptura(procesoOperativoEstSec);
-		}
-		[ValidateAntiForgeryToken]
-		public IActionResult ProcesoOperativoEstSecActualiza(EProcesoOperativoEstSec procesoOperativoEstSec)
-		{
-			procesoOperativoEstSec.ProcesoOperativoEstId = EVProcesosOperativos.ProcesoOperativoEstSel.ProcesoOperativoEstId; //Llave padre
-			if (NProcesosOperativos.ProcesoOperativoEstSecActualiza(procesoOperativoEstSec))
-				return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
-
-			return ProcesoOperativoEstSecActualizaCap(procesoOperativoEstSec);
-		}
-		public IActionResult ProcesoOperativoEstSecElimina(Int32 indice)
-		{
-			NProcesosOperativos.ProcesoOperativoEstSecElimina(EVProcesosOperativos.ProcesoOperativoEstSecPag.Pagina[indice]);
-			base.MMensajesTemp = NProcesosOperativos.Mensajes.ToString();
-			return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
-		}
-		#endregion
-
-		#region Funciones
-		private IActionResult ProcesoOperativoEstSecCaptura(EProcesoOperativoEstSec procesoOperativoEstSec)
-		{
-			ViewBag.Mensajes = base.MObtenMensajes(NProcesosOperativos.Mensajes);
-			ViewBag.Accion = EVProcesosOperativos.Accion;
-			ViewBag.Reglas = EVProcesosOperativos.ProcesoOperativoEstSecReglas;
-
-			ViewBag.ProcesosOperativosEst = NCatalogos.ProcesoOperativoEstCmb(EVProcesosOperativos.ProcesoOperativoEstSel.ProcesoOperativoId);
-
-			return ViewCap(nameof(ProcesoOperativoEstSecCaptura), procesoOperativoEstSec);
-		}
-		#endregion
-
-		#region Acciones de Paginacion Orden y Filtro
-		[MValidaSeg(nameof(ProcesoOperativoEstSecInicia))]
-		public IActionResult ProcesoOperativoEstSecPaginacion(MEDatosPaginador datPag)
-		{
-			EVProcesosOperativos.ProcesoOperativoEstSecPag.DatPag = datPag;
-			return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
-		}
-		[MValidaSeg(nameof(ProcesoOperativoEstSecInicia))]
-		public IActionResult ProcesoOperativoEstSecOrdena(String orden)
-		{
-			EVProcesosOperativos.ProcesoOperativoEstSecColOrden = orden;
-			return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
-		}
-		#endregion
-
-		#endregion
-
-		#region Combos Grupo
-		//Mod
-		private void CargaCombosPO(String prefAccion,
-								   Int64 capCmbProcesoOperativoId)
-		{
-			ViewData["ProcesosOperativosCols"] = null;
-
-			ViewData["ProcesosOperativos"] = NProcesosOperativos.ProcesoOperativoCmb();
-			if (!NProcesosOperativos.Mensajes.Ok)
-				ViewData["Mensajes"] = NProcesosOperativos.Mensajes.ToString();
-
-			if (capCmbProcesoOperativoId > 0)
-			{
-				ViewData[prefAccion + "ProcesosOperativosCols"] = NProcesosOperativos.ProcesoOperativoColCmb(capCmbProcesoOperativoId);
-				if (!NProcesosOperativos.Mensajes.Ok)
-					ViewData[prefAccion + "Mensajes"] = NProcesosOperativos.Mensajes.ToString();
-			}
-		}
-		#endregion
-	}
+    [Area("PriCatalogos")]
+    public class ProcesosOperativosController : MControllerMvcPri
+    {
+        #region Constructores
+        public ProcesosOperativosController(INProcesosOperativos nProcesosOperativos,
+                                            INCatalogos nCatalogos)
+        {
+            NProcesosOperativos = nProcesosOperativos;
+            NCatalogos = nCatalogos;
+        }
+        #endregion
+
+        #region Propiedades
+        private INProcesosOperativos NProcesosOperativos { get; set; }
+        private INCatalogos NCatalogos { get; set; }
+        private EVProcesosOperativos EV
+        {
+            get { return base.MEVCtrl<EVProcesosOperativos>(); }
+        }
+        #endregion
+
+        #region ProcesoOperativo (ProcesosOperativos)
+
+        #region Acciones
+        public async Task<IActionResult> ProcesoOperativoInicia()
+        {
+            //Configuracion de inicio
+            await Servicios.Gen.InicializaSF(EV.ProcesoOperativo, nameof(EProcesoOperativo.Orden),
+                async () => await NProcesosOperativos.ProcesoOperativoReglas());
+
+            return RedirectToAction(nameof(ProcesoOperativoCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoInicia))]
+        public async Task<IActionResult> ProcesoOperativoCon()
+        {
+            await Servicios.Pag.CargaPagOrdYFil(EV.ProcesoOperativo);
+            EV.ProcesoOperativo.Pag = await NProcesosOperativos.ProcesoOperativoPag(EV.ProcesoOperativo.Filtro);
+            await Servicios.Pag.ActTamPag(EV.ProcesoOperativo);
+
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            return View(nameof(ProcesoOperativoCon), EV.ProcesoOperativo.Pag?.Pagina);
+        }
+        public async Task<IActionResult> ProcesoOperativoXId(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Consulta;
+            EV.ProcesoOperativo.Indice = indice;
+            return await ProcesoOperativoCaptura(EV.ProcesoOperativo.Pag.Pagina[indice]);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoInserta))]
+        public async Task<IActionResult> ProcesoOperativoInsertaIni()
+        {
+            EV.Accion = MAccionesGen.Inserta;
+            return await ProcesoOperativoInsertaCap(new EProcesoOperativo()
+            {
+                Activo = true
+            });
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoInserta))]
+        public async Task<IActionResult> ProcesoOperativoInsertaCap(EProcesoOperativo procesoOperativo)
+        {
+            return await ProcesoOperativoCaptura(procesoOperativo);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoInserta(EProcesoOperativo procesoOperativo)
+        {
+            await NProcesosOperativos.ProcesoOperativoInserta(procesoOperativo);
+            if (NProcesosOperativos.Mensajes.Ok)
+                return RedirectToAction(nameof(ProcesoOperativoCon));
+
+            return await ProcesoOperativoInsertaCap(procesoOperativo);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoActualiza))]
+        public async Task<IActionResult> ProcesoOperativoActualizaIni(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.ProcesoOperativo.Indice = indice;
+            EV.ProcesoOperativo.Sel = EV.ProcesoOperativo.Pag.Pagina[indice];
+            return await ProcesoOperativoActualizaCap(EV.ProcesoOperativo.Sel);
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoActualiza))]
+        public async Task<IActionResult> ProcesoOperativoActualizaCap(EProcesoOperativo procesoOperativo)
+        {
+            return await ProcesoOperativoCaptura(procesoOperativo);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoActualiza(EProcesoOperativo procesoOperativo)
+        {
+            if (await NProcesosOperativos.ProcesoOperativoActualiza(procesoOperativo))
+                return RedirectToAction(nameof(ProcesoOperativoCon));
+
+            return await ProcesoOperativoActualizaCap(procesoOperativo);
+        }
+        public async Task<IActionResult> ProcesoOperativoElimina(Int32 indice)
+        {
+            await NProcesosOperativos.ProcesoOperativoElimina(EV.ProcesoOperativo.Pag.Pagina[indice]);
+            return RedirectToAction(nameof(ProcesoOperativoCon));
+        }
+        #endregion
+
+        #region Funciones
+        private async Task<IActionResult> ProcesoOperativoCaptura(EProcesoOperativo procesoOperativo)
+        {
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            return await Task.FromResult(ViewCap(nameof(ProcesoOperativoCaptura), procesoOperativo));
+        }
+        #endregion
+
+        #region Acciones de Paginacion Orden y Filtro
+        [MValidaSeg(nameof(ProcesoOperativoInicia))]
+        public IActionResult ProcesoOperativoPaginacion(MEDatosPaginador datPag)
+        {
+            EV.ProcesoOperativo.Pag.DatPag = datPag;
+            return RedirectToAction(nameof(ProcesoOperativoCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoInicia))]
+        public IActionResult ProcesoOperativoOrdena(String orden)
+        {
+            EV.ProcesoOperativo.ColOrden = orden;
+            return RedirectToAction(nameof(ProcesoOperativoCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoInicia))]
+        public IActionResult ProcesoOperativoFiltra(EProcesoOperativoFiltro filtro)
+        {
+            EV.ProcesoOperativo.Filtro = filtro;
+            return RedirectToAction(nameof(ProcesoOperativoCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoInicia))]
+        public IActionResult ProcesoOperativoLimpiaFiltros()
+        {
+            EV.ProcesoOperativo.Filtro = new EProcesoOperativoFiltro();
+            return RedirectToAction(nameof(ProcesoOperativoCon));
+        }
+        #endregion
+
+        #endregion
+
+        #region ProcesoOperativoCol (ProcesosOperativosCols)
+
+        #region Acciones
+        public async Task<IActionResult> ProcesoOperativoColInicia(Int32 indice)
+        {
+            //Configuracion de inicio
+            await Servicios.Gen.InicializaSF(EV.ProcesoOperativoCol, nameof(EProcesoOperativoCol.ConOrden),
+                async () => await NProcesosOperativos.ProcesoOperativoColReglas());
+
+            Servicios.Gen.InicializaSFInd(EV.ProcesoOperativo, indice);
+
+            return RedirectToAction(nameof(ProcesoOperativoColCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoColInicia))]
+        public async Task<IActionResult> ProcesoOperativoColCon()
+        {
+            EV.ProcesoOperativoCol.Filtro.ProcesoOperativoId = EV.ProcesoOperativo.Sel.ProcesoOperativoId;
+
+            await Servicios.Pag.CargaPagOrdYFil(EV.ProcesoOperativoCol);
+            EV.ProcesoOperativoCol.Pag = await NProcesosOperativos.ProcesoOperativoColPag(EV.ProcesoOperativoCol.Filtro);
+            await Servicios.Pag.ActTamPag(EV.ProcesoOperativoCol);
+
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            //Adi
+            ViewBag.PermiteInserta = !EV.ProcesoOperativo.Sel.TieneExpedientes;
+
+            return View(nameof(ProcesoOperativoColCon), EV.ProcesoOperativoCol.Pag?.Pagina);
+        }
+        public async Task<IActionResult> ProcesoOperativoColXId(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Consulta;
+            EV.ProcesoOperativoCol.Indice = indice;
+            return await ProcesoOperativoColCaptura(EV.ProcesoOperativoCol.Pag.Pagina[indice]);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoColInserta))]
+        public async Task<IActionResult> ProcesoOperativoColInsertaIni()
+        {
+            EV.Accion = MAccionesGen.Inserta;
+            return await ProcesoOperativoColInsertaCap(new EProcesoOperativoCol()
+            {
+                ConOrdenar = true,
+                CapColumnas = 1,
+                CapObligatorio = true,
+                Activo = true
+            });
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoColInserta))]
+        public async Task<IActionResult> ProcesoOperativoColInsertaCap(EProcesoOperativoCol procesoOperativoCol)
+        {
+            return await ProcesoOperativoColCaptura(procesoOperativoCol);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoColInserta(EProcesoOperativoCol procesoOperativoCol)
+        {
+            procesoOperativoCol.ProcesoOperativoId = EV.ProcesoOperativo.Sel.ProcesoOperativoId; //Llave padre
+            await NProcesosOperativos.ProcesoOperativoColInserta(procesoOperativoCol);
+            if (NProcesosOperativos.Mensajes.Ok)
+                return RedirectToAction(nameof(ProcesoOperativoColCon));
+
+            return await ProcesoOperativoColInsertaCap(procesoOperativoCol);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoColActualiza))]
+        public async Task<IActionResult> ProcesoOperativoColActualizaIni(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.ProcesoOperativoCol.Indice = indice;
+            EV.ProcesoOperativoCol.Sel = EV.ProcesoOperativoCol.Pag.Pagina[indice];
+            return await ProcesoOperativoColActualizaCap(EV.ProcesoOperativoCol.Sel);
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoColActualiza))]
+        public async Task<IActionResult> ProcesoOperativoColActualizaCap(EProcesoOperativoCol procesoOperativoCol)
+        {
+            return await ProcesoOperativoColCaptura(procesoOperativoCol);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoColActualiza(EProcesoOperativoCol procesoOperativoCol)
+        {
+            procesoOperativoCol.ProcesoOperativoId = EV.ProcesoOperativo.Sel.ProcesoOperativoId; //Llave padre
+            if (await NProcesosOperativos.ProcesoOperativoColActualiza(procesoOperativoCol))
+                return RedirectToAction(nameof(ProcesoOperativoColCon));
+
+            return await ProcesoOperativoColActualizaCap(procesoOperativoCol);
+        }
+        public async Task<IActionResult> ProcesoOperativoColElimina(Int32 indice)
+        {
+            await NProcesosOperativos.ProcesoOperativoColElimina(EV.ProcesoOperativoCol.Pag.Pagina[indice]);
+            return RedirectToAction(nameof(ProcesoOperativoColCon));
+        }
+        #endregion
+
+        #region Funciones
+        private async Task<IActionResult> ProcesoOperativoColCaptura(EProcesoOperativoCol procesoOperativoCol)
+        {
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            //Mod
+            ViewBag.TieneExpedientes = EV.ProcesoOperativo.Sel.TieneExpedientes;
+
+            await MUtilMvc.CargaCmbCascada(ViewData, NProcesosOperativos.Mensajes, "Id",
+                ("ProcesosOperativos", async () => await NProcesosOperativos.ProcesoOperativoCmb()),
+                (procesoOperativoCol.ProcesoOperativoId > 0, "ProcesosOperativosCols", async () => await NProcesosOperativos.ProcesoOperativoColCmb(procesoOperativoCol.ProcesoOperativoId)));
+
+            await MUtilMvc.CargaCmbCascada(ViewData, NProcesosOperativos.Mensajes, "Texto",
+                ("ProcesosOperativos", async () => await NProcesosOperativos.ProcesoOperativoCmb()),
+                (procesoOperativoCol.ProcesoOperativoId > 0, "ProcesosOperativosCols", async () => await NProcesosOperativos.ProcesoOperativoColCmb(procesoOperativoCol.ProcesoOperativoId)));
+
+            //CargaCombosPO("Id",
+            //              procesoOperativoCol.CapCmbProcesoOperativoId);
+
+            //CargaCombosPO("Texto",
+            //              procesoOperativoCol.CapCmbProcesoOperativoId);
+
+            return ViewCap(nameof(ProcesoOperativoColCaptura), procesoOperativoCol);
+        }
+        #endregion
+
+        #region Acciones de Paginacion Orden y Filtro
+        [MValidaSeg(nameof(ProcesoOperativoColInicia))]
+        public IActionResult ProcesoOperativoColPaginacion(MEDatosPaginador datPag)
+        {
+            EV.ProcesoOperativoCol.Pag.DatPag = datPag;
+            return RedirectToAction(nameof(ProcesoOperativoColCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoColInicia))]
+        public IActionResult ProcesoOperativoColOrdena(String orden)
+        {
+            EV.ProcesoOperativoCol.ColOrden = orden;
+            return RedirectToAction(nameof(ProcesoOperativoColCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoColInicia))]
+        public IActionResult ProcesoOperativoColFiltra(EProcesoOperativoColFiltro filtro)
+        {
+            EV.ProcesoOperativoCol.Filtro = filtro;
+            return RedirectToAction(nameof(ProcesoOperativoColCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoColInicia))]
+        public IActionResult ProcesoOperativoColLimpiaFiltros()
+        {
+            EV.ProcesoOperativoCol.Filtro = new EProcesoOperativoColFiltro();
+            return RedirectToAction(nameof(ProcesoOperativoColCon));
+        }
+        #endregion
+
+        #endregion
+
+        #region ProcesoOperativoObjeto (ProcesosOperativosObjetos)
+
+        #region Acciones
+        public async Task<IActionResult> ProcesoOperativoObjetoInicia(Int32 indice)
+        {
+            //Configuracion de inicio
+            await Servicios.Gen.InicializaSF(EV.ProcesoOperativoObjeto, nameof(EProcesoOperativoObjeto.ProcesoOperativoObjetoId),
+                async () => await NProcesosOperativos.ProcesoOperativoObjetoReglas());
+
+            Servicios.Gen.InicializaSFInd(EV.ProcesoOperativo, indice);
+
+            return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
+        public async Task<IActionResult> ProcesoOperativoObjetoCon()
+        {
+            EV.ProcesoOperativoObjeto.Filtro.ProcesoOperativoId = EV.ProcesoOperativo.Sel.ProcesoOperativoId;
+
+            await Servicios.Pag.CargaPagOrdYFil(EV.ProcesoOperativoObjeto);
+            EV.ProcesoOperativoObjeto.Pag = await NProcesosOperativos.ProcesoOperativoObjetoPag(EV.ProcesoOperativoObjeto.Filtro);
+            await Servicios.Pag.ActTamPag(EV.ProcesoOperativoObjeto);
+
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            return View(nameof(ProcesoOperativoObjetoCon), EV.ProcesoOperativoObjeto.Pag?.Pagina);
+        }
+        public async Task<IActionResult> ProcesoOperativoObjetoXId(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Consulta;
+            EV.ProcesoOperativoObjeto.Indice = indice;
+            return await ProcesoOperativoObjetoCaptura(EV.ProcesoOperativoObjeto.Pag.Pagina[indice]);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoObjetoInserta))]
+        public async Task<IActionResult> ProcesoOperativoObjetoInsertaIni()
+        {
+            EV.Accion = MAccionesGen.Inserta;
+            return await ProcesoOperativoObjetoInsertaCap(new EProcesoOperativoObjeto()
+            {
+                Activo = true
+            });
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoObjetoInserta))]
+        public async Task<IActionResult> ProcesoOperativoObjetoInsertaCap(EProcesoOperativoObjeto procesoOperativoObjeto)
+        {
+            return await ProcesoOperativoObjetoCaptura(procesoOperativoObjeto);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoObjetoInserta(EProcesoOperativoObjeto procesoOperativoObjeto)
+        {
+            procesoOperativoObjeto.ProcesoOperativoId = EV.ProcesoOperativo.Sel.ProcesoOperativoId; //Llave padre
+            await NProcesosOperativos.ProcesoOperativoObjetoInserta(procesoOperativoObjeto);
+            if (NProcesosOperativos.Mensajes.Ok)
+                return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
+
+            return await ProcesoOperativoObjetoInsertaCap(procesoOperativoObjeto);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoObjetoActualiza))]
+        public async Task<IActionResult> ProcesoOperativoObjetoActualizaIni(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.ProcesoOperativoObjeto.Indice = indice;
+            EV.ProcesoOperativoObjeto.Sel = EV.ProcesoOperativoObjeto.Pag.Pagina[indice];
+            return await ProcesoOperativoObjetoActualizaCap(EV.ProcesoOperativoObjeto.Sel);
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoObjetoActualiza))]
+        public async Task<IActionResult> ProcesoOperativoObjetoActualizaCap(EProcesoOperativoObjeto procesoOperativoObjeto)
+        {
+            return await ProcesoOperativoObjetoCaptura(procesoOperativoObjeto);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoObjetoActualiza(EProcesoOperativoObjeto procesoOperativoObjeto)
+        {
+            procesoOperativoObjeto.ProcesoOperativoId = EV.ProcesoOperativo.Sel.ProcesoOperativoId; //Llave padre
+            if (await NProcesosOperativos.ProcesoOperativoObjetoActualiza(procesoOperativoObjeto))
+                return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
+
+            return await ProcesoOperativoObjetoActualizaCap(procesoOperativoObjeto);
+        }
+        public async Task<IActionResult> ProcesoOperativoObjetoElimina(Int32 indice)
+        {
+            await NProcesosOperativos.ProcesoOperativoObjetoElimina(EV.ProcesoOperativoObjeto.Pag.Pagina[indice]);
+            return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
+        }
+        #endregion
+
+        #region Funciones
+        private async Task<IActionResult> ProcesoOperativoObjetoCaptura(EProcesoOperativoObjeto procesoOperativoObjeto)
+        {
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            return await Task.FromResult(ViewCap(nameof(ProcesoOperativoObjetoCaptura), procesoOperativoObjeto));
+        }
+        #endregion
+
+        #region Acciones de Paginacion Orden y Filtro
+        [MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
+        public IActionResult ProcesoOperativoObjetoPaginacion(MEDatosPaginador datPag)
+        {
+            EV.ProcesoOperativoObjeto.Pag.DatPag = datPag;
+            return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
+        public IActionResult ProcesoOperativoObjetoOrdena(String orden)
+        {
+            EV.ProcesoOperativoObjeto.ColOrden = orden;
+            return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
+        public IActionResult ProcesoOperativoObjetoFiltra(EProcesoOperativoObjetoFiltro filtro)
+        {
+            EV.ProcesoOperativoObjeto.Filtro = filtro;
+            return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoObjetoInicia))]
+        public IActionResult ProcesoOperativoObjetoLimpiaFiltros()
+        {
+            EV.ProcesoOperativoObjeto.Filtro = new EProcesoOperativoObjetoFiltro();
+            return RedirectToAction(nameof(ProcesoOperativoObjetoCon));
+        }
+        #endregion
+
+        #endregion
+
+        #region ProcesoOperativoEst (ProcesosOperativosEst)
+
+        #region Acciones
+        public async Task<IActionResult> ProcesoOperativoEstInicia(Int32 indice)
+        {
+            //Configuracion de inicio
+            await Servicios.Gen.InicializaSF(EV.ProcesoOperativoEst, nameof(EProcesoOperativoEst.Orden),
+                async () => await NProcesosOperativos.ProcesoOperativoEstReglas());
+
+            Servicios.Gen.InicializaSFInd(EV.ProcesoOperativo, indice);
+
+            return RedirectToAction(nameof(ProcesoOperativoEstCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoEstInicia))]
+        public async Task<IActionResult> ProcesoOperativoEstCon()
+        {
+            EV.ProcesoOperativoEst.Filtro.ProcesoOperativoId = EV.ProcesoOperativo.Sel.ProcesoOperativoId;
+
+            await Servicios.Pag.CargaPagOrdYFil(EV.ProcesoOperativoEst);
+            EV.ProcesoOperativoEst.Pag = await NProcesosOperativos.ProcesoOperativoEstPag(EV.ProcesoOperativoEst.Filtro);
+            await Servicios.Pag.ActTamPag(EV.ProcesoOperativoEst);
+
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            return View(nameof(ProcesoOperativoEstCon), EV.ProcesoOperativoEst.Pag?.Pagina);
+        }
+        public async Task<IActionResult> ProcesoOperativoEstXId(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Consulta;
+            EV.ProcesoOperativoEst.Indice = indice;
+            return await ProcesoOperativoEstCaptura(EV.ProcesoOperativoEst.Pag.Pagina[indice]);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoEstInserta))]
+        public async Task<IActionResult> ProcesoOperativoEstInsertaIni()
+        {
+            EV.Accion = MAccionesGen.Inserta;
+            return await ProcesoOperativoEstInsertaCap(new EProcesoOperativoEst()
+            {
+                Activo = true
+            });
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoEstInserta))]
+        public async Task<IActionResult> ProcesoOperativoEstInsertaCap(EProcesoOperativoEst procesoOperativoEst)
+        {
+            return await ProcesoOperativoEstCaptura(procesoOperativoEst);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoEstInserta(EProcesoOperativoEst procesoOperativoEst)
+        {
+            procesoOperativoEst.ProcesoOperativoId = EV.ProcesoOperativo.Sel.ProcesoOperativoId; //Llave padre
+            await NProcesosOperativos.ProcesoOperativoEstInserta(procesoOperativoEst);
+            if (NProcesosOperativos.Mensajes.Ok)
+                return RedirectToAction(nameof(ProcesoOperativoEstCon));
+
+            return await ProcesoOperativoEstInsertaCap(procesoOperativoEst);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoEstActualiza))]
+        public async Task<IActionResult> ProcesoOperativoEstActualizaIni(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.ProcesoOperativoEst.Indice = indice;
+            EV.ProcesoOperativoEst.Sel = EV.ProcesoOperativoEst.Pag.Pagina[indice];
+            return await ProcesoOperativoEstActualizaCap(EV.ProcesoOperativoEst.Sel);
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoEstActualiza))]
+        public async Task<IActionResult> ProcesoOperativoEstActualizaCap(EProcesoOperativoEst procesoOperativoEst)
+        {
+            return await ProcesoOperativoEstCaptura(procesoOperativoEst);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoEstActualiza(EProcesoOperativoEst procesoOperativoEst)
+        {
+            procesoOperativoEst.ProcesoOperativoId = EV.ProcesoOperativo.Sel.ProcesoOperativoId; //Llave padre
+            if (await NProcesosOperativos.ProcesoOperativoEstActualiza(procesoOperativoEst))
+                return RedirectToAction(nameof(ProcesoOperativoEstCon));
+
+            return await ProcesoOperativoEstActualizaCap(procesoOperativoEst);
+        }
+        public async Task<IActionResult> ProcesoOperativoEstElimina(Int32 indice)
+        {
+            await NProcesosOperativos.ProcesoOperativoEstElimina(EV.ProcesoOperativoEst.Pag.Pagina[indice]);
+            return RedirectToAction(nameof(ProcesoOperativoEstCon));
+        }
+        #endregion
+
+        #region Funciones
+        private async Task<IActionResult> ProcesoOperativoEstCaptura(EProcesoOperativoEst procesoOperativoEst)
+        {
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            return await Task.FromResult(ViewCap(nameof(ProcesoOperativoEstCaptura), procesoOperativoEst));
+        }
+        #endregion
+
+        #region Acciones de Paginacion Orden y Filtro
+        [MValidaSeg(nameof(ProcesoOperativoEstInicia))]
+        public IActionResult ProcesoOperativoEstPaginacion(MEDatosPaginador datPag)
+        {
+            EV.ProcesoOperativoEst.Pag.DatPag = datPag;
+            return RedirectToAction(nameof(ProcesoOperativoEstCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoEstInicia))]
+        public IActionResult ProcesoOperativoEstOrdena(String orden)
+        {
+            EV.ProcesoOperativoEst.ColOrden = orden;
+            return RedirectToAction(nameof(ProcesoOperativoEstCon));
+        }
+        #endregion
+
+        #endregion
+
+        #region ProcesoOperativoEstSec (ProcesosOperativosEstSec)
+
+        #region Acciones
+        public async Task<IActionResult> ProcesoOperativoEstSecInicia(Int32 indice)
+        {
+            //Configuracion de inicio
+            await Servicios.Gen.InicializaSF(EV.ProcesoOperativoEstSec, nameof(EProcesoOperativoEstSec.ProcesoOperativoEstSecId),
+                async () => await NProcesosOperativos.ProcesoOperativoEstSecReglas());
+
+            Servicios.Gen.InicializaSFInd(EV.ProcesoOperativoEst, indice);
+
+            return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoEstSecInicia))]
+        public async Task<IActionResult> ProcesoOperativoEstSecCon()
+        {
+            EV.ProcesoOperativoEstSec.Filtro.ProcesoOperativoEstId = EV.ProcesoOperativoEst.Sel.ProcesoOperativoEstId;
+
+            await Servicios.Pag.CargaPagOrdYFil(EV.ProcesoOperativoEstSec);
+            EV.ProcesoOperativoEstSec.Pag = await NProcesosOperativos.ProcesoOperativoEstSecPag(EV.ProcesoOperativoEstSec.Filtro);
+            await Servicios.Pag.ActTamPag(EV.ProcesoOperativoEstSec);
+
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            return View(nameof(ProcesoOperativoEstSecCon), EV.ProcesoOperativoEstSec.Pag?.Pagina);
+        }
+        public async Task<IActionResult> ProcesoOperativoEstSecXId(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Consulta;
+            EV.ProcesoOperativoEstSec.Indice = indice;
+            return await ProcesoOperativoEstSecCaptura(EV.ProcesoOperativoEstSec.Pag.Pagina[indice]);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoEstSecInserta))]
+        public async Task<IActionResult> ProcesoOperativoEstSecInsertaIni()
+        {
+            EV.Accion = MAccionesGen.Inserta;
+            return await ProcesoOperativoEstSecInsertaCap(new EProcesoOperativoEstSec());
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoEstSecInserta))]
+        public async Task<IActionResult> ProcesoOperativoEstSecInsertaCap(EProcesoOperativoEstSec procesoOperativoEstSec)
+        {
+            return await ProcesoOperativoEstSecCaptura(procesoOperativoEstSec);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoEstSecInserta(EProcesoOperativoEstSec procesoOperativoEstSec)
+        {
+            procesoOperativoEstSec.ProcesoOperativoEstId = EV.ProcesoOperativoEst.Sel.ProcesoOperativoEstId; //Llave padre
+            await NProcesosOperativos.ProcesoOperativoEstSecInserta(procesoOperativoEstSec);
+            if (NProcesosOperativos.Mensajes.Ok)
+                return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
+
+            return await ProcesoOperativoEstSecInsertaCap(procesoOperativoEstSec);
+        }
+        [MValidaSeg(nameof(ProcesoOperativoEstSecActualiza))]
+        public async Task<IActionResult> ProcesoOperativoEstSecActualizaIni(Int32 indice)
+        {
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.ProcesoOperativoEstSec.Indice = indice;
+            EV.ProcesoOperativoEstSec.Sel = EV.ProcesoOperativoEstSec.Pag.Pagina[indice];
+            return await ProcesoOperativoEstSecActualizaCap(EV.ProcesoOperativoEstSec.Sel);
+        }
+        [ValidateAntiForgeryToken]
+        [MValidaSeg(nameof(ProcesoOperativoEstSecActualiza))]
+        public async Task<IActionResult> ProcesoOperativoEstSecActualizaCap(EProcesoOperativoEstSec procesoOperativoEstSec)
+        {
+            return await ProcesoOperativoEstSecCaptura(procesoOperativoEstSec);
+        }
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesoOperativoEstSecActualiza(EProcesoOperativoEstSec procesoOperativoEstSec)
+        {
+            procesoOperativoEstSec.ProcesoOperativoEstId = EV.ProcesoOperativoEst.Sel.ProcesoOperativoEstId; //Llave padre
+            if (await NProcesosOperativos.ProcesoOperativoEstSecActualiza(procesoOperativoEstSec))
+                return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
+
+            return await ProcesoOperativoEstSecActualizaCap(procesoOperativoEstSec);
+        }
+        public async Task<IActionResult> ProcesoOperativoEstSecElimina(Int32 indice)
+        {
+            await NProcesosOperativos.ProcesoOperativoEstSecElimina(EV.ProcesoOperativoEstSec.Pag.Pagina[indice]);
+            return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
+        }
+        #endregion
+
+        #region Funciones
+        private async Task<IActionResult> ProcesoOperativoEstSecCaptura(EProcesoOperativoEstSec procesoOperativoEstSec)
+        {
+            ViewBag.Mensajes = NProcesosOperativos.Mensajes;
+            ViewBag.EV = EV;
+
+            ViewBag.ProcesosOperativosEst = await NCatalogos.ProcesoOperativoEstCmb(EV.ProcesoOperativoEst.Sel.ProcesoOperativoId);
+
+            return await Task.FromResult(ViewCap(nameof(ProcesoOperativoEstSecCaptura), procesoOperativoEstSec));
+        }
+        #endregion
+
+        #region Acciones de Paginacion Orden y Filtro
+        [MValidaSeg(nameof(ProcesoOperativoEstSecInicia))]
+        public IActionResult ProcesoOperativoEstSecPaginacion(MEDatosPaginador datPag)
+        {
+            EV.ProcesoOperativoEstSec.Pag.DatPag = datPag;
+            return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
+        }
+        [MValidaSeg(nameof(ProcesoOperativoEstSecInicia))]
+        public IActionResult ProcesoOperativoEstSecOrdena(String orden)
+        {
+            EV.ProcesoOperativoEstSec.ColOrden = orden;
+            return RedirectToAction(nameof(ProcesoOperativoEstSecCon));
+        }
+        #endregion
+
+        #endregion
+
+        //#region Combos Grupo
+        ////Mod
+        //private async Task<void> CargaCombosPO(String prefAccion,
+        //                                       Int64 capCmbProcesoOperativoId)
+        //{
+        //    ViewData["ProcesosOperativosCols"] = null;
+
+        //    ViewData["ProcesosOperativos"] = await NProcesosOperativos.ProcesoOperativoCmb();
+        //    if (!NProcesosOperativos.Mensajes.Ok)
+        //        ViewData["Mensajes"] = NProcesosOperativos.Mensajes.ToString();
+
+        //    if (capCmbProcesoOperativoId > 0)
+        //    {
+        //        ViewData[prefAccion + "ProcesosOperativosCols"] = NProcesosOperativos.ProcesoOperativoColCmb(capCmbProcesoOperativoId);
+        //        if (!NProcesosOperativos.Mensajes.Ok)
+        //            ViewData[prefAccion + "Mensajes"] = NProcesosOperativos.Mensajes.ToString();
+        //    }
+        //}
+        //#endregion
+    }
 }

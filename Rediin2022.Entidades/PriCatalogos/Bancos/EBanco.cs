@@ -1,4 +1,4 @@
-using DSEntityNetX.DataAccess;
+
 using DSMetodNetX.Entidades;
 using System;
 
@@ -8,13 +8,14 @@ namespace Rediin2022.Entidades.PriCatalogos
     /// Entidad.
     /// </summary>
     [Serializable]
-    public class EBanco: MEntidad
+    [MDAErrorDuplicado(-1, nameof(BancoNombre))]
+    public class EBanco : MEntidad
     {
         #region Propiedades
         //Columnas principales
-        [XMain] public Int64 BancoId { get; set; } = 0L;
-        [XMain] public String BancoNombre { get; set; } = String.Empty;
-        [XMain] public Boolean Activo { get; set; } = false;
+        [MDAMain] public Int64 BancoId { get; set; } = 0L;
+        [MDAMain] public String BancoNombre { get; set; } = String.Empty;
+        [MDAMain] public Boolean Activo { get; set; } = false;
         #endregion
     }
 }

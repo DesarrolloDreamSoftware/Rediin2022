@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -48,65 +49,65 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta paginada de la entidad Banco.
         /// </summary>
         [HttpPost]
-        public EBancoPag BancoPag(EBancoFiltro bancoFiltro)
+        public async Task<EBancoPag> BancoPag(EBancoFiltro bancoFiltro)
         {
-            return NBancos.BancoPag(bancoFiltro);
+            return await NBancos.BancoPag(bancoFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad Banco.
         /// </summary>
         [HttpGet("{bancoId}")]
-        public EBanco BancoXId(Int64 bancoId)
+        public async Task<EBanco> BancoXId(Int64 bancoId)
         {
-            return NBancos.BancoXId(bancoId);
+            return await NBancos.BancoXId(bancoId);
         }
         /// <summary>
         /// Consulta para combos de la entidad Banco.
         /// </summary>
         [HttpGet]
-        public List<MEElemento> BancoCmb()
+        public async Task<List<MEElemento>> BancoCmb()
         {
-            return NBancos.BancoCmb();
+            return await NBancos.BancoCmb();
         }
         /// <summary>
         /// Permite insertar la entidad Banco.
         /// </summary>
         [HttpPost]
-        public Int64 BancoInserta(EBanco banco)
+        public async Task<Int64> BancoInserta(EBanco banco)
         {
-            return NBancos.BancoInserta(banco);
+            return await NBancos.BancoInserta(banco);
         }
         /// <summary>
         /// Permite actualizar la entidad Banco.
         /// </summary>
         [HttpPost]
-        public Boolean BancoActualiza(EBanco banco)
+        public async Task<Boolean> BancoActualiza(EBanco banco)
         {
-            return NBancos.BancoActualiza(banco);
+            return await NBancos.BancoActualiza(banco);
         }
         /// <summary>
         /// Permite eliminar la entidad Banco.
         /// </summary>
         [HttpPost]
-        public Boolean BancoElimina(EBanco banco)
+        public async Task<Boolean> BancoElimina(EBanco banco)
         {
-            return NBancos.BancoElimina(banco);
+            return await NBancos.BancoElimina(banco);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
         [HttpPost]
-        public MEDatosArchivo BancoExporta(EBancoFiltro bancoFiltro)
+        public async Task<string> BancoExporta(EBancoFiltro bancoFiltro)
         {
-            return NBancos.BancoExporta(bancoFiltro);
+            return await NBancos.BancoExporta(bancoFiltro);
         }
         /// <summary>
         /// Reglas de negocio de la entidad Banco.
         /// </summary>
         [HttpGet]
-        public List<MEReglaNeg> BancoReglas()
+        public async Task<List<MEReglaNeg>> BancoReglas()
         {
-            return NBancos.BancoReglas();
+            return await NBancos.BancoReglas();
         }
         #endregion
 

@@ -1,0 +1,55 @@
+@model EProcesoOperativoObjeto
+
+@{
+    ViewData["Title"] = "Captura";
+    EVProcesosOperativos EV = ViewBag.EV;
+}
+
+<form asp-action="_ProcesoOperativoObjetoCaptura">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="@EV.ProcesoOperativoObjeto.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._ProcesoOperativoObjetoTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="ProcesoOperativoObjetoId" xval-enabled="false"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Activo"/>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="12">
+                    <input mval="Model" xval-for="ProcesoOperativoObjetoNombre"/>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Orden" />
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Obligatorio" />
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="DiasVencimiento" />
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Cantidad"/>
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <button maccion="Guarda"
+                    asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoObjetoInserta) : nameof(ProcesosOperativosController.ProcesoOperativoObjetoActualiza))"
+                    xvalidate="@nameof(EProcesoOperativoObjeto)"></button>
+            &nbsp;
+            <a maccion="Regresa" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

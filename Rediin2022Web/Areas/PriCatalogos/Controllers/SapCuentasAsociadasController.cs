@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapCuentasAsociadas EVSapCuentasAsociadas
+        private EVSapCuentasAsociadas EV
         {
-            get
-            {
-                if (base.MSesion<EVSapCuentasAsociadas>() == null)
-                    base.MSesion(new EVSapCuentasAsociadas());
-
-                return base.MSesionAuto<EVSapCuentasAsociadas>();
-            }
+            get { return base.MEVCtrl<EVSapCuentasAsociadas>(); }
         }
         #endregion
 
@@ -63,14 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapCuentaAsociadaInicia()
+        public async Task<IActionResult> SapCuentaAsociadaInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapCuentasAsociadas.SapCuentaAsociadaColOrden))
-                EVSapCuentasAsociadas.SapCuentaAsociadaColOrden = nameof(ESapCuentaAsociada.SapCuentaAsociadaId);
-
-            if (EVSapCuentasAsociadas.SapCuentaAsociadaReglas == null)
-                EVSapCuentasAsociadas.SapCuentaAsociadaReglas = NSapCuentasAsociadas.SapCuentaAsociadaReglas();
+            await Servicios.Gen.InicializaSF(EV.SapCuentaAsociada, nameof(ESapCuentaAsociada.SapCuentaAsociadaId),
+                async () => await NSapCuentasAsociadas.SapCuentaAsociadaReglas());
 
             return RedirectToAction(nameof(SapCuentaAsociadaCon));
         }
@@ -78,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapCuentaAsociadaInicia))]
-        public IActionResult SapCuentaAsociadaCon()
+        public async Task<IActionResult> SapCuentaAsociadaCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapCuentasAsociadas.SapCuentaAsociadaFiltro,
-                                     EVSapCuentasAsociadas.SapCuentaAsociadaPag,
-                                     EVSapCuentasAsociadas.SapCuentaAsociadaColOrden,
-                                     nameof(ESapCuentaAsociada));
-
-            EVSapCuentasAsociadas.SapCuentaAsociadaPag = NSapCuentasAsociadas.SapCuentaAsociadaPag(EVSapCuentasAsociadas.SapCuentaAsociadaFiltro);
-            base.MActualizaTamPag(EVSapCuentasAsociadas.SapCuentaAsociadaPag?.DatPag);
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapCuentaAsociada);
+            EV.SapCuentaAsociada.Pag = await NSapCuentasAsociadas.SapCuentaAsociadaPag(EV.SapCuentaAsociada.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapCuentaAsociada);
 
             ViewBag.Mensajes = NSapCuentasAsociadas.Mensajes.Copy();
-            ViewBag.Reglas = EVSapCuentasAsociadas.SapCuentaAsociadaReglas;
-            ViewBag.DatPag = EVSapCuentasAsociadas.SapCuentaAsociadaPag?.DatPag;
-            ViewBag.Orden = EVSapCuentasAsociadas.SapCuentaAsociadaColOrden;
-            ViewBag.Filtro = EVSapCuentasAsociadas.SapCuentaAsociadaFiltro;
-            ViewBag.Indice = EVSapCuentasAsociadas.SapCuentaAsociadaIndice;
+            ViewBag.EV = EV;
 
-            return View(nameof(SapCuentaAsociadaCon), EVSapCuentasAsociadas.SapCuentaAsociadaPag?.Pagina);
+            return View(nameof(SapCuentaAsociadaCon), EV.SapCuentaAsociada.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapCuentaAsociadaXId(Int32 indice)
+        public async Task<IActionResult> SapCuentaAsociadaXId(Int32 indice)
         {
-            EVSapCuentasAsociadas.Accion = MAccionesGen.Consulta;
-            EVSapCuentasAsociadas.SapCuentaAsociadaIndice = indice;
-            return SapCuentaAsociadaCaptura(EVSapCuentasAsociadas.SapCuentaAsociadaPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapCuentaAsociada.Indice = indice;
+            return await SapCuentaAsociadaCaptura(EV.SapCuentaAsociada.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapCuentaAsociadaInserta))]
-        public IActionResult SapCuentaAsociadaInsertaIni()
+        public async Task<IActionResult> SapCuentaAsociadaInsertaIni()
         {
-            EVSapCuentasAsociadas.Accion = MAccionesGen.Inserta;
-            return SapCuentaAsociadaInsertaCap(new ESapCuentaAsociada()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapCuentaAsociadaInsertaCap(new ESapCuentaAsociada()
             {
                 Activo = true
             });
@@ -123,58 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapCuentaAsociadaInserta))]
-        public IActionResult SapCuentaAsociadaInsertaCap(ESapCuentaAsociada sapCuentaAsociada)
+        public async Task<IActionResult> SapCuentaAsociadaInsertaCap(ESapCuentaAsociada sapCuentaAsociada)
         {
-            return SapCuentaAsociadaCaptura(sapCuentaAsociada);
+            return await SapCuentaAsociadaCaptura(sapCuentaAsociada);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapCuentaAsociadaInserta(ESapCuentaAsociada sapCuentaAsociada)
+        public async Task<IActionResult> SapCuentaAsociadaInserta(ESapCuentaAsociada sapCuentaAsociada)
         {
-            if (NSapCuentasAsociadas.SapCuentaAsociadaInserta(sapCuentaAsociada))
+            if (await NSapCuentasAsociadas.SapCuentaAsociadaInserta(sapCuentaAsociada))
                 return RedirectToAction(nameof(SapCuentaAsociadaCon));
 
-            return SapCuentaAsociadaInsertaCap(sapCuentaAsociada);
+            return await SapCuentaAsociadaInsertaCap(sapCuentaAsociada);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapCuentaAsociadaActualiza))]
-        public IActionResult SapCuentaAsociadaActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapCuentaAsociadaActualizaIni(Int32 indice)
         {
-            EVSapCuentasAsociadas.Accion = MAccionesGen.Actualiza;
-            EVSapCuentasAsociadas.SapCuentaAsociadaIndice = indice;
-            EVSapCuentasAsociadas.SapCuentaAsociadaSel = EVSapCuentasAsociadas.SapCuentaAsociadaPag.Pagina[indice];
-            return SapCuentaAsociadaActualizaCap(EVSapCuentasAsociadas.SapCuentaAsociadaSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapCuentaAsociada.Indice = indice;
+            EV.SapCuentaAsociada.Sel = EV.SapCuentaAsociada.Pag.Pagina[indice];
+            return await SapCuentaAsociadaActualizaCap(EV.SapCuentaAsociada.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapCuentaAsociadaActualiza))]
-        public IActionResult SapCuentaAsociadaActualizaCap(ESapCuentaAsociada sapCuentaAsociada)
+        public async Task<IActionResult> SapCuentaAsociadaActualizaCap(ESapCuentaAsociada sapCuentaAsociada)
         {
-            return SapCuentaAsociadaCaptura(sapCuentaAsociada);
+            return await SapCuentaAsociadaCaptura(sapCuentaAsociada);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapCuentaAsociadaActualiza(ESapCuentaAsociada sapCuentaAsociada)
+        public async Task<IActionResult> SapCuentaAsociadaActualiza(ESapCuentaAsociada sapCuentaAsociada)
         {
-            if (NSapCuentasAsociadas.SapCuentaAsociadaActualiza(sapCuentaAsociada))
+            if (await NSapCuentasAsociadas.SapCuentaAsociadaActualiza(sapCuentaAsociada))
                 return RedirectToAction(nameof(SapCuentaAsociadaCon));
 
-            return SapCuentaAsociadaActualizaCap(sapCuentaAsociada);
+            return await SapCuentaAsociadaActualizaCap(sapCuentaAsociada);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapCuentaAsociadaElimina(Int32 indice)
+        public async Task<IActionResult> SapCuentaAsociadaElimina(Int32 indice)
         {
-            NSapCuentasAsociadas.SapCuentaAsociadaElimina(EVSapCuentasAsociadas.SapCuentaAsociadaPag.Pagina[indice]);
+            await NSapCuentasAsociadas.SapCuentaAsociadaElimina(EV.SapCuentaAsociada.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapCuentaAsociadaCon));
         }
         /// <summary>
@@ -182,18 +165,18 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapCuentaAsociadaExporta()
         {
-            EVSapCuentasAsociadas.SapCuentaAsociadaFiltro.ColumnaOrden = EVSapCuentasAsociadas.SapCuentaAsociadaColOrden;
-            EVSapCuentasAsociadas.SapCuentaAsociadaFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapCuentaAsociada.Filtro.ColumnaOrden = EV.SapCuentaAsociada.ColOrden;
+            EV.SapCuentaAsociada.Filtro.Columnas = new Dictionary<String, String>()
                                           {
                                               { nameof(ESapCuentaAsociada.Activo), String.Empty },
                                               { nameof(ESapCuentaAsociada.SapCuentaAsociadaId), String.Empty },
                                               { nameof(ESapCuentaAsociada.SapCuentaAsociadaNombre), String.Empty }
                                           };
 
-            MEDatosArchivo vDA = NSapCuentasAsociadas.SapCuentaAsociadaExporta(EVSapCuentasAsociadas.SapCuentaAsociadaFiltro);
-            EVSapCuentasAsociadas.SapCuentaAsociadaFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NSapCuentasAsociadas.SapCuentaAsociadaExporta(EV.SapCuentaAsociada.Filtro);
+            EV.SapCuentaAsociada.Filtro.Columnas = null;
             if (NSapCuentasAsociadas.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapCuentasAsociadas.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
             return RedirectToAction(nameof(SapCuentaAsociadaCon));
         }
@@ -203,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapCuentaAsociadaCaptura(ESapCuentaAsociada sapCuentaAsociada)
+        private async Task<IActionResult> SapCuentaAsociadaCaptura(ESapCuentaAsociada sapCuentaAsociada)
         {
             ViewBag.Mensajes = NSapCuentasAsociadas.Mensajes.Copy();
-            ViewBag.Accion = EVSapCuentasAsociadas.Accion;
-            ViewBag.Reglas = EVSapCuentasAsociadas.SapCuentaAsociadaReglas;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapCuentaAsociadaCaptura), sapCuentaAsociada);
+            return await Task.FromResult(ViewCap(nameof(SapCuentaAsociadaCaptura), sapCuentaAsociada));
         }
         #endregion
 
@@ -220,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapCuentaAsociadaInicia))]
         public IActionResult SapCuentaAsociadaPaginacion(MEDatosPaginador datPag)
         {
-            EVSapCuentasAsociadas.SapCuentaAsociadaPag.DatPag = datPag;
+            EV.SapCuentaAsociada.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapCuentaAsociadaCon));
         }
         /// <summary>
@@ -229,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapCuentaAsociadaInicia))]
         public IActionResult SapCuentaAsociadaOrdena(String orden)
         {
-            EVSapCuentasAsociadas.SapCuentaAsociadaColOrden = orden;
+            EV.SapCuentaAsociada.ColOrden = orden;
             return RedirectToAction(nameof(SapCuentaAsociadaCon));
         }
         /// <summary>
@@ -238,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapCuentaAsociadaInicia))]
         public IActionResult SapCuentaAsociadaFiltra(ESapCuentaAsociadaFiltro filtro)
         {
-            EVSapCuentasAsociadas.SapCuentaAsociadaFiltro = filtro;
+            EV.SapCuentaAsociada.Filtro = filtro;
             return RedirectToAction(nameof(SapCuentaAsociadaCon));
         }
         /// <summary>
@@ -247,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapCuentaAsociadaInicia))]
         public IActionResult SapCuentaAsociadaLimpiaFiltros()
         {
-            EVSapCuentasAsociadas.SapCuentaAsociadaFiltro = new ESapCuentaAsociadaFiltro();
+            EV.SapCuentaAsociada.Filtro = new ESapCuentaAsociadaFiltro();
             return RedirectToAction(nameof(SapCuentaAsociadaCon));
         }
         #endregion

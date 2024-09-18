@@ -1,13 +1,15 @@
-﻿@model List<EProcesoOperativoEst>
+@model List<EProcesoOperativoEst>
 @{
     ViewData["Title"] = "Consulta";
+    EVProcesosOperativos EV = ViewBag.EV;
 }
-<div mpanel="Display" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas">
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.ProcesoOperativoEst.Reglas">
     <div msub-panel="ConTitulo" msp-filtros="false">
         @MensajesXId._ProcesoOperativoEstTitCon
     </div>
     <div msub-panel="ConDatos">
-        <table melemento="ConTabla" xsort-action="@nameof(ProcesosOperativosController.ProcesoOperativoEstOrdena)" xsort-current="@ViewBag.orden">
+        <table melemento="ConTabla" xsort-action="@nameof(ProcesosOperativosController.ProcesoOperativoEstOrdena)" 
+            xsort-current="@EV.ProcesoOperativoEst.ColOrden">
             <thead melemento="ConTablaEnc">
                 <tr>
                     <th></th>
@@ -34,7 +36,7 @@
                     for (int i = 0; i < Model.Count(); i++)
                     {
                         String vDivAcciones = "divPanelAcciones" + i.ToString();
-                        <tr class="@(ViewBag.Indice == i ? "conTablaLinSel" : null)">
+                        <tr class="@(EV.ProcesoOperativoEst.Indice == i ? "conTablaLinSel" : null)">
                             <td nowrap>
                                 <a maccion="IniciaActualiza" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoEstActualizaIni)" asp-route-indice="@i"></a>
                                 <div msub-panel="ConAccionesXReg" id="@vDivAcciones">
@@ -65,7 +67,7 @@
         </table>
     </div>
     <div msub-panel="ConPaginador">
-        <div mdata-pager="@ViewBag.DatPag" xdp-action="@nameof(ProcesosOperativosController.ProcesoOperativoEstPaginacion)"></div>
+        <div mdata-pager="@EV.ProcesoOperativoEst.Pag?.DatPag" xdp-action="@nameof(ProcesosOperativosController.ProcesoOperativoEstPaginacion)"></div>
     </div>
     <div msub-panel="ConAccionesGen">
         <a maccion="IniciaInserta" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoEstInsertaIni)" asp-route-indice="-1"></a>

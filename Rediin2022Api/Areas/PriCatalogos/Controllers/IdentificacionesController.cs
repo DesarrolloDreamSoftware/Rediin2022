@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -48,57 +49,57 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta paginada de la entidad Identificacion.
         /// </summary>
         [HttpPost]
-        public EIdentificacionPag IdentificacionPag(EIdentificacionFiltro identificacionFiltro)
+        public async Task<EIdentificacionPag> IdentificacionPag(EIdentificacionFiltro identificacionFiltro)
         {
-            return NIdentificaciones.IdentificacionPag(identificacionFiltro);
+            return await NIdentificaciones.IdentificacionPag(identificacionFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad Identificacion.
         /// </summary>
         [HttpGet("{identificacionId}")]
-        public EIdentificacion IdentificacionXId(Int64 identificacionId)
+        public async Task<EIdentificacion> IdentificacionXId(Int64 identificacionId)
         {
-            return NIdentificaciones.IdentificacionXId(identificacionId);
+            return await NIdentificaciones.IdentificacionXId(identificacionId);
         }
         /// <summary>
         /// Consulta para combos de la entidad Identificacion.
         /// </summary>
         [HttpGet]
-        public List<MEElemento> IdentificacionCmb()
+        public async Task<List<MEElemento>> IdentificacionCmb()
         {
-            return NIdentificaciones.IdentificacionCmb();
+            return await NIdentificaciones.IdentificacionCmb();
         }
         /// <summary>
         /// Permite insertar la entidad Identificacion.
         /// </summary>
         [HttpPost]
-        public Int64 IdentificacionInserta(EIdentificacion identificacion)
+        public async Task<Int64> IdentificacionInserta(EIdentificacion identificacion)
         {
-            return NIdentificaciones.IdentificacionInserta(identificacion);
+            return await NIdentificaciones.IdentificacionInserta(identificacion);
         }
         /// <summary>
         /// Permite actualizar la entidad Identificacion.
         /// </summary>
         [HttpPost]
-        public Boolean IdentificacionActualiza(EIdentificacion identificacion)
+        public async Task<Boolean> IdentificacionActualiza(EIdentificacion identificacion)
         {
-            return NIdentificaciones.IdentificacionActualiza(identificacion);
+            return await NIdentificaciones.IdentificacionActualiza(identificacion);
         }
         /// <summary>
         /// Permite eliminar la entidad Identificacion.
         /// </summary>
         [HttpPost]
-        public Boolean IdentificacionElimina(EIdentificacion identificacion)
+        public async Task<Boolean> IdentificacionElimina(EIdentificacion identificacion)
         {
-            return NIdentificaciones.IdentificacionElimina(identificacion);
+            return await NIdentificaciones.IdentificacionElimina(identificacion);
         }
         /// <summary>
         /// Reglas de negocio de la entidad Identificacion.
         /// </summary>
         [HttpGet]
-        public List<MEReglaNeg> IdentificacionReglas()
+        public async Task<List<MEReglaNeg>> IdentificacionReglas()
         {
-            return NIdentificaciones.IdentificacionReglas();
+            return await NIdentificaciones.IdentificacionReglas();
         }
         #endregion
 

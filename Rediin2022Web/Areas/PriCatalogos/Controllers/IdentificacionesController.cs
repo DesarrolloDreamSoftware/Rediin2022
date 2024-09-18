@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVIdentificaciones EVIdentificaciones
+        private EVIdentificaciones EV
         {
-            get
-            {
-                if (base.MSesion<EVIdentificaciones>() == null)
-                    base.MSesion(new EVIdentificaciones());
-
-                return base.MSesionAuto<EVIdentificaciones>();
-            }
+            get { return base.MEVCtrl<EVIdentificaciones>(); }
         }
         #endregion
 
@@ -63,17 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult IdentificacionInicia()
+        public async Task<IActionResult> IdentificacionInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVIdentificaciones.IdentificacionColOrden))
-                EVIdentificaciones.IdentificacionColOrden = "-" + nameof(EIdentificacion.IdentificacionId);
-
-            if (EVIdentificaciones.IdentificacionReglas == null)
-            {
-                EVIdentificaciones.IdentificacionReglas = NIdentificaciones.IdentificacionReglas();
-                base.MMensajesTemp = NIdentificaciones.Mensajes.ToString();
-            }
+            await Servicios.Gen.InicializaSF(EV.Identificacion, "-" + nameof(EIdentificacion.IdentificacionId),
+                async () => await NIdentificaciones.IdentificacionReglas());
 
             return RedirectToAction(nameof(IdentificacionCon));
         }
@@ -81,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(IdentificacionInicia))]
-        public IActionResult IdentificacionCon()
+        public async Task<IActionResult> IdentificacionCon()
         {
-            base.MCargaFiltroPagYOrd(EVIdentificaciones.IdentificacionFiltro,
-                                     EVIdentificaciones.IdentificacionPag,
-                                     EVIdentificaciones.IdentificacionColOrden,
-                                     nameof(EIdentificacion));
+            await Servicios.Pag.CargaPagOrdYFil(EV.Identificacion);
+            EV.Identificacion.Pag = await NIdentificaciones.IdentificacionPag(EV.Identificacion.Filtro);
+            await Servicios.Pag.ActTamPag(EV.Identificacion);
 
-            EVIdentificaciones.IdentificacionPag = NIdentificaciones.IdentificacionPag(EVIdentificaciones.IdentificacionFiltro);
-            base.MActualizaTamPag(EVIdentificaciones.IdentificacionPag?.DatPag);
+            ViewBag.Mensajes = NIdentificaciones.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = base.MObtenMensajes(NIdentificaciones.Mensajes);
-            ViewBag.Reglas = EVIdentificaciones.IdentificacionReglas;
-            ViewBag.DatPag = EVIdentificaciones.IdentificacionPag?.DatPag;
-            ViewBag.Orden = EVIdentificaciones.IdentificacionColOrden;
-            ViewBag.Filtro = EVIdentificaciones.IdentificacionFiltro;
-            ViewBag.Indice = EVIdentificaciones.IdentificacionIndice;
-
-            return View(nameof(IdentificacionCon), EVIdentificaciones.IdentificacionPag?.Pagina);
+            return View(nameof(IdentificacionCon), EV.Identificacion.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult IdentificacionXId(Int32 indice)
+        public async Task<IActionResult> IdentificacionXId(Int32 indice)
         {
-            EVIdentificaciones.Accion = MAccionesGen.Consulta;
-            EVIdentificaciones.IdentificacionIndice = indice;
-            return IdentificacionCaptura(EVIdentificaciones.IdentificacionPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.Identificacion.Indice = indice;
+            return await IdentificacionCaptura(EV.Identificacion.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(IdentificacionInserta))]
-        public IActionResult IdentificacionInsertaIni()
+        public async Task<IActionResult> IdentificacionInsertaIni()
         {
-            EVIdentificaciones.Accion = MAccionesGen.Inserta;
-            return IdentificacionInsertaCap(new EIdentificacion()
+            EV.Accion = MAccionesGen.Inserta;
+            return await IdentificacionInsertaCap(new EIdentificacion()
             {
                 Activo = true
             });
@@ -126,60 +106,59 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(IdentificacionInserta))]
-        public IActionResult IdentificacionInsertaCap(EIdentificacion identificacion)
+        public async Task<IActionResult> IdentificacionInsertaCap(EIdentificacion identificacion)
         {
-            return IdentificacionCaptura(identificacion);
+            return await IdentificacionCaptura(identificacion);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult IdentificacionInserta(EIdentificacion identificacion)
+        public async Task<IActionResult> IdentificacionInserta(EIdentificacion identificacion)
         {
-            NIdentificaciones.IdentificacionInserta(identificacion);
+            await NIdentificaciones.IdentificacionInserta(identificacion);
             if (NIdentificaciones.Mensajes.Ok)
                 return RedirectToAction(nameof(IdentificacionCon));
 
-            return IdentificacionInsertaCap(identificacion);
+            return await IdentificacionInsertaCap(identificacion);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(IdentificacionActualiza))]
-        public IActionResult IdentificacionActualizaIni(Int32 indice)
+        public async Task<IActionResult> IdentificacionActualizaIni(Int32 indice)
         {
-            EVIdentificaciones.Accion = MAccionesGen.Actualiza;
-            EVIdentificaciones.IdentificacionIndice = indice;
-            EVIdentificaciones.IdentificacionSel = EVIdentificaciones.IdentificacionPag.Pagina[indice];
-            return IdentificacionActualizaCap(EVIdentificaciones.IdentificacionSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.Identificacion.Indice = indice;
+            EV.Identificacion.Sel = EV.Identificacion.Pag.Pagina[indice];
+            return await IdentificacionActualizaCap(EV.Identificacion.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(IdentificacionActualiza))]
-        public IActionResult IdentificacionActualizaCap(EIdentificacion identificacion)
+        public async Task<IActionResult> IdentificacionActualizaCap(EIdentificacion identificacion)
         {
-            return IdentificacionCaptura(identificacion);
+            return await IdentificacionCaptura(identificacion);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult IdentificacionActualiza(EIdentificacion identificacion)
+        public async Task<IActionResult> IdentificacionActualiza(EIdentificacion identificacion)
         {
-            if (NIdentificaciones.IdentificacionActualiza(identificacion))
+            if (await NIdentificaciones.IdentificacionActualiza(identificacion))
                 return RedirectToAction(nameof(IdentificacionCon));
 
-            return IdentificacionActualizaCap(identificacion);
+            return await IdentificacionActualizaCap(identificacion);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult IdentificacionElimina(Int32 indice)
+        public async Task<IActionResult> IdentificacionElimina(Int32 indice)
         {
-            NIdentificaciones.IdentificacionElimina(EVIdentificaciones.IdentificacionPag.Pagina[indice]);
-            base.MMensajesTemp = NIdentificaciones.Mensajes.ToString();
+            await NIdentificaciones.IdentificacionElimina(EV.Identificacion.Pag.Pagina[indice]);
             return RedirectToAction(nameof(IdentificacionCon));
         }
         #endregion
@@ -188,13 +167,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult IdentificacionCaptura(EIdentificacion identificacion)
+        private async Task<IActionResult> IdentificacionCaptura(EIdentificacion identificacion)
         {
-            ViewBag.Mensajes = base.MObtenMensajes(NIdentificaciones.Mensajes);
-            ViewBag.Accion = EVIdentificaciones.Accion;
-            ViewBag.Reglas = EVIdentificaciones.IdentificacionReglas;
+            ViewBag.Mensajes = NIdentificaciones.Mensajes;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(IdentificacionCaptura), identificacion);
+            return await Task.FromResult(ViewCap(nameof(IdentificacionCaptura), identificacion));
         }
         #endregion
 
@@ -205,7 +183,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(IdentificacionInicia))]
         public IActionResult IdentificacionPaginacion(MEDatosPaginador datPag)
         {
-            EVIdentificaciones.IdentificacionPag.DatPag = datPag;
+            EV.Identificacion.Pag.DatPag = datPag;
             return RedirectToAction(nameof(IdentificacionCon));
         }
         /// <summary>
@@ -214,7 +192,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(IdentificacionInicia))]
         public IActionResult IdentificacionOrdena(String orden)
         {
-            EVIdentificaciones.IdentificacionColOrden = orden;
+            EV.Identificacion.ColOrden = orden;
             return RedirectToAction(nameof(IdentificacionCon));
         }
         /// <summary>
@@ -223,7 +201,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(IdentificacionInicia))]
         public IActionResult IdentificacionFiltra(EIdentificacionFiltro filtro)
         {
-            EVIdentificaciones.IdentificacionFiltro = filtro;
+            EV.Identificacion.Filtro = filtro;
             return RedirectToAction(nameof(IdentificacionCon));
         }
         /// <summary>
@@ -232,7 +210,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(IdentificacionInicia))]
         public IActionResult IdentificacionLimpiaFiltros()
         {
-            EVIdentificaciones.IdentificacionFiltro = new EIdentificacionFiltro();
+            EV.Identificacion.Filtro = new EIdentificacionFiltro();
             return RedirectToAction(nameof(IdentificacionCon));
         }
         #endregion

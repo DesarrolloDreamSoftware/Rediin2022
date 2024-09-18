@@ -1,0 +1,18 @@
+﻿@model EIdentificacionFiltro
+
+<form asp-action="_FiltraIdentificacion">
+    <div mpanel="Base" xpnl-rules="ViewBag.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilIdentificacionNombre"/>
+            </div>
+            <div melemento="FilCol" melem-cols="4">
+                <select mval-filter="Model" xval-for="FilActivo"></select>
+            </div>
+            <div melemento="FilColBtn" melem-cols="4">
+                <button maccion="Filtra" asp-action="@nameof(IdentificacionesController.IdentificacionFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(IdentificacionesController.IdentificacionLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>

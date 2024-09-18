@@ -1,4 +1,4 @@
-using DSEntityNetX.DataAccess;
+
 using DSMetodNetX.Entidades;
 using System;
 
@@ -8,13 +8,14 @@ namespace Rediin2022.Entidades.PriCatalogos
     /// Entidad.
     /// </summary>
     [Serializable]
-    public class ESapSociedad: MEntidad
+    [MDAErrorDuplicado(-1, nameof(SapSociedadNombre))]
+    public class ESapSociedad : MEntidad
     {
         #region Propiedades
         //Columnas principales
-        [XMain] public String SapSociedadId { get; set; } = String.Empty;
-        [XMain] public String SapSociedadNombre { get; set; } = String.Empty;
-        [XMain] public Boolean Activo { get; set; } = false;
+        [MDAMain] public String SapSociedadId { get; set; } = String.Empty;
+        [MDAMain] public String SapSociedadNombre { get; set; } = String.Empty;
+        [MDAMain] public Boolean Activo { get; set; } = false;
         #endregion
     }
 }

@@ -1,16 +1,18 @@
-﻿@model List<EProcesoOperativoObjeto>
+@model List<EProcesoOperativoObjeto>
 @{
     ViewData["Title"] = "Consulta";
+    EVProcesosOperativos EV = ViewBag.EV;
 }
-<div mpanel="Display" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas">
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.ProcesoOperativoObjeto.Reglas">
     <div msub-panel="ConTitulo">
         @MensajesXId._ProcesoOperativoObjetoTitCon
     </div>
     <div msub-panel="ConFiltro">
-        <partial name="_ProcesoOperativoObjetoFiltra" model="(EProcesoOperativoObjetoFiltro)ViewBag.Filtro" view-data="ViewData" />
+        <partial name="_ProcesoOperativoObjetoFiltra" model="@EV.ProcesoOperativoObjeto.Filtro" view-data="ViewData" />
     </div>
     <div msub-panel="ConDatos">
-        <table melemento="ConTabla" xsort-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoOrdena)" xsort-current="@ViewBag.orden">
+        <table melemento="ConTabla" xsort-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoOrdena)" 
+            xsort-current="@EV.ProcesoOperativoObjeto.ColOrden">
             <thead melemento="ConTablaEnc">
                 <tr>
                     <th></th>
@@ -43,7 +45,7 @@
                     for (int i = 0; i < Model.Count(); i++)
                     {
                         String vDivAcciones = "divPanelAcciones" + i.ToString();
-                        <tr class="@(ViewBag.Indice == i ? "conTablaLinSel" : null)">
+                        <tr class="@(EV.ProcesoOperativoObjeto.Indice == i ? "conTablaLinSel" : null)">
                             <td nowrap>
                                 <a maccion="IniciaActualiza" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoActualizaIni)" asp-route-indice="@i"></a>
                                 <div msub-panel="ConAccionesXReg" id="@vDivAcciones">
@@ -79,7 +81,7 @@
         </table>
     </div>
     <div msub-panel="ConPaginador">
-        <div mdata-pager="@ViewBag.DatPag" xdp-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoPaginacion)"></div>
+        <div mdata-pager="@EV.ProcesoOperativoObjeto.Pag?.DatPag" xdp-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoPaginacion)"></div>
     </div>
     <div msub-panel="ConAccionesGen">
         <a maccion="IniciaInserta" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoInsertaIni)" asp-route-indice="-1"></a>

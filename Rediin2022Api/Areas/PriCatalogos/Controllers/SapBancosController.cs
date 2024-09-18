@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -47,59 +48,59 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad SapBanco.
         /// </summary>
-        public ESapBancoPag SapBancoPag(ESapBancoFiltro sapBancoFiltro)
+        public async Task<ESapBancoPag> SapBancoPag(ESapBancoFiltro sapBancoFiltro)
         {
-            return NSapBancos.SapBancoPag(sapBancoFiltro);
+            return await NSapBancos.SapBancoPag(sapBancoFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad SapBanco.
         /// </summary>
         [HttpGet("{sapBancoId}")]
-        public ESapBanco SapBancoXId(String sapBancoId)
+        public async Task<ESapBanco> SapBancoXId(String sapBancoId)
         {
-            return NSapBancos.SapBancoXId(sapBancoId);
+            return await NSapBancos.SapBancoXId(sapBancoId);
         }
         /// <summary>
         /// Consulta para combos de la entidad SapBanco.
         /// </summary>
-        public List<MEElemento> SapBancoCmb()
+        public async Task<List<MEElemento>> SapBancoCmb()
         {
-            return NSapBancos.SapBancoCmb();
+            return await NSapBancos.SapBancoCmb();
         }
         /// <summary>
         /// Permite insertar la entidad SapBanco.
         /// </summary>
-        public Boolean SapBancoInserta(ESapBanco sapBanco)
+        public async Task<Boolean> SapBancoInserta(ESapBanco sapBanco)
         {
-            return NSapBancos.SapBancoInserta(sapBanco);
+            return await NSapBancos.SapBancoInserta(sapBanco);
         }
         /// <summary>
         /// Permite actualizar la entidad SapBanco.
         /// </summary>
-        public Boolean SapBancoActualiza(ESapBanco sapBanco)
+        public async Task<Boolean> SapBancoActualiza(ESapBanco sapBanco)
         {
-            return NSapBancos.SapBancoActualiza(sapBanco);
+            return await NSapBancos.SapBancoActualiza(sapBanco);
         }
         /// <summary>
         /// Permite eliminar la entidad SapBanco.
         /// </summary>
-        public Boolean SapBancoElimina(ESapBanco sapBanco)
+        public async Task<Boolean> SapBancoElimina(ESapBanco sapBanco)
         {
-            return NSapBancos.SapBancoElimina(sapBanco);
+            return await NSapBancos.SapBancoElimina(sapBanco);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapBancoExporta(ESapBancoFiltro sapBancoFiltro)
+        public async Task<string> SapBancoExporta(ESapBancoFiltro sapBancoFiltro)
         {
-            return NSapBancos.SapBancoExporta(sapBancoFiltro);
+            return await NSapBancos.SapBancoExporta(sapBancoFiltro);
         }
         /// <summary>
         /// Reglas de negocio de la entidad SapBanco.
         /// </summary>
-        public List<MEReglaNeg> SapBancoReglas()
+        public async Task<List<MEReglaNeg>> SapBancoReglas()
         {
-            return NSapBancos.SapBancoReglas();
+            return await NSapBancos.SapBancoReglas();
         }
         #endregion
 

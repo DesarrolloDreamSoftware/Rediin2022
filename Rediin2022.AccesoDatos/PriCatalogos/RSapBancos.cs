@@ -1,12 +1,14 @@
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.AccesoDatos.PriCatalogos
 {
@@ -16,6 +18,13 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
     [Serializable]
     public class RSapBancos : MRepositorio
     {
+        #region Variables
+        /// <summary>
+        /// Conexión.
+        /// </summary>
+        private IMConexionEntidad _conexion;
+        #endregion
+
         #region Constructores
         /// <summary>
         /// Repositorio.
@@ -23,6 +32,7 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         public RSapBancos(IMConexionEntidad conexion)
             : base(conexion)
         {
+            _conexion = conexion;
         }
         #endregion
 
@@ -32,81 +42,84 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad SapBanco.
         /// </summary>
-        public ESapBancoPag SapBancoPag(ESapBancoFiltro sapBancoFiltro)
+        public async Task<ESapBancoPag> SapBancoPag(ESapBancoFiltro sapBancoFiltro)
         {
-            return base.EntidadPag<ESapBancoPag>(sapBancoFiltro,
-                sapBancoPag =>
-                {
-                    _conexion.AddParamFilterTL(sapBancoFiltro);
-                    _conexion.LoadEntity<ESapBancoPag>("NCSapBancosCP", sapBancoPag);
-                },
-                sapBancoPag =>
-                {
-                    _conexion.AddParamFilterPag(sapBancoFiltro);
-                    sapBancoPag.Pagina = _conexion.LoadEntities<ESapBanco>("NCSapBancosCP");
-                });
+            return await _conexion.EntidadPagAsync<ESapBanco,
+                                                    ESapBancoPag,
+                                                    ESapBancoFiltro>(sapBancoFiltro, "NCSapBancosCP");
+
+            //return base.EntidadPagAsync<ESapBancoPag>(sapBancoFiltro,
+            //               sapBancoPag =>
+            //    {
+            //        _conexion.AddParamFilterTL(sapBancoFiltro);
+            //        _conexion.LoadEntity<ESapBancoPag>("NCSapBancosCP", sapBancoPag);
+            //    },
+            //    sapBancoPag =>
+            //    {
+            //        _conexion.AddParamFilterPag(sapBancoFiltro);
+            //        sapBancoPag.Pagina = _conexion.LoadEntities<ESapBanco>("NCSapBancosCP");
+            //    });
         }
         /// <summary>
         /// Consulta por id de la entidad SapBanco.
         /// </summary>
-        public ESapBanco SapBancoXId(String sapBancoId)
+        public async Task<ESapBanco> SapBancoXId(String sapBancoId)
         {
-            _conexion.AddParamIn(nameof(sapBancoId), sapBancoId);
-            return _conexion.LoadEntity<ESapBanco>("NCSapBancosCI");
+            _conexion.AddParamIn(sapBancoId);
+            return await _conexion.LoadEntityAsync<ESapBanco>("NCSapBancosCI");
         }
         /// <summary>
         /// Consulta para combos de la entidad SapBanco.
         /// </summary>
-        public List<MEElemento> SapBancoCmb()
+        public async Task<List<MEElemento>> SapBancoCmb()
         {
-            return _conexion.LoadCmb<MEElemento>("NCSapBancosCCmb");
+            return await _conexion.EntidadCmbAsync("NCSapBancosCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad SapBanco.
         /// </summary>
-        protected Boolean SapBancoInserta(ESapBanco sapBanco)
+        protected async Task<Boolean> SapBancoInserta(ESapBanco sapBanco)
         {
-            _conexion.AddParamEntity(sapBanco, MAccionesBd.Inserta);
-            _conexion.ExecuteScalarVal("NCSapBancosIAE",
-                                       MensajesXId.SapBancoNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapBanco, MAccionesBd.Inserta, "NCSapBancosIAE");
+            //return sapBanco.SapBancoId;
+
+            //_conexion.AddParamEntity(sapBanco, MAccionesBd.Inserta);
+            //await _conexion.ExecuteScalarValAsync("NCSapBancosIAE",
+            //                           MensajesXId.SapBancoNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite actualizar la entidad SapBanco.
         /// </summary>
-        protected Boolean SapBancoActualiza(ESapBanco sapBanco)
+        protected async Task<Boolean> SapBancoActualiza(ESapBanco sapBanco)
         {
-            _conexion.AddParamEntity(sapBanco, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCSapBancosIAE",
-                                       MensajesXId.SapBancoNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapBanco, MAccionesBd.Actualiza, "NCSapBancosIAE");
+
+            //_conexion.AddParamEntity(sapBanco, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCSapBancosIAE",
+            //                           MensajesXId.SapBancoNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad SapBanco.
         /// </summary>
-        protected Boolean SapBancoElimina(ESapBanco sapBanco)
+        protected async Task<Boolean> SapBancoElimina(ESapBanco sapBanco)
         {
-            _conexion.AddParamEntity(sapBanco, MAccionesBd.Elimina);
-            return _conexion.ExecuteNonQueryRet("NCSapBancosIAE");
+            return await _conexion.EntityUpdateAsync(sapBanco, MAccionesBd.Elimina, "NCSapBancosIAE");
+
+            //_conexion.AddParamEntity(sapBanco, MAccionesBd.Elimina);
+            //return await _conexion.ExecuteNonQueryRetAsync("NCSapBancosIAE");
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        protected MEDatosArchivo SapBancoExporta(ESapBancoFiltro sapBancoFiltro,
-                                                 MArchivoExcel archivoExcel)
+        protected async Task<string> SapBancoExporta(ESapBancoFiltro sapBancoFiltro,
+                                                     MArchivoExcel archivoExcel)
         {
-            sapBancoFiltro.DatPag.StartLine = 1;
-            sapBancoFiltro.DatPag.PageSize = Int32.MaxValue;
-            _conexion.AddParamFilterPag(sapBancoFiltro);
-
-            String vArchivo = archivoExcel.Export(_conexion.GetCurrentCmd("NCSapBancosCP"),
+            _conexion.AddParamFilterExp(sapBancoFiltro);
+            return await archivoExcel.ExportAsync(_conexion.GetCurrentCmd("NCSapBancosCP"),
                                                   "SapBanco.xlsb",
                                                   sapBancoFiltro.Columnas);
-            return new MEDatosArchivo()
-            {
-                PathOrg = vArchivo,
-                PathDes = vArchivo
-            };
         }
         #endregion
 

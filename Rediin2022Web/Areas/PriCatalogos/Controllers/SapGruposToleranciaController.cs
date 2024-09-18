@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapGruposTolerancia EVSapGruposTolerancia
+        private EVSapGruposTolerancia EV
         {
-            get
-            {
-                if (base.MSesion<EVSapGruposTolerancia>() == null)
-                    base.MSesion(new EVSapGruposTolerancia());
-
-                return base.MSesionAuto<EVSapGruposTolerancia>();
-            }
+            get { return base.MEVCtrl<EVSapGruposTolerancia>(); }
         }
         #endregion
 
@@ -63,14 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapGrupoToleranciaInicia()
+        public async Task<IActionResult> SapGrupoToleranciaInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapGruposTolerancia.SapGrupoToleranciaColOrden))
-                EVSapGruposTolerancia.SapGrupoToleranciaColOrden = nameof(ESapGrupoTolerancia.SapGrupoToleranciaId);
-
-            if (EVSapGruposTolerancia.SapGrupoToleranciaReglas == null)
-                EVSapGruposTolerancia.SapGrupoToleranciaReglas = NSapGruposTolerancia.SapGrupoToleranciaReglas();
+            await Servicios.Gen.InicializaSF(EV.SapGrupoTolerancia, nameof(ESapGrupoTolerancia.SapGrupoToleranciaId),
+                async () => await NSapGruposTolerancia.SapGrupoToleranciaReglas());
 
             return RedirectToAction(nameof(SapGrupoToleranciaCon));
         }
@@ -78,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapGrupoToleranciaInicia))]
-        public IActionResult SapGrupoToleranciaCon()
+        public async Task<IActionResult> SapGrupoToleranciaCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapGruposTolerancia.SapGrupoToleranciaFiltro,
-                                     EVSapGruposTolerancia.SapGrupoToleranciaPag,
-                                     EVSapGruposTolerancia.SapGrupoToleranciaColOrden,
-                                     nameof(ESapGrupoTolerancia));
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapGrupoTolerancia);
+            EV.SapGrupoTolerancia.Pag = await NSapGruposTolerancia.SapGrupoToleranciaPag(EV.SapGrupoTolerancia.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapGrupoTolerancia);
 
-            EVSapGruposTolerancia.SapGrupoToleranciaPag = NSapGruposTolerancia.SapGrupoToleranciaPag(EVSapGruposTolerancia.SapGrupoToleranciaFiltro);
-            base.MActualizaTamPag(EVSapGruposTolerancia.SapGrupoToleranciaPag?.DatPag);
+            ViewBag.Mensajes = NSapGruposTolerancia.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = NSapGruposTolerancia.Mensajes.Copy();
-            ViewBag.Reglas = EVSapGruposTolerancia.SapGrupoToleranciaReglas;
-            ViewBag.DatPag = EVSapGruposTolerancia.SapGrupoToleranciaPag?.DatPag;
-            ViewBag.Orden = EVSapGruposTolerancia.SapGrupoToleranciaColOrden;
-            ViewBag.Filtro = EVSapGruposTolerancia.SapGrupoToleranciaFiltro;
-            ViewBag.Indice = EVSapGruposTolerancia.SapGrupoToleranciaIndice;
-
-            return View(nameof(SapGrupoToleranciaCon), EVSapGruposTolerancia.SapGrupoToleranciaPag?.Pagina);
+            return View(nameof(SapGrupoToleranciaCon), EV.SapGrupoTolerancia.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapGrupoToleranciaXId(Int32 indice)
+        public async Task<IActionResult> SapGrupoToleranciaXId(Int32 indice)
         {
-            EVSapGruposTolerancia.Accion = MAccionesGen.Consulta;
-            EVSapGruposTolerancia.SapGrupoToleranciaIndice = indice;
-            return SapGrupoToleranciaCaptura(EVSapGruposTolerancia.SapGrupoToleranciaPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapGrupoTolerancia.Indice = indice;
+            return await SapGrupoToleranciaCaptura(EV.SapGrupoTolerancia.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapGrupoToleranciaInserta))]
-        public IActionResult SapGrupoToleranciaInsertaIni()
+        public async Task<IActionResult> SapGrupoToleranciaInsertaIni()
         {
-            EVSapGruposTolerancia.Accion = MAccionesGen.Inserta;
-            return SapGrupoToleranciaInsertaCap(new ESapGrupoTolerancia()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapGrupoToleranciaInsertaCap(new ESapGrupoTolerancia()
             {
                 Activo = true
             });
@@ -123,58 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapGrupoToleranciaInserta))]
-        public IActionResult SapGrupoToleranciaInsertaCap(ESapGrupoTolerancia sapGrupoTolerancia)
+        public async Task<IActionResult> SapGrupoToleranciaInsertaCap(ESapGrupoTolerancia sapGrupoTolerancia)
         {
-            return SapGrupoToleranciaCaptura(sapGrupoTolerancia);
+            return await SapGrupoToleranciaCaptura(sapGrupoTolerancia);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapGrupoToleranciaInserta(ESapGrupoTolerancia sapGrupoTolerancia)
+        public async Task<IActionResult> SapGrupoToleranciaInserta(ESapGrupoTolerancia sapGrupoTolerancia)
         {
-            if (NSapGruposTolerancia.SapGrupoToleranciaInserta(sapGrupoTolerancia))
+            if (await NSapGruposTolerancia.SapGrupoToleranciaInserta(sapGrupoTolerancia))
                 return RedirectToAction(nameof(SapGrupoToleranciaCon));
 
-            return SapGrupoToleranciaInsertaCap(sapGrupoTolerancia);
+            return await SapGrupoToleranciaInsertaCap(sapGrupoTolerancia);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapGrupoToleranciaActualiza))]
-        public IActionResult SapGrupoToleranciaActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapGrupoToleranciaActualizaIni(Int32 indice)
         {
-            EVSapGruposTolerancia.Accion = MAccionesGen.Actualiza;
-            EVSapGruposTolerancia.SapGrupoToleranciaIndice = indice;
-            EVSapGruposTolerancia.SapGrupoToleranciaSel = EVSapGruposTolerancia.SapGrupoToleranciaPag.Pagina[indice];
-            return SapGrupoToleranciaActualizaCap(EVSapGruposTolerancia.SapGrupoToleranciaSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapGrupoTolerancia.Indice = indice;
+            EV.SapGrupoTolerancia.Sel = EV.SapGrupoTolerancia.Pag.Pagina[indice];
+            return await SapGrupoToleranciaActualizaCap(EV.SapGrupoTolerancia.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapGrupoToleranciaActualiza))]
-        public IActionResult SapGrupoToleranciaActualizaCap(ESapGrupoTolerancia sapGrupoTolerancia)
+        public async Task<IActionResult> SapGrupoToleranciaActualizaCap(ESapGrupoTolerancia sapGrupoTolerancia)
         {
-            return SapGrupoToleranciaCaptura(sapGrupoTolerancia);
+            return await SapGrupoToleranciaCaptura(sapGrupoTolerancia);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapGrupoToleranciaActualiza(ESapGrupoTolerancia sapGrupoTolerancia)
+        public async Task<IActionResult> SapGrupoToleranciaActualiza(ESapGrupoTolerancia sapGrupoTolerancia)
         {
-            if (NSapGruposTolerancia.SapGrupoToleranciaActualiza(sapGrupoTolerancia))
+            if (await NSapGruposTolerancia.SapGrupoToleranciaActualiza(sapGrupoTolerancia))
                 return RedirectToAction(nameof(SapGrupoToleranciaCon));
 
-            return SapGrupoToleranciaActualizaCap(sapGrupoTolerancia);
+            return await SapGrupoToleranciaActualizaCap(sapGrupoTolerancia);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapGrupoToleranciaElimina(Int32 indice)
+        public async Task<IActionResult> SapGrupoToleranciaElimina(Int32 indice)
         {
-            NSapGruposTolerancia.SapGrupoToleranciaElimina(EVSapGruposTolerancia.SapGrupoToleranciaPag.Pagina[indice]);
+            await NSapGruposTolerancia.SapGrupoToleranciaElimina(EV.SapGrupoTolerancia.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapGrupoToleranciaCon));
         }
         /// <summary>
@@ -182,18 +165,18 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapGrupoToleranciaExporta()
         {
-            EVSapGruposTolerancia.SapGrupoToleranciaFiltro.ColumnaOrden = EVSapGruposTolerancia.SapGrupoToleranciaColOrden;
-            EVSapGruposTolerancia.SapGrupoToleranciaFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapGrupoTolerancia.Filtro.ColumnaOrden = EV.SapGrupoTolerancia.ColOrden;
+            EV.SapGrupoTolerancia.Filtro.Columnas = new Dictionary<String, String>()
                                            {
                                                { nameof(ESapGrupoTolerancia.Activo), String.Empty },
                                                { nameof(ESapGrupoTolerancia.SapGrupoToleranciaId), String.Empty },
                                                { nameof(ESapGrupoTolerancia.SapGrupoToleranciaNombre), String.Empty }
                                            };
 
-            MEDatosArchivo vDA = NSapGruposTolerancia.SapGrupoToleranciaExporta(EVSapGruposTolerancia.SapGrupoToleranciaFiltro);
-            EVSapGruposTolerancia.SapGrupoToleranciaFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NSapGruposTolerancia.SapGrupoToleranciaExporta(EV.SapGrupoTolerancia.Filtro);
+            EV.SapGrupoTolerancia.Filtro.Columnas = null;
             if (NSapGruposTolerancia.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapGruposTolerancia.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
             return RedirectToAction(nameof(SapGrupoToleranciaCon));
         }
@@ -203,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapGrupoToleranciaCaptura(ESapGrupoTolerancia sapGrupoTolerancia)
+        private async Task<IActionResult> SapGrupoToleranciaCaptura(ESapGrupoTolerancia sapGrupoTolerancia)
         {
             ViewBag.Mensajes = NSapGruposTolerancia.Mensajes.Copy();
-            ViewBag.Accion = EVSapGruposTolerancia.Accion;
-            ViewBag.Reglas = EVSapGruposTolerancia.SapGrupoToleranciaReglas;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapGrupoToleranciaCaptura), sapGrupoTolerancia);
+            return await Task.FromResult(ViewCap(nameof(SapGrupoToleranciaCaptura), sapGrupoTolerancia));
         }
         #endregion
 
@@ -220,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoToleranciaInicia))]
         public IActionResult SapGrupoToleranciaPaginacion(MEDatosPaginador datPag)
         {
-            EVSapGruposTolerancia.SapGrupoToleranciaPag.DatPag = datPag;
+            EV.SapGrupoTolerancia.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapGrupoToleranciaCon));
         }
         /// <summary>
@@ -229,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoToleranciaInicia))]
         public IActionResult SapGrupoToleranciaOrdena(String orden)
         {
-            EVSapGruposTolerancia.SapGrupoToleranciaColOrden = orden;
+            EV.SapGrupoTolerancia.ColOrden = orden;
             return RedirectToAction(nameof(SapGrupoToleranciaCon));
         }
         /// <summary>
@@ -238,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoToleranciaInicia))]
         public IActionResult SapGrupoToleranciaFiltra(ESapGrupoToleranciaFiltro filtro)
         {
-            EVSapGruposTolerancia.SapGrupoToleranciaFiltro = filtro;
+            EV.SapGrupoTolerancia.Filtro = filtro;
             return RedirectToAction(nameof(SapGrupoToleranciaCon));
         }
         /// <summary>
@@ -247,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoToleranciaInicia))]
         public IActionResult SapGrupoToleranciaLimpiaFiltros()
         {
-            EVSapGruposTolerancia.SapGrupoToleranciaFiltro = new ESapGrupoToleranciaFiltro();
+            EV.SapGrupoTolerancia.Filtro = new ESapGrupoToleranciaFiltro();
             return RedirectToAction(nameof(SapGrupoToleranciaCon));
         }
         #endregion

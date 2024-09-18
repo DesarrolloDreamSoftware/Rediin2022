@@ -1,22 +1,45 @@
-﻿@model List<EConExpedienteObjeto>
+@model List<EConExpedienteObjeto>
 @{
 	ViewData["Title"] = "Consulta";
+    EVConExpedientes EV = ViewBag.EV;
 }
-<div mpanel="Display" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas">
+
+
+
+<div class="row">
+	<div class="col-md-3">
+		<div class="sidenav">
+			<div id="loader"></div>
+			<h2 style="padding-left:15px">Files</h2>
+			@for (int i = 0; i < Model.Count(); i++)
+			{
+				<a href="#" onclick="ViewDocument('@i')">@Model[i].ArchivoNombre</a>
+			}
+		</div>
+	</div>
+	<div class="col-md-9">
+		<h2>Preview</h2>
+		<div id="content" style="border:solid 1px black;width:400px;height:200px;overflow:scroll"></div>
+	</div>
+</div>
+
+
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.ConExpedienteObjeto.Reglas">
 	<div msub-panel="ConTitulo">
 		@MensajesXId._ConExpedienteObjetoTitCon
 	</div>
 	<div msub-panel="ConFiltro">
-		<partial name="_ConExpedienteObjetoFiltra" model="(EConExpedienteObjetoFiltro)ViewBag.Filtro" view-data="ViewData" />
+		<partial name="_ConExpedienteObjetoFiltra" model="@EV.ConExpedienteObjeto.Filtro" view-data="ViewData" />
 	</div>
 	<div msub-panel="ConDatos">
-		<table melemento="ConTabla" xsort-action="@nameof(ConExpedientesController.ConExpedienteObjetoOrdena)" xsort-current="@ViewBag.orden">
+		<table melemento="ConTabla" xsort-action="@nameof(ConExpedientesController.ConExpedienteObjetoOrdena)" 
+            xsort-current="@EV.ConExpedienteObjeto.ColOrden">
 			<thead melemento="ConTablaEnc">
 				<tr>
 					<th></th>
 					<th>
-                        <span mhead-for="@nameof(EConExpedienteObjeto.Orden)" xhead-align="Center" xhead-sort="true"></span>
-                    </th>
+						<span mhead-for="@nameof(EConExpedienteObjeto.Orden)" xhead-align="Center" xhead-sort="true"></span>
+					</th>
 					<th>
 						<span mhead-for="@nameof(EConExpedienteObjeto.ProcesoOperativoObjetoNombre)" xhead-sort="true"></span>
 					</th>
@@ -37,12 +60,12 @@
 					for (int i = 0; i < Model.Count(); i++)
 					{
 						String vDivAcciones = "divPanelAcciones" + i.ToString();
-						<tr class="@(ViewBag.Indice == i ? "conTablaLinSel" : null)">
+						<tr class="@(EV.ConExpedienteObjeto.Indice == i ? "conTablaLinSel" : null)">
 							<td nowrap>
 								<div msub-panel="ConAccionesXReg" id="@vDivAcciones">
-                                    <a maccion="ConsultaXIdList" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoXId)" asp-route-indice="@i"></a>
-                                    <a maccion="EliminaList" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoElimina)" asp-route-indice="@i"></a>
-                                </div>
+									<a maccion="ConsultaXIdList" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoXId)" asp-route-indice="@i"></a>
+									<a maccion="EliminaList" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoElimina)" asp-route-indice="@i"></a>
+								</div>
 							</td>
 							<td>
 								<span mcell-for="@Model[i].Orden" xcell-align="Center"></span>
@@ -60,9 +83,9 @@
 								}
 								else
 								{
-								<a asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoDescarga)" asp-route-indice="@i" title="Descargar">
-									<span mcell-for="@Model[i].ArchivoNombre" xcell-first="30" style="color:blue"></span>
-								</a>
+									<a asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoDescarga)" asp-route-indice="@i" title="Descargar">
+										<span mcell-for="@Model[i].ArchivoNombre" xcell-first="30" style="color:blue"></span>
+									</a>
 								}
 							</td>
 							<td>
@@ -75,7 +98,7 @@
 		</table>
 	</div>
 	<div msub-panel="ConPaginador">
-		<div mdata-pager="@ViewBag.DatPag" xdp-action="@nameof(ConExpedientesController.ConExpedienteObjetoPaginacion)"></div>
+		<div mdata-pager="@EV.ConExpedienteObjeto.Pag?.DatPag" xdp-action="@nameof(ConExpedientesController.ConExpedienteObjetoPaginacion)"></div>
 	</div>
 	<div msub-panel="ConAccionesGen">
 		<a maccion="IniciaInserta" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoInsertaIni)" asp-route-indice="-1"></a>
@@ -88,7 +111,7 @@
 	EConExpedienteObjetoSelArchivo vConExpedienteObjetoSelArchivo = ViewBag.ConExpedienteObjetoSelArchivo;
 	<div id="mdlAcciones" mmodal="true">
 		<form asp-action="_ConExpedienteObjetoSelArchivo" enctype="multipart/form-data">
-			<div mpanel="Edit" mpnl-mensajes="@ViewBag.SEARMensajes">
+			<div mpanel="Edit" xpnl-messages="@ViewBag.SEARMensajes">
 				<div msub-panel="CapTitulo">
 					@MensajesXId._ConExpedienteObjetoSelArchivoTitCap
 				</div>
@@ -120,4 +143,15 @@
 			</div>
 		</form>
 	</div>
+}
+
+@section Scripts {
+	<script src="~/PriOperacion/ConExpedientes/ConExpedienteObjeto.js" asp-append-version="true"></script>
+	<script src="~/PriCatalogos/ProcesosOperativos/ProcesoOperativoCol.js" asp-append-version="true"></script>
+	<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+	<script type="text/javascript">
+		$(window).load(function () {
+			$("#loader").fadeOut(1000);
+		});
+	</script>
 }

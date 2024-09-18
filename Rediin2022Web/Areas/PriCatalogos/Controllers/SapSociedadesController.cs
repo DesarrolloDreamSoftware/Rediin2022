@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapSociedades EVSapSociedades
+        private EVSapSociedades EV
         {
-            get
-            {
-                if (base.MSesion<EVSapSociedades>() == null)
-                    base.MSesion(new EVSapSociedades());
-
-                return base.MSesionAuto<EVSapSociedades>();
-            }
+            get { return base.MEVCtrl<EVSapSociedades>(); }
         }
         #endregion
 
@@ -63,14 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapSociedadInicia()
+        public async Task<IActionResult> SapSociedadInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapSociedades.SapSociedadColOrden))
-                EVSapSociedades.SapSociedadColOrden = nameof(ESapSociedad.SapSociedadId);
-
-            if (EVSapSociedades.SapSociedadReglas == null)
-                EVSapSociedades.SapSociedadReglas = NSapSociedades.SapSociedadReglas();
+            await Servicios.Gen.InicializaSF(EV.SapSociedad, nameof(ESapSociedad.SapSociedadId),
+                async () => await NSapSociedades.SapSociedadReglas());
 
             return RedirectToAction(nameof(SapSociedadCon));
         }
@@ -78,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapSociedadInicia))]
-        public IActionResult SapSociedadCon()
+        public async Task<IActionResult> SapSociedadCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapSociedades.SapSociedadFiltro,
-                                     EVSapSociedades.SapSociedadPag,
-                                     EVSapSociedades.SapSociedadColOrden,
-                                     nameof(ESapSociedad));
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapSociedad);
+            EV.SapSociedad.Pag = await NSapSociedades.SapSociedadPag(EV.SapSociedad.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapSociedad);
 
-            EVSapSociedades.SapSociedadPag = NSapSociedades.SapSociedadPag(EVSapSociedades.SapSociedadFiltro);
-            base.MActualizaTamPag(EVSapSociedades.SapSociedadPag?.DatPag);
+            ViewBag.Mensajes = NSapSociedades.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = NSapSociedades.Mensajes.Copy();
-            ViewBag.Reglas = EVSapSociedades.SapSociedadReglas;
-            ViewBag.DatPag = EVSapSociedades.SapSociedadPag?.DatPag;
-            ViewBag.Orden = EVSapSociedades.SapSociedadColOrden;
-            ViewBag.Filtro = EVSapSociedades.SapSociedadFiltro;
-            ViewBag.Indice = EVSapSociedades.SapSociedadIndice;
-
-            return View(nameof(SapSociedadCon), EVSapSociedades.SapSociedadPag?.Pagina);
+            return View(nameof(SapSociedadCon), EV.SapSociedad.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapSociedadXId(Int32 indice)
+        public async Task<IActionResult> SapSociedadXId(Int32 indice)
         {
-            EVSapSociedades.Accion = MAccionesGen.Consulta;
-            EVSapSociedades.SapSociedadIndice = indice;
-            return SapSociedadCaptura(EVSapSociedades.SapSociedadPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapSociedad.Indice = indice;
+            return await SapSociedadCaptura(EV.SapSociedad.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapSociedadInserta))]
-        public IActionResult SapSociedadInsertaIni()
+        public async Task<IActionResult> SapSociedadInsertaIni()
         {
-            EVSapSociedades.Accion = MAccionesGen.Inserta;
-            return SapSociedadInsertaCap(new ESapSociedad()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapSociedadInsertaCap(new ESapSociedad()
             {
                 Activo = true
             });
@@ -123,58 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapSociedadInserta))]
-        public IActionResult SapSociedadInsertaCap(ESapSociedad sapSociedad)
+        public async Task<IActionResult> SapSociedadInsertaCap(ESapSociedad sapSociedad)
         {
-            return SapSociedadCaptura(sapSociedad);
+            return await SapSociedadCaptura(sapSociedad);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapSociedadInserta(ESapSociedad sapSociedad)
+        public async Task<IActionResult> SapSociedadInserta(ESapSociedad sapSociedad)
         {
-            if (NSapSociedades.SapSociedadInserta(sapSociedad))
+            if (await NSapSociedades.SapSociedadInserta(sapSociedad))
                 return RedirectToAction(nameof(SapSociedadCon));
 
-            return SapSociedadInsertaCap(sapSociedad);
+            return await SapSociedadInsertaCap(sapSociedad);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapSociedadActualiza))]
-        public IActionResult SapSociedadActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapSociedadActualizaIni(Int32 indice)
         {
-            EVSapSociedades.Accion = MAccionesGen.Actualiza;
-            EVSapSociedades.SapSociedadIndice = indice;
-            EVSapSociedades.SapSociedadSel = EVSapSociedades.SapSociedadPag.Pagina[indice];
-            return SapSociedadActualizaCap(EVSapSociedades.SapSociedadSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapSociedad.Indice = indice;
+            EV.SapSociedad.Sel = EV.SapSociedad.Pag.Pagina[indice];
+            return await SapSociedadActualizaCap(EV.SapSociedad.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapSociedadActualiza))]
-        public IActionResult SapSociedadActualizaCap(ESapSociedad sapSociedad)
+        public async Task<IActionResult> SapSociedadActualizaCap(ESapSociedad sapSociedad)
         {
-            return SapSociedadCaptura(sapSociedad);
+            return await SapSociedadCaptura(sapSociedad);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapSociedadActualiza(ESapSociedad sapSociedad)
+        public async Task<IActionResult> SapSociedadActualiza(ESapSociedad sapSociedad)
         {
-            if (NSapSociedades.SapSociedadActualiza(sapSociedad))
+            if (await NSapSociedades.SapSociedadActualiza(sapSociedad))
                 return RedirectToAction(nameof(SapSociedadCon));
 
-            return SapSociedadActualizaCap(sapSociedad);
+            return await SapSociedadActualizaCap(sapSociedad);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapSociedadElimina(Int32 indice)
+        public async Task<IActionResult> SapSociedadElimina(Int32 indice)
         {
-            NSapSociedades.SapSociedadElimina(EVSapSociedades.SapSociedadPag.Pagina[indice]);
+            await NSapSociedades.SapSociedadElimina(EV.SapSociedad.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapSociedadCon));
         }
         /// <summary>
@@ -182,18 +165,18 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapSociedadExporta()
         {
-            EVSapSociedades.SapSociedadFiltro.ColumnaOrden = EVSapSociedades.SapSociedadColOrden;
-            EVSapSociedades.SapSociedadFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapSociedad.Filtro.ColumnaOrden = EV.SapSociedad.ColOrden;
+            EV.SapSociedad.Filtro.Columnas = new Dictionary<String, String>()
                               {
                                   { nameof(ESapSociedad.Activo), String.Empty },
                                   { nameof(ESapSociedad.SapSociedadId), String.Empty },
                                   { nameof(ESapSociedad.SapSociedadNombre), String.Empty }
                               };
 
-            MEDatosArchivo vDA = NSapSociedades.SapSociedadExporta(EVSapSociedades.SapSociedadFiltro);
-            EVSapSociedades.SapSociedadFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NSapSociedades.SapSociedadExporta(EV.SapSociedad.Filtro);
+            EV.SapSociedad.Filtro.Columnas = null;
             if (NSapSociedades.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapSociedades.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
             return RedirectToAction(nameof(SapSociedadCon));
         }
@@ -203,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapSociedadCaptura(ESapSociedad sapSociedad)
+        private async Task<IActionResult> SapSociedadCaptura(ESapSociedad sapSociedad)
         {
             ViewBag.Mensajes = NSapSociedades.Mensajes.Copy();
-            ViewBag.Accion = EVSapSociedades.Accion;
-            ViewBag.Reglas = EVSapSociedades.SapSociedadReglas;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapSociedadCaptura), sapSociedad);
+            return await Task.FromResult(ViewCap(nameof(SapSociedadCaptura), sapSociedad));
         }
         #endregion
 
@@ -220,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapSociedadInicia))]
         public IActionResult SapSociedadPaginacion(MEDatosPaginador datPag)
         {
-            EVSapSociedades.SapSociedadPag.DatPag = datPag;
+            EV.SapSociedad.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapSociedadCon));
         }
         /// <summary>
@@ -229,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapSociedadInicia))]
         public IActionResult SapSociedadOrdena(String orden)
         {
-            EVSapSociedades.SapSociedadColOrden = orden;
+            EV.SapSociedad.ColOrden = orden;
             return RedirectToAction(nameof(SapSociedadCon));
         }
         /// <summary>
@@ -238,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapSociedadInicia))]
         public IActionResult SapSociedadFiltra(ESapSociedadFiltro filtro)
         {
-            EVSapSociedades.SapSociedadFiltro = filtro;
+            EV.SapSociedad.Filtro = filtro;
             return RedirectToAction(nameof(SapSociedadCon));
         }
         /// <summary>
@@ -247,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapSociedadInicia))]
         public IActionResult SapSociedadLimpiaFiltros()
         {
-            EVSapSociedades.SapSociedadFiltro = new ESapSociedadFiltro();
+            EV.SapSociedad.Filtro = new ESapSociedadFiltro();
             return RedirectToAction(nameof(SapSociedadCon));
         }
         #endregion

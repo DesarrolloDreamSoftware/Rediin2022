@@ -1,12 +1,14 @@
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.AccesoDatos.PriCatalogos
 {
@@ -16,6 +18,13 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
     [Serializable]
     public class RSapGrupoCuentas : MRepositorio
     {
+        #region Variables
+        /// <summary>
+        /// Conexión.
+        /// </summary>
+        private IMConexionEntidad _conexion;
+        #endregion
+
         #region Constructores
         /// <summary>
         /// Repositorio.
@@ -23,6 +32,7 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         public RSapGrupoCuentas(IMConexionEntidad conexion)
             : base(conexion)
         {
+            _conexion = conexion;
         }
         #endregion
 
@@ -32,81 +42,84 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad SapGrupoCuenta.
         /// </summary>
-        public ESapGrupoCuentaPag SapGrupoCuentaPag(ESapGrupoCuentaFiltro sapGrupoCuentaFiltro)
+        public async Task<ESapGrupoCuentaPag> SapGrupoCuentaPag(ESapGrupoCuentaFiltro sapGrupoCuentaFiltro)
         {
-            return base.EntidadPag<ESapGrupoCuentaPag>(sapGrupoCuentaFiltro,
-                sapGrupoCuentaPag =>
-                {
-                    _conexion.AddParamFilterTL(sapGrupoCuentaFiltro);
-                    _conexion.LoadEntity<ESapGrupoCuentaPag>("NCSapGrupoCuentasCP", sapGrupoCuentaPag);
-                },
-                sapGrupoCuentaPag =>
-                {
-                    _conexion.AddParamFilterPag(sapGrupoCuentaFiltro);
-                    sapGrupoCuentaPag.Pagina = _conexion.LoadEntities<ESapGrupoCuenta>("NCSapGrupoCuentasCP");
-                });
+            return await _conexion.EntidadPagAsync<ESapGrupoCuenta,
+                                                    ESapGrupoCuentaPag,
+                                                    ESapGrupoCuentaFiltro>(sapGrupoCuentaFiltro, "NCSapGrupoCuentasCP");
+
+            //return base.EntidadPagAsync<ESapGrupoCuentaPag>(sapGrupoCuentaFiltro,
+            //               sapGrupoCuentaPag =>
+            //    {
+            //        _conexion.AddParamFilterTL(sapGrupoCuentaFiltro);
+            //        _conexion.LoadEntity<ESapGrupoCuentaPag>("NCSapGrupoCuentasCP", sapGrupoCuentaPag);
+            //    },
+            //    sapGrupoCuentaPag =>
+            //    {
+            //        _conexion.AddParamFilterPag(sapGrupoCuentaFiltro);
+            //        sapGrupoCuentaPag.Pagina = _conexion.LoadEntities<ESapGrupoCuenta>("NCSapGrupoCuentasCP");
+            //    });
         }
         /// <summary>
         /// Consulta por id de la entidad SapGrupoCuenta.
         /// </summary>
-        public ESapGrupoCuenta SapGrupoCuentaXId(String sapGrupoCuentaId)
+        public async Task<ESapGrupoCuenta> SapGrupoCuentaXId(String sapGrupoCuentaId)
         {
-            _conexion.AddParamIn(nameof(sapGrupoCuentaId), sapGrupoCuentaId);
-            return _conexion.LoadEntity<ESapGrupoCuenta>("NCSapGrupoCuentasCI");
+            _conexion.AddParamIn(sapGrupoCuentaId);
+            return await _conexion.LoadEntityAsync<ESapGrupoCuenta>("NCSapGrupoCuentasCI");
         }
         /// <summary>
         /// Consulta para combos de la entidad SapGrupoCuenta.
         /// </summary>
-        public List<MEElemento> SapGrupoCuentaCmb()
+        public async Task<List<MEElemento>> SapGrupoCuentaCmb()
         {
-            return _conexion.LoadCmb<MEElemento>("NCSapGrupoCuentasCCmb");
+            return await _conexion.EntidadCmbAsync("NCSapGrupoCuentasCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad SapGrupoCuenta.
         /// </summary>
-        protected Boolean SapGrupoCuentaInserta(ESapGrupoCuenta sapGrupoCuenta)
+        protected async Task<Boolean> SapGrupoCuentaInserta(ESapGrupoCuenta sapGrupoCuenta)
         {
-            _conexion.AddParamEntity(sapGrupoCuenta, MAccionesBd.Inserta);
-            _conexion.ExecuteScalarVal("NCSapGrupoCuentasIAE",
-                                       MensajesXId.SapGrupoCuentaNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapGrupoCuenta, MAccionesBd.Inserta, "NCSapGrupoCuentasIAE");
+            //return sapGrupoCuenta.SapGrupoCuentaId;
+
+            //_conexion.AddParamEntity(sapGrupoCuenta, MAccionesBd.Inserta);
+            //await _conexion.ExecuteScalarValAsync("NCSapGrupoCuentasIAE",
+            //                           MensajesXId.SapGrupoCuentaNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite actualizar la entidad SapGrupoCuenta.
         /// </summary>
-        protected Boolean SapGrupoCuentaActualiza(ESapGrupoCuenta sapGrupoCuenta)
+        protected async Task<Boolean> SapGrupoCuentaActualiza(ESapGrupoCuenta sapGrupoCuenta)
         {
-            _conexion.AddParamEntity(sapGrupoCuenta, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCSapGrupoCuentasIAE",
-                                       MensajesXId.SapGrupoCuentaNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapGrupoCuenta, MAccionesBd.Actualiza, "NCSapGrupoCuentasIAE");
+
+            //_conexion.AddParamEntity(sapGrupoCuenta, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCSapGrupoCuentasIAE",
+            //                           MensajesXId.SapGrupoCuentaNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad SapGrupoCuenta.
         /// </summary>
-        protected Boolean SapGrupoCuentaElimina(ESapGrupoCuenta sapGrupoCuenta)
+        protected async Task<Boolean> SapGrupoCuentaElimina(ESapGrupoCuenta sapGrupoCuenta)
         {
-            _conexion.AddParamEntity(sapGrupoCuenta, MAccionesBd.Elimina);
-            return _conexion.ExecuteNonQueryRet("NCSapGrupoCuentasIAE");
+            return await _conexion.EntityUpdateAsync(sapGrupoCuenta, MAccionesBd.Elimina, "NCSapGrupoCuentasIAE");
+
+            //_conexion.AddParamEntity(sapGrupoCuenta, MAccionesBd.Elimina);
+            //return await _conexion.ExecuteNonQueryRetAsync("NCSapGrupoCuentasIAE");
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        protected MEDatosArchivo SapGrupoCuentaExporta(ESapGrupoCuentaFiltro sapGrupoCuentaFiltro,
-                                                       MArchivoExcel archivoExcel)
+        protected async Task<string> SapGrupoCuentaExporta(ESapGrupoCuentaFiltro sapGrupoCuentaFiltro,
+                                                           MArchivoExcel archivoExcel)
         {
-            sapGrupoCuentaFiltro.DatPag.StartLine = 1;
-            sapGrupoCuentaFiltro.DatPag.PageSize = Int32.MaxValue;
-            _conexion.AddParamFilterPag(sapGrupoCuentaFiltro);
-
-            String vArchivo = archivoExcel.Export(_conexion.GetCurrentCmd("NCSapGrupoCuentasCP"),
+            _conexion.AddParamFilterExp(sapGrupoCuentaFiltro);
+            return await archivoExcel.ExportAsync(_conexion.GetCurrentCmd("NCSapGrupoCuentasCP"),
                                                   "SapGrupoCuenta.xlsb",
                                                   sapGrupoCuentaFiltro.Columnas);
-            return new MEDatosArchivo()
-            {
-                PathOrg = vArchivo,
-                PathDes = vArchivo
-            };
         }
         #endregion
 

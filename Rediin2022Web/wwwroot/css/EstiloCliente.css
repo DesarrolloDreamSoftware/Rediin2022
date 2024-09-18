@@ -75,6 +75,9 @@ input[type="checkbox"] {
     background-color: white;
     color: #9a9a9a;
     border: 2px solid white;
+    --bs-btn-padding-y: .25rem;
+    --bs-btn-padding-x: .5rem;
+    --bs-btn-font-size: .75rem;
 }
 
     .paginadorBoton:hover {
@@ -176,6 +179,34 @@ input[type="checkbox"] {
     font-weight: bold;
 }
 
+.panelConMensajesOk {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: green;
+}
+
+.panelConMensajesError {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: red;
+}
+
+.panelConMensajesAdvertencia {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: orange;
+}
+
+.panelConMensajesNormal {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: blue;
+}
+
 .panelConMensajesCont {
     font-family: Arial;
     font-size: 12pt;
@@ -223,6 +254,34 @@ input[type="checkbox"] {
     font-size: 12pt;
     color: #9a9a9a;
     font-weight: bold;
+}
+
+.panelCapMensajesOk {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: green;
+}
+
+.panelCapMensajesError {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: red;
+}
+
+.panelCapMensajesAdvertencia {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: orange;
+}
+
+.panelCapMensajesNormal {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: blue;
 }
 
 .panelCapMensajesCont {
@@ -601,6 +660,7 @@ input[type="checkbox"] {
 }
 
 .estiloInputDeshabilitado {
+    background-color: #f1eeee;
 }
 
 .inputBool {
@@ -632,4 +692,60 @@ input[type="checkbox"] {
 }
 
 .pantallaBloqueo {
+}
+
+
+.DSLin {
+    border: 4px solid White;
+}
+
+.DSCol {
+    min-height: 180px;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    padding: 1px;
+}
+
+    .DSCol:hover {
+        font-weight: bold;
+        font-size: 18pt;
+    }
+
+.DSColSel {
+    min-height: 180px;
+    color: black;
+    text-align: center;
+    vertical-align: middle;
+    padding: 1px;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+.DSCheck {
+    width: 30px;
+}
+
+
+
+.DSCol2 {
+    min-height: 180px;
+    max-height: 180px;
+    text-align: center;
+}
+
+    .DSCol2:hover {
+        font-weight: bold;
+        font-size: 18pt;
+    }
+
+.DSColSel2 {
+    min-height: 180px;
+    max-height: 180px;
+    text-align: center;
+}
+
+.DSImg2 {
+    width: 80%;
+    max-height: 140px;
 }

@@ -1,5 +1,6 @@
-ï»¿using DSEntityNetX.Common.Casting;
+using DSEntityNetX.Common.Casting;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Negocio;
 using Rediin2022.AccesoDatos.PriClientes;
@@ -34,16 +35,16 @@ namespace Rediin2022.Negocio.PriClientes
         #region Propiedades
         public INConExpedientes NConExpedientes { get; }
         public INProcesosOperativos NProcesosOperativos { get; }
-        public IMMensajes Mensajes
-        {
-            get { return NProcesosOperativos.Mensajes; }
-        }
+        //public IMMensajes Mensajes
+        //{
+        //    get { return NProcesosOperativos.Mensajes; }
+        //}
         #endregion
 
         #region Funciones
 
         #region Funciones para el cliente
-        public Int64 ExpedienteInserta(EExpediente expediente)
+        public async Task<Int64> ExpedienteInserta(EExpediente expediente)
         {
             //Validamos
             if (expediente.ProcesoOperativoId <= 0)
@@ -53,13 +54,13 @@ namespace Rediin2022.Negocio.PriClientes
             //    Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ExpedienteId);
 
             if (expediente.Valores == null || expediente.Valores.Count == 0)
-                Mensajes.AddError("No especificÃ³ los valores.");
+                Mensajes.AddError("No especificó los valores.");
 
             if (!Mensajes.Ok)
                 return 0L;
 
             List<EProcesoOperativoCol> vColumnas =
-                NProcesosOperativos.ProcesoOperativoColCT(expediente.ProcesoOperativoId);
+                await NProcesosOperativos.ProcesoOperativoColCT(expediente.ProcesoOperativoId);
 
             foreach (EProcesoOperativoCol vCol in vColumnas)
             {
@@ -127,9 +128,9 @@ namespace Rediin2022.Negocio.PriClientes
                 }
             }
 
-            return NConExpedientes.ConExpedienteInserta(vConExp);
+            return await NConExpedientes.ConExpedienteInserta(vConExp);
         }
-        public Boolean ExpedienteActualiza(EExpediente expediente)
+        public async Task<Boolean> ExpedienteActualiza(EExpediente expediente)
         {
             //Validamos
             if (expediente.ProcesoOperativoId <= 0)
@@ -139,13 +140,13 @@ namespace Rediin2022.Negocio.PriClientes
             //    Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ExpedienteId);
 
             if (expediente.Valores == null || expediente.Valores.Count == 0)
-                Mensajes.AddError("No especificÃ³ los valores.");
+                Mensajes.AddError("No especificó los valores.");
 
             if (!Mensajes.Ok)
                 return false;
 
             List<EProcesoOperativoCol> vColumnas =
-                NProcesosOperativos.ProcesoOperativoColCT(expediente.ProcesoOperativoId);
+                await NProcesosOperativos.ProcesoOperativoColCT(expediente.ProcesoOperativoId);
 
             foreach (EProcesoOperativoCol vCol in vColumnas)
             {
@@ -214,11 +215,11 @@ namespace Rediin2022.Negocio.PriClientes
                 }
             }
 
-            return NConExpedientes.ConExpedienteActualiza(vConExp);
+            return await NConExpedientes.ConExpedienteActualiza(vConExp);
         }
-        public Boolean ExpedienteElimina(Int64 expedienteId)
+        public async Task<Boolean> ExpedienteElimina(Int64 expedienteId)
         {
-            return NConExpedientes.ConExpedienteElimina(new EConExpediente()
+            return await NConExpedientes.ConExpedienteElimina(new EConExpediente()
             {
                 ExpedienteId = expedienteId
             });
@@ -243,7 +244,7 @@ namespace Rediin2022.Negocio.PriClientes
 
             return Mensajes.Ok;
         }
-        public Int64 ObjetoInserta(EExpedienteObjeto expedienteObjeto)
+        public async Task<Int64> ObjetoInserta(EExpedienteObjeto expedienteObjeto)
         {
             if (!ObjetoValida(expedienteObjeto))
                 return 0L;
@@ -255,15 +256,15 @@ namespace Rediin2022.Negocio.PriClientes
             vConExpedienteObjeto.ArchivoNombre = expedienteObjeto.ArchivoNombre;
             vConExpedienteObjeto.Ruta = expedienteObjeto.Ruta;
             vConExpedienteObjeto.Activo = expedienteObjeto.Activo;
-            return NConExpedientes.ConExpedienteObjetoInserta(vConExpedienteObjeto);
+            return await NConExpedientes.ConExpedienteObjetoInserta(vConExpedienteObjeto);
         }
         /// <summary>
         /// Sube el documento y modifica su nombre.
-		/// Es necesario cargar los campos ExpedienteId, ExpedienteObjetoId, ArchivoNombre y Archivo
+        /// Es necesario cargar los campos ExpedienteId, ExpedienteObjetoId, ArchivoNombre y Archivo
         /// </summary>
         /// <param name="documento"></param>
         /// <returns></returns>
-        public Boolean ObjetoActualiza(EExpedienteObjeto expedienteObjeto)
+        public async Task<Boolean> ObjetoActualiza(EExpedienteObjeto expedienteObjeto)
         {
             if (!ObjetoValida(expedienteObjeto))
                 return false;
@@ -276,36 +277,36 @@ namespace Rediin2022.Negocio.PriClientes
             vConExpedienteObjeto.ArchivoNombre = expedienteObjeto.ArchivoNombre;
             vConExpedienteObjeto.Ruta = expedienteObjeto.Ruta;
             vConExpedienteObjeto.Activo = expedienteObjeto.Activo;
-            return NConExpedientes.ConExpedienteObjetoActualiza(vConExpedienteObjeto);
+            return await NConExpedientes.ConExpedienteObjetoActualiza(vConExpedienteObjeto);
         }
 
         /// <summary>
         /// Descargar solo el documento
-		/// </summary>
-		/// <param name="expendienteId"></param>
-		/// <param name="archivoNombre"></param>
-		/// <returns></returns>
-		public EDocumento ObjectoDescargaDocto(Int64 expendienteId, String archivoNombre)
+        /// </summary>
+        /// <param name="expendienteId"></param>
+        /// <param name="archivoNombre"></param>
+        /// <returns></returns>
+        public async Task<EDocumento> ObjectoDescargaDocto(Int64 expendienteId, String archivoNombre)
         {
-            return new EDocumento(); //Solo para el Api
+            return await Task.FromResult(new EDocumento()); //Solo para el Api
         }
         /// <summary>
         /// Sube el documento sin modificar datos
         /// </summary>
         /// <param name="documento"></param>
         /// <returns></returns>
-        public Boolean ObjetoSubeDocto(EDocumento documento)
+        public async Task<Boolean> ObjetoSubeDocto(EDocumento documento)
         {
-            return true;
+            return await Task.FromResult(true);
         }
         /// <summary>
         /// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
         /// </summary>
         /// <param name="expendienteDatCmb"></param>
         /// <returns></returns>
-        public List<MEElemento> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb)
+        public async Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb)
         {
-            return NConExpedientes.ConExpedienteCmb(new EProcesoOperativoCol()
+            return await NConExpedientes.ConExpedienteCmb(new EProcesoOperativoCol()
             {
                 CapCmbProcesoOperativoId = expendienteDatCmb.CapCmbProcesoOperativoId,
                 CapCmbIdColumnaId = expendienteDatCmb.CapCmbIdColumnaId,
@@ -322,13 +323,13 @@ namespace Rediin2022.Negocio.PriClientes
         /// </summary>
         /// <param name="usuarioId"></param>
         /// <returns></returns>
-        public EDatosProveedor ProveedorXUsuario(Int64 procesoOperativoIdProveedor,
-                                                 Int64 usuarioId)
+        public async Task<EDatosProveedor> ProveedorXUsuario(Int64 procesoOperativoIdProveedor,
+                                                             Int64 usuarioId)
         {
             EDatosProveedor vDP = new EDatosProveedor();
 
             //Obtenemos la relacion de las columnas con sus propiedades
-            List<ERelacionProcOper> vRelaciones = base.RelacionProcesoOperativo(procesoOperativoIdProveedor);
+            List<ERelacionProcOper> vRelaciones = await base.RelacionProcesoOperativo(procesoOperativoIdProveedor);
             if (vRelaciones == null || vRelaciones.Count == 0)
                 return vDP;
 
@@ -338,20 +339,20 @@ namespace Rediin2022.Negocio.PriClientes
                 return vDP;
 
             //Obtenemos el id de expediente del usuario.
-            Int64 vExpendienteId = base.ProveedorExpedienteId(usuarioId,
+            Int64 vExpendienteId = await base.ProveedorExpedienteId(usuarioId,
                                                               procesoOperativoIdProveedor,
                                                               vColUsuarioId);
             if (vExpendienteId <= 0)
                 return vDP;
 
             //Obtenemos los datos del expediente.
-            EConExpediente vExpediente = NConExpedientes.ConExpedienteXId(vExpendienteId);
+            EConExpediente vExpediente = await NConExpedientes.ConExpedienteXId(vExpendienteId);
             if (vExpediente == null)
                 return vDP;
 
             //Obtenemos los metadatos de las columnas
             List<EProcesoOperativoCol> vColMD =
-                NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoIdProveedor);
+                await NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoIdProveedor);
 
             //Cargamos las propiedades
             vDP.Proveedor = new EProveedor();
@@ -363,7 +364,7 @@ namespace Rediin2022.Negocio.PriClientes
             }
 
             //Cargamos el ultimo comentario
-            EExpedienteEstatu vEstatusUlt = NConExpedientes.ExpedienteEstatusUltimo(vExpendienteId);
+            EExpedienteEstatu vEstatusUlt = await NConExpedientes.ExpedienteEstatusUltimo(vExpendienteId);
             vDP.Proveedor.Comentarios = vEstatusUlt.Comentarios;
 
             //Creamos las reglas de negocio
@@ -393,14 +394,14 @@ namespace Rediin2022.Negocio.PriClientes
         /// </summary>
         /// <param name="proveedor"></param>
         /// <returns></returns>
-        public Boolean ProveedorActualiza(EProveedor proveedor)
+        public async Task<Boolean> ProveedorActualiza(EProveedor proveedor)
         {
             EExpediente vExp = new EExpediente();
             vExp.ProcesoOperativoId = proveedor.ProcesoOperativoId;
             vExp.ExpendienteId = proveedor.ExpedienteId;
 
             List<ERelacionProcOper> vRelPO =
-                RelacionProcesoOperativo(proveedor.ProcesoOperativoId);
+                await RelacionProcesoOperativo(proveedor.ProcesoOperativoId);
 
             PropertyInfo[] vPIEnt = proveedor.GetType().GetProperties();
             foreach (ERelacionProcOper vRel in vRelPO)
@@ -428,16 +429,16 @@ namespace Rediin2022.Negocio.PriClientes
                 }
             }
 
-            return ExpedienteActualiza(vExp);
+            return await ExpedienteActualiza(vExp);
         }
         /// <summary>
         /// Pasa el expediente al siguiente estatus.
         /// </summary>
         /// <param name="expedienteId"></param>
         /// <returns></returns>
-        public Boolean ProveedorCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
+        public async Task<Boolean> ProveedorCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
         {
-            return NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus);
+            return await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus);
         }
         #endregion
         //No config Proveedor

@@ -1,0 +1,52 @@
+@model EAutorizacionUsuario
+
+@{
+    ViewData["Title"] = "Captura";
+    EVAutorizaciones EV = ViewBag.EV;
+}
+
+<form asp-action="_AutorizacionUsuarioCaptura">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="@EV.AutorizacionUsuario.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._AutorizacionUsuarioTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="AutorizacionUsuarioId" xval-enabled="false"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <select mval="Model" xval-for="ProcesoOperativoEstId" xval-items="ViewBag.ProcesosOperativosEst"></select>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Text" xval-for="UsuarioId"
+                         mopt-action="@nameof(AutorizacionesController.OpcUsuarioId)"
+                         xopt-idtextmul-0="@nameof(EAutorizacionUsuario.Nombre)"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Nombre" xval-enabled="false"/>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="ApellidoPaterno" xval-enabled="false"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="ApellidoMaterno" xval-enabled="false"/>
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <button maccion="Guarda"
+                    asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(AutorizacionesController.AutorizacionUsuarioInserta) : nameof(AutorizacionesController.AutorizacionUsuarioActualiza))"
+                    xvalidate="@nameof(EAutorizacionUsuario)"></button>
+            &nbsp;
+            <a maccion="Regresa" asp-action="@nameof(AutorizacionesController.AutorizacionUsuarioCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

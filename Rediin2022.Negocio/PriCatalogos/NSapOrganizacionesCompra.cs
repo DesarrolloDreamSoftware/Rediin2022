@@ -2,14 +2,16 @@ using DSEntityNetX.Business;
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using DSMetodNetX.Negocio;
 using Rediin2022.AccesoDatos.PriCatalogos;
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.Negocio.PriCatalogos
 {
@@ -47,68 +49,68 @@ namespace Rediin2022.Negocio.PriCatalogos
         /// <summary>
         /// Esta funcion valida e inserta un registro en la base de datos.
         /// </summary>
-        public new Boolean SapOrganizacionCompraInserta(ESapOrganizacionCompra sapOrganizacionCompra)
+        public new async Task<Boolean> SapOrganizacionCompraInserta(ESapOrganizacionCompra sapOrganizacionCompra)
         {
             //Validacion
             if (!SapOrganizacionCompraValida(sapOrganizacionCompra))
                 return false;
 
             //Persistencia
-            return base.SapOrganizacionCompraInserta(sapOrganizacionCompra);
+            return await base.SapOrganizacionCompraInserta(sapOrganizacionCompra);
         }
         /// <summary>
         /// Valida y actualiza un registro en la base de datos.
         /// </summary>
-        public new Boolean SapOrganizacionCompraActualiza(ESapOrganizacionCompra sapOrganizacionCompra)
+        public new async Task<Boolean> SapOrganizacionCompraActualiza(ESapOrganizacionCompra sapOrganizacionCompra)
         {
             //Validacion
             if (!SapOrganizacionCompraValida(sapOrganizacionCompra))
                 return false;
 
             //Persistencia
-            return base.SapOrganizacionCompraActualiza(sapOrganizacionCompra);
+            return await base.SapOrganizacionCompraActualiza(sapOrganizacionCompra);
         }
         /// <summary>
         /// Elimina un registro de la base de datos.
         /// </summary>
         /// <returns></returns>
-        public new Boolean SapOrganizacionCompraElimina(ESapOrganizacionCompra sapOrganizacionCompra)
+        public new async Task<Boolean> SapOrganizacionCompraElimina(ESapOrganizacionCompra sapOrganizacionCompra)
         {
             //Validacion
             SapOrganizacionCompraReglasNeg().ValidateProperty(sapOrganizacionCompra, e => e.SapOrganizacionCompraId);
-            if (!_mensajes.Ok)
+            if (!Mensajes.Ok)
                 return false;
 
             //Persistencia
-            return base.SapOrganizacionCompraElimina(sapOrganizacionCompra);
+            return await base.SapOrganizacionCompraElimina(sapOrganizacionCompra);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapOrganizacionCompraExporta(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro)
+        public async Task<string> SapOrganizacionCompraExporta(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro)
         {
-            return base.SapOrganizacionCompraExporta(sapOrganizacionCompraFiltro,
-                                                     _archivoExcel);
+            return await base.SapOrganizacionCompraExporta(sapOrganizacionCompraFiltro,
+                                                           _archivoExcel);
         }
         /// <summary>
         /// Reglas de negocio.
         /// </summary>
-        public List<MEReglaNeg> SapOrganizacionCompraReglas()
+        public async Task<List<MEReglaNeg>> SapOrganizacionCompraReglas()
         {
-            return SapOrganizacionCompraReglasNeg().Rules;
+            return await Task.Run(() => SapOrganizacionCompraReglasNeg().Rules);
         }
         /// <summary>
         /// Validacion para inserta y actualiza.
         /// </summary>
         private Boolean SapOrganizacionCompraValida(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            _mensajes.Initialize();
+            Mensajes.Initialize();
             if (!SapOrganizacionCompraReglasNeg().Validate(sapOrganizacionCompra))
                 return false;
 
             //Validaciones adicionales
 
-            return _mensajes.Ok;
+            return Mensajes.Ok;
         }
         /// <summary>
         /// Crea las reglas de negocio.
@@ -118,7 +120,7 @@ namespace Rediin2022.Negocio.PriCatalogos
             if (_sapOrganizacionCompraReglas != null)
                 return _sapOrganizacionCompraReglas;
 
-            _sapOrganizacionCompraReglas = Validaciones.CreaReglasNeg<ESapOrganizacionCompra>(_mensajes);
+            _sapOrganizacionCompraReglas = Validaciones.CreaReglasNeg<ESapOrganizacionCompra>(Mensajes);
             _sapOrganizacionCompraReglas.AddSL(e => e.SapOrganizacionCompraId, 2, 50);
             _sapOrganizacionCompraReglas.AddSL(e => e.SapOrganizacionCompraNombre, 2, 120);
             _sapOrganizacionCompraReglas.AddSL(e => e.Activo);

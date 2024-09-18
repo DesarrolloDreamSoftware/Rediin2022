@@ -1,9 +1,10 @@
 using DSMetodNetX.Aplicacion;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Negocio;
+
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.Aplicacion.PriCatalogos
 {
@@ -20,30 +21,31 @@ namespace Rediin2022.Aplicacion.PriCatalogos
         public MAccionesGen Accion { get; set; } = MAccionesGen.Ninguna;
 
         //SapTratamiento (SapTratamientos)
-        /// <summary>
-        /// Paginacion.
-        /// </summary>
-        public ESapTratamientoPag SapTratamientoPag { get; set; } = null;
-        /// <summary>
-        /// Orden.
-        /// </summary>
-        public String SapTratamientoColOrden { get; set; } = String.Empty;
-        /// <summary>
-        /// Filtro.
-        /// </summary>
-        public ESapTratamientoFiltro SapTratamientoFiltro { get; set; } = new ESapTratamientoFiltro();
-        /// <summary>
-        /// Indice.
-        /// </summary>
-        public Int32 SapTratamientoIndice { get; set; } = 0;
-        /// <summary>
-        /// Entidad de seleccion.
-        /// </summary>
-        public ESapTratamiento SapTratamientoSel { get; set; } = null;
-        /// <summary>
-        /// Reglas de negocio.
-        /// </summary>
-        public List<MEReglaNeg> SapTratamientoReglas { get; set; } = null;
+        public MEVSF<ESapTratamiento, ESapTratamientoPag, ESapTratamientoFiltro> SapTratamiento { get; set; } = new();
+        ///// <summary>
+        ///// Paginacion.
+        ///// </summary>
+        //public ESapTratamientoPag SapTratamientoPag { get; set; } = null;
+        ///// <summary>
+        ///// Orden.
+        ///// </summary>
+        //public String SapTratamientoColOrden { get; set; } = String.Empty;
+        ///// <summary>
+        ///// Filtro.
+        ///// </summary>
+        //public ESapTratamientoFiltro SapTratamientoFiltro { get; set; } = new ESapTratamientoFiltro();
+        ///// <summary>
+        ///// Indice.
+        ///// </summary>
+        //public Int32 SapTratamientoIndice { get; set; } = 0;
+        ///// <summary>
+        ///// Entidad de seleccion.
+        ///// </summary>
+        //public ESapTratamiento SapTratamientoSel { get; set; } = null;
+        ///// <summary>
+        ///// Reglas de negocio.
+        ///// </summary>
+        //public List<MEReglaNeg> SapTratamientoReglas { get; set; } = null;
         #endregion
     }
 }

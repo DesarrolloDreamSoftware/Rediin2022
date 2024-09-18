@@ -1,11 +1,13 @@
-﻿@model EAutorizacionUsuario
+@model EAutorizacionUsuario
 
 @{
     ViewData["Title"] = "Captura";
+    EVAutorizaciones EV = ViewBag.EV;
 }
 
 <form asp-action="_AutorizacionUsuarioCaptura">
-    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+    <div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.AutorizacionUsuario.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
         <div msub-panel="CapTitulo">
             @MensajesXId._AutorizacionUsuarioTitCap
         </div>
@@ -39,7 +41,7 @@
         </div>
         <div msub-panel="CapAccionesGen">
             <button maccion="Guarda"
-                    asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(AutorizacionesController.AutorizacionUsuarioInserta) : nameof(AutorizacionesController.AutorizacionUsuarioActualiza))"
+                    asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(AutorizacionesController.AutorizacionUsuarioInserta) : nameof(AutorizacionesController.AutorizacionUsuarioActualiza))"
                     xvalidate="@nameof(EAutorizacionUsuario)"></button>
             &nbsp;
             <a maccion="Regresa" asp-action="@nameof(AutorizacionesController.AutorizacionUsuarioCon)"></a>

@@ -1,16 +1,18 @@
-﻿@model List<EAutorizacionUsuario>
+@model List<EAutorizacionUsuario>
 @{
     ViewData["Title"] = "Consulta";
+    EVAutorizaciones EV = ViewBag.EV;
 }
-<div mpanel="Display" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas">
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.AutorizacionUsuario.Reglas">
     <div msub-panel="ConTitulo">
         @MensajesXId._AutorizacionUsuarioTitCon
     </div>
     <div msub-panel="ConFiltro">
-        <partial name="_AutorizacionUsuarioFiltra" model="(EAutorizacionUsuarioFiltro)ViewBag.Filtro" view-data="ViewData" />
+        <partial name="_AutorizacionUsuarioFiltra" model="@EV.AutorizacionUsuario.Filtro" view-data="ViewData" />
     </div>
     <div msub-panel="ConDatos">
-        <table melemento="ConTabla" xsort-action="@nameof(AutorizacionesController.AutorizacionUsuarioOrdena)" xsort-current="@ViewBag.orden">
+        <table melemento="ConTabla" xsort-action="@nameof(AutorizacionesController.AutorizacionUsuarioOrdena)" 
+            xsort-current="@EV.AutorizacionUsuario.ColOrden">
             <thead melemento="ConTablaEnc">
                 <tr>
                     <th></th>
@@ -40,7 +42,7 @@
                     for (int i = 0; i < Model.Count(); i++)
                     {
                         String vDivAcciones = "divPanelAcciones" + i.ToString();
-                        <tr class="@(ViewBag.Indice == i ? "conTablaLinSel" : null)">
+                        <tr class="@(EV.AutorizacionUsuario.Indice == i ? "conTablaLinSel" : null)">
                             <td nowrap>
                                 <a maccion="IniciaActualiza" asp-action="@nameof(AutorizacionesController.AutorizacionUsuarioActualizaIni)" asp-route-indice="@i"></a>
                                 <div msub-panel="ConAccionesXReg" id="@vDivAcciones">
@@ -73,7 +75,7 @@
         </table>
     </div>
     <div msub-panel="ConPaginador">
-        <div mdata-pager="@ViewBag.DatPag" xdp-action="@nameof(AutorizacionesController.AutorizacionUsuarioPaginacion)"></div>
+        <div mdata-pager="@EV.AutorizacionUsuario.Pag?.DatPag" xdp-action="@nameof(AutorizacionesController.AutorizacionUsuarioPaginacion)"></div>
     </div>
     <div msub-panel="ConAccionesGen">
         <a maccion="IniciaInserta" asp-action="@nameof(AutorizacionesController.AutorizacionUsuarioInsertaIni)" asp-route-indice="-1"></a>

@@ -1,12 +1,12 @@
-using DSEntityNetX.Common.Casting;
-using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.AccesoDatos.PriCatalogos
 {
@@ -16,6 +16,13 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
     [Serializable]
     public class RSapSociedades : MRepositorio
     {
+        #region Variables
+        /// <summary>
+        /// Conexión.
+        /// </summary>
+        private IMConexionEntidad _conexion;
+        #endregion
+
         #region Constructores
         /// <summary>
         /// Repositorio.
@@ -23,6 +30,7 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         public RSapSociedades(IMConexionEntidad conexion)
             : base(conexion)
         {
+            _conexion = conexion;
         }
         #endregion
 
@@ -32,81 +40,84 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad SapSociedad.
         /// </summary>
-        public ESapSociedadPag SapSociedadPag(ESapSociedadFiltro sapSociedadFiltro)
+        public async Task<ESapSociedadPag> SapSociedadPag(ESapSociedadFiltro sapSociedadFiltro)
         {
-            return base.EntidadPag<ESapSociedadPag>(sapSociedadFiltro,
-                sapSociedadPag =>
-                {
-                    _conexion.AddParamFilterTL(sapSociedadFiltro);
-                    _conexion.LoadEntity<ESapSociedadPag>("NCSapSociedadesCP", sapSociedadPag);
-                },
-                sapSociedadPag =>
-                {
-                    _conexion.AddParamFilterPag(sapSociedadFiltro);
-                    sapSociedadPag.Pagina = _conexion.LoadEntities<ESapSociedad>("NCSapSociedadesCP");
-                });
+            return await _conexion.EntidadPagAsync<ESapSociedad,
+                                                    ESapSociedadPag,
+                                                    ESapSociedadFiltro>(sapSociedadFiltro, "NCSapSociedadesCP");
+
+            //return base.EntidadPagAsync<ESapSociedadPag>(sapSociedadFiltro,
+            //               sapSociedadPag =>
+            //    {
+            //        _conexion.AddParamFilterTL(sapSociedadFiltro);
+            //        _conexion.LoadEntity<ESapSociedadPag>("NCSapSociedadesCP", sapSociedadPag);
+            //    },
+            //    sapSociedadPag =>
+            //    {
+            //        _conexion.AddParamFilterPag(sapSociedadFiltro);
+            //        sapSociedadPag.Pagina = _conexion.LoadEntities<ESapSociedad>("NCSapSociedadesCP");
+            //    });
         }
         /// <summary>
         /// Consulta por id de la entidad SapSociedad.
         /// </summary>
-        public ESapSociedad SapSociedadXId(String sapSociedadId)
+        public async Task<ESapSociedad> SapSociedadXId(String sapSociedadId)
         {
-            _conexion.AddParamIn(nameof(sapSociedadId), sapSociedadId);
-            return _conexion.LoadEntity<ESapSociedad>("NCSapSociedadesCI");
+            _conexion.AddParamIn(sapSociedadId);
+            return await _conexion.LoadEntityAsync<ESapSociedad>("NCSapSociedadesCI");
         }
         /// <summary>
         /// Consulta para combos de la entidad SapSociedad.
         /// </summary>
-        public List<MEElemento> SapSociedadCmb()
+        public async Task<List<MEElemento>> SapSociedadCmb()
         {
-            return _conexion.LoadCmb<MEElemento>("NCSapSociedadesCCmb");
+            return await _conexion.EntidadCmbAsync("NCSapSociedadesCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad SapSociedad.
         /// </summary>
-        protected Boolean SapSociedadInserta(ESapSociedad sapSociedad)
+        protected async Task<Boolean> SapSociedadInserta(ESapSociedad sapSociedad)
         {
-            _conexion.AddParamEntity(sapSociedad, MAccionesBd.Inserta);
-            _conexion.ExecuteScalarVal("NCSapSociedadesIAE",
-                                       MensajesXId.SapSociedadNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapSociedad, MAccionesBd.Inserta, "NCSapSociedadesIAE");
+            //return sapSociedad.SapSociedadId;
+
+            //_conexion.AddParamEntity(sapSociedad, MAccionesBd.Inserta);
+            //await _conexion.ExecuteScalarValAsync("NCSapSociedadesIAE",
+            //                           MensajesXId.SapSociedadNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite actualizar la entidad SapSociedad.
         /// </summary>
-        protected Boolean SapSociedadActualiza(ESapSociedad sapSociedad)
+        protected async Task<Boolean> SapSociedadActualiza(ESapSociedad sapSociedad)
         {
-            _conexion.AddParamEntity(sapSociedad, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCSapSociedadesIAE",
-                                       MensajesXId.SapSociedadNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapSociedad, MAccionesBd.Actualiza, "NCSapSociedadesIAE");
+
+            //_conexion.AddParamEntity(sapSociedad, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCSapSociedadesIAE",
+            //                           MensajesXId.SapSociedadNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad SapSociedad.
         /// </summary>
-        protected Boolean SapSociedadElimina(ESapSociedad sapSociedad)
+        protected async Task<Boolean> SapSociedadElimina(ESapSociedad sapSociedad)
         {
-            _conexion.AddParamEntity(sapSociedad, MAccionesBd.Elimina);
-            return _conexion.ExecuteNonQueryRet("NCSapSociedadesIAE");
+            return await _conexion.EntityUpdateAsync(sapSociedad, MAccionesBd.Elimina, "NCSapSociedadesIAE");
+
+            //_conexion.AddParamEntity(sapSociedad, MAccionesBd.Elimina);
+            //return await _conexion.ExecuteNonQueryRetAsync("NCSapSociedadesIAE");
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        protected MEDatosArchivo SapSociedadExporta(ESapSociedadFiltro sapSociedadFiltro,
-                                                    MArchivoExcel archivoExcel)
+        protected async Task<string> SapSociedadExporta(ESapSociedadFiltro sapSociedadFiltro,
+                                                        MArchivoExcel archivoExcel)
         {
-            sapSociedadFiltro.DatPag.StartLine = 1;
-            sapSociedadFiltro.DatPag.PageSize = Int32.MaxValue;
-            _conexion.AddParamFilterPag(sapSociedadFiltro);
-
-            String vArchivo = archivoExcel.Export(_conexion.GetCurrentCmd("NCSapSociedadesCP"),
+            _conexion.AddParamFilterExp(sapSociedadFiltro);
+            return await archivoExcel.ExportAsync(_conexion.GetCurrentCmd("NCSapSociedadesCP"),
                                                   "SapSociedad.xlsb",
                                                   sapSociedadFiltro.Columnas);
-            return new MEDatosArchivo()
-            {
-                PathOrg = vArchivo,
-                PathDes = vArchivo
-            };
         }
         #endregion
 

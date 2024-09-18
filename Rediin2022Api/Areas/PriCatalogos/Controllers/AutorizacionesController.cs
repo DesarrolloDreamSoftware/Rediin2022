@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -36,49 +37,49 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta paginada de la entidad Autorizacion.
         /// </summary>
         [HttpPost]
-        public EAutorizacionPag AutorizacionPag(EAutorizacionFiltro autorizacionFiltro)
+        public async Task<EAutorizacionPag> AutorizacionPag(EAutorizacionFiltro autorizacionFiltro)
         {
-            return NAutorizaciones.AutorizacionPag(autorizacionFiltro);
+            return await NAutorizaciones.AutorizacionPag(autorizacionFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad Autorizacion.
         /// </summary>
         [HttpGet("{autorizacionId}")]
-        public EAutorizacion AutorizacionXId(Int64 autorizacionId)
+        public async Task<EAutorizacion> AutorizacionXId(Int64 autorizacionId)
         {
-            return NAutorizaciones.AutorizacionXId(autorizacionId);
+            return await NAutorizaciones.AutorizacionXId(autorizacionId);
         }
         /// <summary>
         /// Permite insertar la entidad Autorizacion.
         /// </summary>
         [HttpPost]
-        public Int64 AutorizacionInserta(EAutorizacion autorizacion)
+        public async Task<Int64> AutorizacionInserta(EAutorizacion autorizacion)
         {
-            return NAutorizaciones.AutorizacionInserta(autorizacion);
+            return await NAutorizaciones.AutorizacionInserta(autorizacion);
         }
         /// <summary>
         /// Permite actualizar la entidad Autorizacion.
         /// </summary>
         [HttpPost]
-        public Boolean AutorizacionActualiza(EAutorizacion autorizacion)
+        public async Task<Boolean> AutorizacionActualiza(EAutorizacion autorizacion)
         {
-            return NAutorizaciones.AutorizacionActualiza(autorizacion);
+            return await NAutorizaciones.AutorizacionActualiza(autorizacion);
         }
         /// <summary>
         /// Permite eliminar la entidad Autorizacion.
         /// </summary>
         [HttpPost]
-        public Boolean AutorizacionElimina(EAutorizacion autorizacion)
+        public async Task<Boolean> AutorizacionElimina(EAutorizacion autorizacion)
         {
-            return NAutorizaciones.AutorizacionElimina(autorizacion);
+            return await NAutorizaciones.AutorizacionElimina(autorizacion);
         }
         /// <summary>
         /// Reglas de negocio de la entidad Autorizacion.
         /// </summary>
         [HttpGet]
-        public List<MEReglaNeg> AutorizacionReglas()
+        public async Task<List<MEReglaNeg>> AutorizacionReglas()
         {
-            return NAutorizaciones.AutorizacionReglas();
+            return await NAutorizaciones.AutorizacionReglas();
         }
         #endregion
 
@@ -87,49 +88,49 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta paginada de la entidad AutorizacionUsuario.
         /// </summary>
         [HttpPost]
-        public EAutorizacionUsuarioPag AutorizacionUsuarioPag(EAutorizacionUsuarioFiltro autorizacionUsuarioFiltro)
+        public async Task<EAutorizacionUsuarioPag> AutorizacionUsuarioPag(EAutorizacionUsuarioFiltro autorizacionUsuarioFiltro)
         {
-            return NAutorizaciones.AutorizacionUsuarioPag(autorizacionUsuarioFiltro);
+            return await NAutorizaciones.AutorizacionUsuarioPag(autorizacionUsuarioFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad AutorizacionUsuario.
         /// </summary>
         [HttpGet("{autorizacionUsuarioId}")]
-        public EAutorizacionUsuario AutorizacionUsuarioXId(Int64 autorizacionUsuarioId)
+        public async Task<EAutorizacionUsuario> AutorizacionUsuarioXId(Int64 autorizacionUsuarioId)
         {
-            return NAutorizaciones.AutorizacionUsuarioXId(autorizacionUsuarioId);
+            return await NAutorizaciones.AutorizacionUsuarioXId(autorizacionUsuarioId);
         }
         /// <summary>
         /// Permite insertar la entidad AutorizacionUsuario.
         /// </summary>
         [HttpPost]
-        public Int64 AutorizacionUsuarioInserta(EAutorizacionUsuario autorizacionUsuario)
+        public async Task<Int64> AutorizacionUsuarioInserta(EAutorizacionUsuario autorizacionUsuario)
         {
-            return NAutorizaciones.AutorizacionUsuarioInserta(autorizacionUsuario);
+            return await NAutorizaciones.AutorizacionUsuarioInserta(autorizacionUsuario);
         }
         /// <summary>
         /// Permite actualizar la entidad AutorizacionUsuario.
         /// </summary>
         [HttpPost]
-        public Boolean AutorizacionUsuarioActualiza(EAutorizacionUsuario autorizacionUsuario)
+        public async Task<Boolean> AutorizacionUsuarioActualiza(EAutorizacionUsuario autorizacionUsuario)
         {
-            return NAutorizaciones.AutorizacionUsuarioActualiza(autorizacionUsuario);
+            return await NAutorizaciones.AutorizacionUsuarioActualiza(autorizacionUsuario);
         }
         /// <summary>
         /// Permite eliminar la entidad AutorizacionUsuario.
         /// </summary>
         [HttpPost]
-        public Boolean AutorizacionUsuarioElimina(EAutorizacionUsuario autorizacionUsuario)
+        public async Task<Boolean> AutorizacionUsuarioElimina(EAutorizacionUsuario autorizacionUsuario)
         {
-            return NAutorizaciones.AutorizacionUsuarioElimina(autorizacionUsuario);
+            return await NAutorizaciones.AutorizacionUsuarioElimina(autorizacionUsuario);
         }
         /// <summary>
         /// Reglas de negocio de la entidad AutorizacionUsuario.
         /// </summary>
         [HttpGet]
-        public List<MEReglaNeg> AutorizacionUsuarioReglas()
+        public async Task<List<MEReglaNeg>> AutorizacionUsuarioReglas()
         {
-            return NAutorizaciones.AutorizacionUsuarioReglas();
+            return await NAutorizaciones.AutorizacionUsuarioReglas();
         }
         #endregion
 

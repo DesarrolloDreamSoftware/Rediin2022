@@ -1,12 +1,14 @@
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.AccesoDatos.PriCatalogos
 {
@@ -16,6 +18,13 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
     [Serializable]
     public class RSapOrganizacionesCompra : MRepositorio
     {
+        #region Variables
+        /// <summary>
+        /// Conexión.
+        /// </summary>
+        private IMConexionEntidad _conexion;
+        #endregion
+
         #region Constructores
         /// <summary>
         /// Repositorio.
@@ -23,6 +32,7 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         public RSapOrganizacionesCompra(IMConexionEntidad conexion)
             : base(conexion)
         {
+            _conexion = conexion;
         }
         #endregion
 
@@ -32,81 +42,84 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad SapOrganizacionCompra.
         /// </summary>
-        public ESapOrganizacionCompraPag SapOrganizacionCompraPag(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro)
+        public async Task<ESapOrganizacionCompraPag> SapOrganizacionCompraPag(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro)
         {
-            return base.EntidadPag<ESapOrganizacionCompraPag>(sapOrganizacionCompraFiltro,
-                sapOrganizacionCompraPag =>
-                {
-                    _conexion.AddParamFilterTL(sapOrganizacionCompraFiltro);
-                    _conexion.LoadEntity<ESapOrganizacionCompraPag>("NCSapOrganizacionesCompraCP", sapOrganizacionCompraPag);
-                },
-                sapOrganizacionCompraPag =>
-                {
-                    _conexion.AddParamFilterPag(sapOrganizacionCompraFiltro);
-                    sapOrganizacionCompraPag.Pagina = _conexion.LoadEntities<ESapOrganizacionCompra>("NCSapOrganizacionesCompraCP");
-                });
+            return await _conexion.EntidadPagAsync<ESapOrganizacionCompra,
+                                                    ESapOrganizacionCompraPag,
+                                                    ESapOrganizacionCompraFiltro>(sapOrganizacionCompraFiltro, "NCSapOrganizacionesCompraCP");
+
+            //return base.EntidadPagAsync<ESapOrganizacionCompraPag>(sapOrganizacionCompraFiltro,
+            //               sapOrganizacionCompraPag =>
+            //    {
+            //        _conexion.AddParamFilterTL(sapOrganizacionCompraFiltro);
+            //        _conexion.LoadEntity<ESapOrganizacionCompraPag>("NCSapOrganizacionesCompraCP", sapOrganizacionCompraPag);
+            //    },
+            //    sapOrganizacionCompraPag =>
+            //    {
+            //        _conexion.AddParamFilterPag(sapOrganizacionCompraFiltro);
+            //        sapOrganizacionCompraPag.Pagina = _conexion.LoadEntities<ESapOrganizacionCompra>("NCSapOrganizacionesCompraCP");
+            //    });
         }
         /// <summary>
         /// Consulta por id de la entidad SapOrganizacionCompra.
         /// </summary>
-        public ESapOrganizacionCompra SapOrganizacionCompraXId(String sapOrganizacionCompraId)
+        public async Task<ESapOrganizacionCompra> SapOrganizacionCompraXId(String sapOrganizacionCompraId)
         {
-            _conexion.AddParamIn(nameof(sapOrganizacionCompraId), sapOrganizacionCompraId);
-            return _conexion.LoadEntity<ESapOrganizacionCompra>("NCSapOrganizacionesCompraCI");
+            _conexion.AddParamIn(sapOrganizacionCompraId);
+            return await _conexion.LoadEntityAsync<ESapOrganizacionCompra>("NCSapOrganizacionesCompraCI");
         }
         /// <summary>
         /// Consulta para combos de la entidad SapOrganizacionCompra.
         /// </summary>
-        public List<MEElemento> SapOrganizacionCompraCmb()
+        public async Task<List<MEElemento>> SapOrganizacionCompraCmb()
         {
-            return _conexion.LoadCmb<MEElemento>("NCSapOrganizacionesCompraCCmb");
+            return await _conexion.EntidadCmbAsync("NCSapOrganizacionesCompraCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad SapOrganizacionCompra.
         /// </summary>
-        protected Boolean SapOrganizacionCompraInserta(ESapOrganizacionCompra sapOrganizacionCompra)
+        protected async Task<Boolean> SapOrganizacionCompraInserta(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            _conexion.AddParamEntity(sapOrganizacionCompra, MAccionesBd.Inserta);
-            _conexion.ExecuteScalarVal("NCSapOrganizacionesCompraIAE",
-                                       MensajesXId.SapOrganizacionCompraNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapOrganizacionCompra, MAccionesBd.Inserta, "NCSapOrganizacionesCompraIAE");
+            //return sapOrganizacionCompra.SapOrganizacionCompraId;
+
+            //           _conexion.AddParamEntity(sapOrganizacionCompra, MAccionesBd.Inserta);
+            //await _conexion.ExecuteScalarValAsync("NCSapOrganizacionesCompraIAE",
+            //                           MensajesXId.SapOrganizacionCompraNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite actualizar la entidad SapOrganizacionCompra.
         /// </summary>
-        protected Boolean SapOrganizacionCompraActualiza(ESapOrganizacionCompra sapOrganizacionCompra)
+        protected async Task<Boolean> SapOrganizacionCompraActualiza(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            _conexion.AddParamEntity(sapOrganizacionCompra, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCSapOrganizacionesCompraIAE",
-                                       MensajesXId.SapOrganizacionCompraNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapOrganizacionCompra, MAccionesBd.Actualiza, "NCSapOrganizacionesCompraIAE");
+
+            //_conexion.AddParamEntity(sapOrganizacionCompra, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCSapOrganizacionesCompraIAE",
+            //                           MensajesXId.SapOrganizacionCompraNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad SapOrganizacionCompra.
         /// </summary>
-        protected Boolean SapOrganizacionCompraElimina(ESapOrganizacionCompra sapOrganizacionCompra)
+        protected async Task<Boolean> SapOrganizacionCompraElimina(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            _conexion.AddParamEntity(sapOrganizacionCompra, MAccionesBd.Elimina);
-            return _conexion.ExecuteNonQueryRet("NCSapOrganizacionesCompraIAE");
+            return await _conexion.EntityUpdateAsync(sapOrganizacionCompra, MAccionesBd.Elimina, "NCSapOrganizacionesCompraIAE");
+
+            //_conexion.AddParamEntity(sapOrganizacionCompra, MAccionesBd.Elimina);
+            //return await _conexion.ExecuteNonQueryRetAsync("NCSapOrganizacionesCompraIAE");
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        protected MEDatosArchivo SapOrganizacionCompraExporta(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro,
-                                                              MArchivoExcel archivoExcel)
+        protected async Task<string> SapOrganizacionCompraExporta(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro,
+                                                                  MArchivoExcel archivoExcel)
         {
-            sapOrganizacionCompraFiltro.DatPag.StartLine = 1;
-            sapOrganizacionCompraFiltro.DatPag.PageSize = Int32.MaxValue;
-            _conexion.AddParamFilterPag(sapOrganizacionCompraFiltro);
-
-            String vArchivo = archivoExcel.Export(_conexion.GetCurrentCmd("NCSapOrganizacionesCompraCP"),
+            _conexion.AddParamFilterExp(sapOrganizacionCompraFiltro);
+            return await archivoExcel.ExportAsync(_conexion.GetCurrentCmd("NCSapOrganizacionesCompraCP"),
                                                   "SapOrganizacionCompra.xlsb",
                                                   sapOrganizacionCompraFiltro.Columnas);
-            return new MEDatosArchivo()
-            {
-                PathOrg = vArchivo,
-                PathDes = vArchivo
-            };
         }
         #endregion
 

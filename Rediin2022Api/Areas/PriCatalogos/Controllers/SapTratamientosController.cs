@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -47,59 +48,59 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad SapTratamiento.
         /// </summary>
-        public ESapTratamientoPag SapTratamientoPag(ESapTratamientoFiltro sapTratamientoFiltro)
+        public async Task<ESapTratamientoPag> SapTratamientoPag(ESapTratamientoFiltro sapTratamientoFiltro)
         {
-            return NSapTratamientos.SapTratamientoPag(sapTratamientoFiltro);
+            return await NSapTratamientos.SapTratamientoPag(sapTratamientoFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad SapTratamiento.
         /// </summary>
         [HttpGet("{sapTratamientoId}")]
-        public ESapTratamiento SapTratamientoXId(String sapTratamientoId)
+        public async Task<ESapTratamiento> SapTratamientoXId(String sapTratamientoId)
         {
-            return NSapTratamientos.SapTratamientoXId(sapTratamientoId);
+            return await NSapTratamientos.SapTratamientoXId(sapTratamientoId);
         }
         /// <summary>
         /// Consulta para combos de la entidad SapTratamiento.
         /// </summary>
-        public List<MEElemento> SapTratamientoCmb()
+        public async Task<List<MEElemento>> SapTratamientoCmb()
         {
-            return NSapTratamientos.SapTratamientoCmb();
+            return await NSapTratamientos.SapTratamientoCmb();
         }
         /// <summary>
         /// Permite insertar la entidad SapTratamiento.
         /// </summary>
-        public Boolean SapTratamientoInserta(ESapTratamiento sapTratamiento)
+        public async Task<Boolean> SapTratamientoInserta(ESapTratamiento sapTratamiento)
         {
-            return NSapTratamientos.SapTratamientoInserta(sapTratamiento);
+            return await NSapTratamientos.SapTratamientoInserta(sapTratamiento);
         }
         /// <summary>
         /// Permite actualizar la entidad SapTratamiento.
         /// </summary>
-        public Boolean SapTratamientoActualiza(ESapTratamiento sapTratamiento)
+        public async Task<Boolean> SapTratamientoActualiza(ESapTratamiento sapTratamiento)
         {
-            return NSapTratamientos.SapTratamientoActualiza(sapTratamiento);
+            return await NSapTratamientos.SapTratamientoActualiza(sapTratamiento);
         }
         /// <summary>
         /// Permite eliminar la entidad SapTratamiento.
         /// </summary>
-        public Boolean SapTratamientoElimina(ESapTratamiento sapTratamiento)
+        public async Task<Boolean> SapTratamientoElimina(ESapTratamiento sapTratamiento)
         {
-            return NSapTratamientos.SapTratamientoElimina(sapTratamiento);
+            return await NSapTratamientos.SapTratamientoElimina(sapTratamiento);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapTratamientoExporta(ESapTratamientoFiltro sapTratamientoFiltro)
+        public async Task<string> SapTratamientoExporta(ESapTratamientoFiltro sapTratamientoFiltro)
         {
-            return NSapTratamientos.SapTratamientoExporta(sapTratamientoFiltro);
+            return await NSapTratamientos.SapTratamientoExporta(sapTratamientoFiltro);
         }
         /// <summary>
         /// Reglas de negocio de la entidad SapTratamiento.
         /// </summary>
-        public List<MEReglaNeg> SapTratamientoReglas()
+        public async Task<List<MEReglaNeg>> SapTratamientoReglas()
         {
-            return NSapTratamientos.SapTratamientoReglas();
+            return await NSapTratamientos.SapTratamientoReglas();
         }
         #endregion
 

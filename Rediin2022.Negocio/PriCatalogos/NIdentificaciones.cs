@@ -2,14 +2,16 @@ using DSEntityNetX.Business;
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using DSMetodNetX.Negocio;
 using Rediin2022.AccesoDatos.PriCatalogos;
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.Negocio.PriCatalogos
 {
@@ -41,60 +43,60 @@ namespace Rediin2022.Negocio.PriCatalogos
         /// <summary>
         /// Esta funcion valida e inserta un registro en la base de datos.
         /// </summary>
-        public new Int64 IdentificacionInserta(EIdentificacion identificacion)
+        public new async Task<Int64> IdentificacionInserta(EIdentificacion identificacion)
         {
             //Validacion
             if (!IdentificacionValida(identificacion))
                 return 0L;
 
             //Persistencia
-            return base.IdentificacionInserta(identificacion);
+            return await base.IdentificacionInserta(identificacion);
         }
         /// <summary>
         /// Valida y actualiza un registro en la base de datos.
         /// </summary>
-        public new Boolean IdentificacionActualiza(EIdentificacion identificacion)
+        public new async Task<Boolean> IdentificacionActualiza(EIdentificacion identificacion)
         {
             //Validacion
             if (!IdentificacionValida(identificacion))
                 return false;
 
             //Persistencia
-            return base.IdentificacionActualiza(identificacion);
+            return await base.IdentificacionActualiza(identificacion);
         }
         /// <summary>
         /// Elimina un registro de la base de datos.
         /// </summary>
         /// <returns></returns>
-        public new Boolean IdentificacionElimina(EIdentificacion identificacion)
+        public new async Task<Boolean> IdentificacionElimina(EIdentificacion identificacion)
         {
             //Validacion
             IdentificacionReglasNeg().ValidateProperty(identificacion, e => e.IdentificacionId);
-            if (!_mensajes.Ok)
+            if (!Mensajes.Ok)
                 return false;
 
             //Persistencia
-            return base.IdentificacionElimina(identificacion);
+            return await base.IdentificacionElimina(identificacion);
         }
         /// <summary>
         /// Reglas de negocio.
         /// </summary>
-        public List<MEReglaNeg> IdentificacionReglas()
+        public async Task<List<MEReglaNeg>> IdentificacionReglas()
         {
-            return IdentificacionReglasNeg().Rules;
+            return await Task.Run(() => IdentificacionReglasNeg().Rules);
         }
         /// <summary>
         /// Validacion para inserta y actualiza.
         /// </summary>
         private Boolean IdentificacionValida(EIdentificacion identificacion)
         {
-            _mensajes.Initialize();
+            Mensajes.Initialize();
             if (!IdentificacionReglasNeg().Validate(identificacion))
                 return false;
 
             //Validaciones adicionales
 
-            return _mensajes.Ok;
+            return Mensajes.Ok;
         }
         /// <summary>
         /// Crea las reglas de negocio.
@@ -104,7 +106,7 @@ namespace Rediin2022.Negocio.PriCatalogos
             if (_identificacionReglas != null)
                 return _identificacionReglas;
 
-            _identificacionReglas = Validaciones.CreaReglasNeg<EIdentificacion>(_mensajes);
+            _identificacionReglas = Validaciones.CreaReglasNeg<EIdentificacion>(Mensajes);
             _identificacionReglas.AddSL(e => e.IdentificacionId, 0L, Validaciones._int64Max, false); // Consecutivo
             _identificacionReglas.AddSL(e => e.IdentificacionNombre, 2, 120);
             _identificacionReglas.AddSL(e => e.Activo);

@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapBancos EVSapBancos
+        private EVSapBancos EV
         {
-            get
-            {
-                if (base.MSesion<EVSapBancos>() == null)
-                    base.MSesion(new EVSapBancos());
-
-                return base.MSesionAuto<EVSapBancos>();
-            }
+            get { return base.MEVCtrl<EVSapBancos>(); }
         }
         #endregion
 
@@ -63,14 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapBancoInicia()
+        public async Task<IActionResult> SapBancoInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapBancos.SapBancoColOrden))
-                EVSapBancos.SapBancoColOrden = nameof(ESapBanco.SapBancoId);
-
-            if (EVSapBancos.SapBancoReglas == null)
-                EVSapBancos.SapBancoReglas = NSapBancos.SapBancoReglas();
+            await Servicios.Gen.InicializaSF(EV.SapBanco, nameof(ESapBanco.SapBancoId),
+                async () => await NSapBancos.SapBancoReglas());
 
             return RedirectToAction(nameof(SapBancoCon));
         }
@@ -78,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapBancoInicia))]
-        public IActionResult SapBancoCon()
+        public async Task<IActionResult> SapBancoCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapBancos.SapBancoFiltro,
-                                     EVSapBancos.SapBancoPag,
-                                     EVSapBancos.SapBancoColOrden,
-                                     nameof(ESapBanco));
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapBanco);
+            EV.SapBanco.Pag = await NSapBancos.SapBancoPag(EV.SapBanco.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapBanco);
 
-            EVSapBancos.SapBancoPag = NSapBancos.SapBancoPag(EVSapBancos.SapBancoFiltro);
-            base.MActualizaTamPag(EVSapBancos.SapBancoPag?.DatPag);
+            ViewBag.Mensajes = NSapBancos.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = NSapBancos.Mensajes.Copy();
-            ViewBag.Reglas = EVSapBancos.SapBancoReglas;
-            ViewBag.DatPag = EVSapBancos.SapBancoPag?.DatPag;
-            ViewBag.Orden = EVSapBancos.SapBancoColOrden;
-            ViewBag.Filtro = EVSapBancos.SapBancoFiltro;
-            ViewBag.Indice = EVSapBancos.SapBancoIndice;
-
-            return View(nameof(SapBancoCon), EVSapBancos.SapBancoPag?.Pagina);
+            return View(nameof(SapBancoCon), EV.SapBanco.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapBancoXId(Int32 indice)
+        public async Task<IActionResult> SapBancoXId(Int32 indice)
         {
-            EVSapBancos.Accion = MAccionesGen.Consulta;
-            EVSapBancos.SapBancoIndice = indice;
-            return SapBancoCaptura(EVSapBancos.SapBancoPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapBanco.Indice = indice;
+            return await SapBancoCaptura(EV.SapBanco.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapBancoInserta))]
-        public IActionResult SapBancoInsertaIni()
+        public async Task<IActionResult> SapBancoInsertaIni()
         {
-            EVSapBancos.Accion = MAccionesGen.Inserta;
-            return SapBancoInsertaCap(new ESapBanco()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapBancoInsertaCap(new ESapBanco()
             {
                 Activo = true
             });
@@ -123,58 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapBancoInserta))]
-        public IActionResult SapBancoInsertaCap(ESapBanco sapBanco)
+        public async Task<IActionResult> SapBancoInsertaCap(ESapBanco sapBanco)
         {
-            return SapBancoCaptura(sapBanco);
+            return await SapBancoCaptura(sapBanco);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapBancoInserta(ESapBanco sapBanco)
+        public async Task<IActionResult> SapBancoInserta(ESapBanco sapBanco)
         {
-            if (NSapBancos.SapBancoInserta(sapBanco))
+            if (await NSapBancos.SapBancoInserta(sapBanco))
                 return RedirectToAction(nameof(SapBancoCon));
 
-            return SapBancoInsertaCap(sapBanco);
+            return await SapBancoInsertaCap(sapBanco);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapBancoActualiza))]
-        public IActionResult SapBancoActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapBancoActualizaIni(Int32 indice)
         {
-            EVSapBancos.Accion = MAccionesGen.Actualiza;
-            EVSapBancos.SapBancoIndice = indice;
-            EVSapBancos.SapBancoSel = EVSapBancos.SapBancoPag.Pagina[indice];
-            return SapBancoActualizaCap(EVSapBancos.SapBancoSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapBanco.Indice = indice;
+            EV.SapBanco.Sel = EV.SapBanco.Pag.Pagina[indice];
+            return await SapBancoActualizaCap(EV.SapBanco.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapBancoActualiza))]
-        public IActionResult SapBancoActualizaCap(ESapBanco sapBanco)
+        public async Task<IActionResult> SapBancoActualizaCap(ESapBanco sapBanco)
         {
-            return SapBancoCaptura(sapBanco);
+            return await SapBancoCaptura(sapBanco);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapBancoActualiza(ESapBanco sapBanco)
+        public async Task<IActionResult> SapBancoActualiza(ESapBanco sapBanco)
         {
-            if (NSapBancos.SapBancoActualiza(sapBanco))
+            if (await NSapBancos.SapBancoActualiza(sapBanco))
                 return RedirectToAction(nameof(SapBancoCon));
 
-            return SapBancoActualizaCap(sapBanco);
+            return await SapBancoActualizaCap(sapBanco);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapBancoElimina(Int32 indice)
+        public async Task<IActionResult> SapBancoElimina(Int32 indice)
         {
-            NSapBancos.SapBancoElimina(EVSapBancos.SapBancoPag.Pagina[indice]);
+            await NSapBancos.SapBancoElimina(EV.SapBanco.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapBancoCon));
         }
         /// <summary>
@@ -182,18 +165,18 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapBancoExporta()
         {
-            EVSapBancos.SapBancoFiltro.ColumnaOrden = EVSapBancos.SapBancoColOrden;
-            EVSapBancos.SapBancoFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapBanco.Filtro.ColumnaOrden = EV.SapBanco.ColOrden;
+            EV.SapBanco.Filtro.Columnas = new Dictionary<String, String>()
                        {
                            { nameof(ESapBanco.Activo), String.Empty },
                            { nameof(ESapBanco.SapBancoId), String.Empty },
                            { nameof(ESapBanco.SapBancoNombre), String.Empty }
                        };
 
-            MEDatosArchivo vDA = NSapBancos.SapBancoExporta(EVSapBancos.SapBancoFiltro);
-            EVSapBancos.SapBancoFiltro.Columnas = null;
+            string vRutaYNombreArchivo = await NSapBancos.SapBancoExporta(EV.SapBanco.Filtro);
+            EV.SapBanco.Filtro.Columnas = null;
             if (NSapBancos.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapBancos.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
             return RedirectToAction(nameof(SapBancoCon));
         }
@@ -203,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapBancoCaptura(ESapBanco sapBanco)
+        private async Task<IActionResult> SapBancoCaptura(ESapBanco sapBanco)
         {
-            ViewBag.Mensajes = NSapBancos.Mensajes.Copy();
-            ViewBag.Accion = EVSapBancos.Accion;
-            ViewBag.Reglas = EVSapBancos.SapBancoReglas;
+            ViewBag.Mensajes = NSapBancos.Mensajes;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapBancoCaptura), sapBanco);
+            return await Task.FromResult(ViewCap(nameof(SapBancoCaptura), sapBanco));
         }
         #endregion
 
@@ -220,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapBancoInicia))]
         public IActionResult SapBancoPaginacion(MEDatosPaginador datPag)
         {
-            EVSapBancos.SapBancoPag.DatPag = datPag;
+            EV.SapBanco.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapBancoCon));
         }
         /// <summary>
@@ -229,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapBancoInicia))]
         public IActionResult SapBancoOrdena(String orden)
         {
-            EVSapBancos.SapBancoColOrden = orden;
+            EV.SapBanco.ColOrden = orden;
             return RedirectToAction(nameof(SapBancoCon));
         }
         /// <summary>
@@ -238,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapBancoInicia))]
         public IActionResult SapBancoFiltra(ESapBancoFiltro filtro)
         {
-            EVSapBancos.SapBancoFiltro = filtro;
+            EV.SapBanco.Filtro = filtro;
             return RedirectToAction(nameof(SapBancoCon));
         }
         /// <summary>
@@ -247,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapBancoInicia))]
         public IActionResult SapBancoLimpiaFiltros()
         {
-            EVSapBancos.SapBancoFiltro = new ESapBancoFiltro();
+            EV.SapBanco.Filtro = new ESapBancoFiltro();
             return RedirectToAction(nameof(SapBancoCon));
         }
         #endregion

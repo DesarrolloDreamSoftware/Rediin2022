@@ -2,10 +2,12 @@ using DSEntityNetX.Common.Casting;
 using DSEntityNetX.Common.File;
 using DSEntityNetX.Common.Pagination;
 using DSEntityNetX.Common.Security;
+using DSEntityNetX.Mvc;
 using DSMetodNetX.Aplicacion;
 using DSMetodNetX.Entidades;
+using DSMetodNetX.Entidades.Correo;
 using DSMetodNetX.Mvc.Seguridad;
-using DSMetodNetX.Mvc.Seguridad.Correo;
+using GroupDocs.Viewer.Options;
 using MailKit.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
@@ -25,8 +27,10 @@ using Sisegui2020.Entidades.Idioma;
 using Sisegui2020.Entidades.PriCatalogos;
 using Sisegui2020.Entidades.PriSeguridad;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -56,7 +60,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
                                         INSapTratamientos nSapTratamientos,
                                         INSapCuentasAsociadas nSapCuentasAsociadas,
                                         INSapGruposTesoreria nSapGruposTesoreria,
-                                        //Falta sap bancos
+                                        INSapBancos nSapBancos,
                                         INSapCondicionesPago nSapCondicionesPago,
                                         INSapViasPago nSapViasPago,
                                         INSapGruposTolerancia nSapGruposTolerancia)
@@ -76,7 +80,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             NSapTratamientos = nSapTratamientos;
             NSapCuentasAsociadas = nSapCuentasAsociadas;
             NSapGruposTesoreria = nSapGruposTesoreria;
-            //Falta sap bancos
+            NSapBancos = nSapBancos;
             NSapCondicionesPago = nSapCondicionesPago;
             NSapViasPago = nSapViasPago;
             NSapGruposTolerancia = nSapGruposTolerancia;
@@ -98,51 +102,37 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         private INSapTratamientos NSapTratamientos { get; set; } //Proveedores
         private INSapCuentasAsociadas NSapCuentasAsociadas { get; set; } //Proveedores
         private INSapGruposTesoreria NSapGruposTesoreria { get; set; } //Proveedores
-        //Falta sap bancos
+        private INSapBancos NSapBancos { get; set; } //Proveedores
         private INSapCondicionesPago NSapCondicionesPago { get; set; } //Proveedores
         private INSapViasPago NSapViasPago { get; set; } //Proveedores
         private INSapGruposTolerancia NSapGruposTolerancia { get; set; } //Proveedores
-        private EVConExpedientes EVConExpedientes
+        private EVConExpedientes EV
         {
-            get
-            {
-                if (base.MSesion<EVConExpedientes>() == null)
-                    base.MSesion(new EVConExpedientes());
-
-                return base.MSesionAuto<EVConExpedientes>();
-            }
+            get { return base.MEVCtrl<EVConExpedientes>(); }
         }
         #endregion
 
         #region ConExpProcOperativo (Enc)
 
         #region Acciones
-        public IActionResult ConExpProcOperativoInicia()
+        public async Task<IActionResult> ConExpProcOperativoInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVConExpedientes.ConExpProcOperativoColOrden))
-                EVConExpedientes.ConExpProcOperativoColOrden = nameof(EConExpProcOperativo.Orden);
+            await Servicios.Gen.InicializaSF(EV.ConExpProcOperativo, nameof(EConExpProcOperativo.Orden));
 
             return RedirectToAction(nameof(ConExpProcOperativoCon));
         }
         [MValidaSeg(nameof(ConExpProcOperativoInicia))]
-        public IActionResult ConExpProcOperativoCon()
+        public async Task<IActionResult> ConExpProcOperativoCon()
         {
-            base.MCargaFiltroPagYOrd(EVConExpedientes.ConExpProcOperativoFiltro,
-                                     EVConExpedientes.ConExpProcOperativoPag,
-                                     EVConExpedientes.ConExpProcOperativoColOrden,
-                                     nameof(EConExpProcOperativo));
+            await Servicios.Pag.CargaPagOrdYFil(EV.ConExpProcOperativo);
+            EV.ConExpProcOperativo.Pag = await NConExpedientes.ConExpProcOperativoPag(EV.ConExpProcOperativo.Filtro);
+            await Servicios.Pag.ActTamPag(EV.ConExpProcOperativo);
 
-            EVConExpedientes.ConExpProcOperativoPag = NConExpedientes.ConExpProcOperativoPag(EVConExpedientes.ConExpProcOperativoFiltro);
-            base.MActualizaTamPag(EVConExpedientes.ConExpProcOperativoPag?.DatPag);
+            ViewBag.Mensajes = NConExpedientes.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
-            ViewBag.DatPag = EVConExpedientes.ConExpProcOperativoPag?.DatPag;
-            ViewBag.Orden = EVConExpedientes.ConExpProcOperativoColOrden;
-            ViewBag.Filtro = EVConExpedientes.ConExpProcOperativoFiltro;
-            ViewBag.Indice = EVConExpedientes.ConExpProcOperativoIndice;
-
-            return View(nameof(ConExpProcOperativoCon), EVConExpedientes.ConExpProcOperativoPag?.Pagina);
+            return View(nameof(ConExpProcOperativoCon), EV.ConExpProcOperativo.Pag?.Pagina);
         }
         #endregion
 
@@ -153,25 +143,25 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         [MValidaSeg(nameof(ConExpProcOperativoInicia))]
         public IActionResult ConExpProcOperativoPaginacion(MEDatosPaginador datPag)
         {
-            EVConExpedientes.ConExpProcOperativoPag.DatPag = datPag;
+            EV.ConExpProcOperativo.Pag.DatPag = datPag;
             return RedirectToAction(nameof(ConExpProcOperativoCon));
         }
         [MValidaSeg(nameof(ConExpProcOperativoInicia))]
         public IActionResult ConExpProcOperativoOrdena(String orden)
         {
-            EVConExpedientes.ConExpProcOperativoColOrden = orden;
+            EV.ConExpProcOperativo.ColOrden = orden;
             return RedirectToAction(nameof(ConExpProcOperativoCon));
         }
         [MValidaSeg(nameof(ConExpProcOperativoInicia))]
         public IActionResult ConExpProcOperativoFiltra(EConExpProcOperativoFiltro filtro)
         {
-            EVConExpedientes.ConExpProcOperativoFiltro = filtro;
+            EV.ConExpProcOperativo.Filtro = filtro;
             return RedirectToAction(nameof(ConExpProcOperativoCon));
         }
         [MValidaSeg(nameof(ConExpProcOperativoInicia))]
         public IActionResult ConExpProcOperativoLimpiaFiltros()
         {
-            EVConExpedientes.ConExpProcOperativoFiltro = new EConExpProcOperativoFiltro();
+            EV.ConExpProcOperativo.Filtro = new EConExpProcOperativoFiltro();
             return RedirectToAction(nameof(ConExpProcOperativoCon));
         }
         #endregion
@@ -181,108 +171,103 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         #region ConExpediente (Exp)
 
         #region Acciones
-        public IActionResult ConExpedienteInicia(Int32 indice)
+        public async Task<IActionResult> ConExpedienteInicia(Int32 indice)
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVConExpedientes.ConExpedienteColOrden))
-                EVConExpedientes.ConExpedienteColOrden = "-" + nameof(EConExpediente.ExpedienteId);
+            //await Servicios.Gen.InicializaSF(EV.ConExpediente, nameof(EConExpediente.ExpedienteId),
+            //    async () => await NConExpedientes.ConExpedienteReglas());
+            await Servicios.Gen.InicializaSF(EV.ConExpediente, "-" + nameof(EConExpediente.ExpedienteId));
 
-            if (indice >= 0)
-            {
-                EVConExpedientes.ConExpProcOperativoIndice = indice;
-                EVConExpedientes.ConExpProcOperativoSel = EVConExpedientes.ConExpProcOperativoPag.Pagina[indice];
-            }
+            Servicios.Gen.InicializaSFInd(EV.ConExpProcOperativo, indice);
 
             //Entidades adicionales
-            EVConExpedientes.ProcOperColumnasCon =
-                NProcesosOperativos.ProcesoOperativoColCT(EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId);
+            EV.ProcOperColumnasCon =
+                await NProcesosOperativos.ProcesoOperativoColCT(EV.ConExpProcOperativo.Sel.ProcesoOperativoId);
 
             //Ordenar columnas para la captura
-            if (EVConExpedientes.ProcOperColumnasCon != null)
+            if (EV.ProcOperColumnasCon != null)
             {
-                EVConExpedientes.ProcOperColumnasCap =
-                    (from vCol in EVConExpedientes.ProcOperColumnasCon
+                EV.ProcOperColumnasCap =
+                    (from vCol in EV.ProcOperColumnasCon
                      where vCol.CapOrden > 0
                      orderby vCol.CapOrden
                      select vCol).ToList();
             }
             else
-                EVConExpedientes.ProcOperColumnasCap = new List<EProcesoOperativoCol>();
-
-            //EVConExpedientes.ProcOperColumnas = NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoCol.ProcesoOperativoId);
+                EV.ProcOperColumnasCap = new List<EProcesoOperativoCol>();
 
             //Cargamos la informacion de los combos
-            if (EVConExpedientes.ProcOperColumnasCap != null && EVConExpedientes.ProcOperColumnasCap.Count > 0)
+            if (EV.ProcOperColumnasCap != null && EV.ProcOperColumnasCap.Count > 0)
             {
-                foreach (EProcesoOperativoCol vCol in EVConExpedientes.ProcOperColumnasCap)
+                foreach (EProcesoOperativoCol vCol in EV.ProcOperColumnasCap)
                 {
                     if (vCol.CapCmbProcesoOperativoId > 0)
-                        vCol.ElementosCmb = NConExpedientes.ConExpedienteCmb(vCol);
+                        vCol.ElementosCmb = await NConExpedientes.ConExpedienteCmb(vCol);
                 }
             }
 
             //No config Proveedor
-            EVConExpedientes.ParamProveedorProcesoOperativoId = base.MParametroSist<Int64>("RediinProveedorProcesoOperativoId");
-            if (EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId == EVConExpedientes.ParamProveedorProcesoOperativoId)
+            EV.ParamProveedorProcesoOperativoId = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoId");
+            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
             {
-                var vRelaciones = NExpedientes.RelacionProcesoOperativo(EVConExpedientes.ParamProveedorProcesoOperativoId);
-                EVConExpedientes.ParamEstIdCaptura = base.MParametroSist<Int64>("RediinProveedorProcesoOperativoEstIdCaptura");
-                EVConExpedientes.ParamEstIdAutorizado = base.MParametroSist<Int64>("RediinProveedorProcesoOperativoEstIdAutorizado");
-                EVConExpedientes.ParamUrlRediinProveedores = base.MParametroSist<String>("RediinProveedorUrl");
+                var vRelaciones = await NExpedientes.RelacionProcesoOperativo(EV.ParamProveedorProcesoOperativoId);
+                EV.ParamEstIdCaptura = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdCaptura");
+                EV.ParamEstIdAutorizado = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdAutorizado");
+                EV.ParamUrlRediinProveedores = await Servicios.ParamSist.Param<String>("RediinProveedorUrl");
 
 
-                EVConExpedientes.ProveedorColumnaIdUsuario = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.UsuarioId)).ColumnaId;
-                if (EVConExpedientes.ProveedorColumnaIdUsuario <= 0)
+                EV.ProveedorColumnaIdUsuario = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.UsuarioId)).ColumnaId;
+                if (EV.ProveedorColumnaIdUsuario <= 0)
                 {
                     NConExpedientes.Mensajes.AddError($"No se configuro correctamente el usuarioId para un nuevo usuario.");
-                    return ConExpProcOperativoCon();
+                    return await ConExpProcOperativoCon();
                 }
 
-                EVConExpedientes.ParamPerfilIdNvoUsr = base.MParametroSist<Int64>("RediinProveedorPerfilIdNvoUsr");
-                if (EVConExpedientes.ParamPerfilIdNvoUsr <= 0)
+                EV.ParamPerfilIdNvoUsr = await Servicios.ParamSist.Param<Int64>("RediinProveedorPerfilIdNvoUsr");
+                if (EV.ParamPerfilIdNvoUsr <= 0)
                 {
                     NConExpedientes.Mensajes.AddError($"No se configuro correctamente el perfil para un nuevo usuario.");
-                    return ConExpProcOperativoCon();
+                    return await ConExpProcOperativoCon();
                 }
-                EVConExpedientes.ParamProveedorColumnaIdNombre = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.NombreORazonSocial)).ColumnaId;
-                EVConExpedientes.ParamProveedorColumnaIdCorreo = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.ContactoCorreoElectronico)).ColumnaId;
-                if (!EVConExpedientes.ProcOperColumnasCon.Exists(e => e.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdNombre))
+                EV.ParamProveedorColumnaIdNombre = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.NombreORazonSocial)).ColumnaId;
+                EV.ParamProveedorColumnaIdCorreo = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.ContactoCorreoElectronico)).ColumnaId;
+                if (!EV.ProcOperColumnasCon.Exists(e => e.ColumnaId == EV.ParamProveedorColumnaIdNombre))
                 {
-                    NConExpedientes.Mensajes.AddError($"No se configuro correctamente la columna de nombre para este proceso operativo de proveedores [{EVConExpedientes.ParamProveedorColumnaIdNombre}].");
-                    return ConExpProcOperativoCon();
+                    NConExpedientes.Mensajes.AddError($"No se configuro correctamente la columna de nombre para este proceso operativo de proveedores [{EV.ParamProveedorColumnaIdNombre}].");
+                    return await ConExpProcOperativoCon();
                 }
-                if (!EVConExpedientes.ProcOperColumnasCon.Exists(e => e.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdCorreo))
+                if (!EV.ProcOperColumnasCon.Exists(e => e.ColumnaId == EV.ParamProveedorColumnaIdCorreo))
                 {
-                    NConExpedientes.Mensajes.AddError($"No se configuro correctamente la columna de correo para este proceso operativo de proveedores [{EVConExpedientes.ParamProveedorColumnaIdCorreo}].");
-                    return ConExpProcOperativoCon();
+                    NConExpedientes.Mensajes.AddError($"No se configuro correctamente la columna de correo para este proceso operativo de proveedores [{EV.ParamProveedorColumnaIdCorreo}].");
+                    return await ConExpProcOperativoCon();
                 }
 
                 //Para catalogos
-                EVConExpedientes.ParamProveedorColumnaIdPais = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.PaisId)).ColumnaId;
-                EVConExpedientes.ParamProveedorColumnaIdEstado = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.EstadoId)).ColumnaId;
-                EVConExpedientes.ParamProveedorColumnaIdMunicipio = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.MunicipioId)).ColumnaId;
-                EVConExpedientes.ParamProveedorColumnaIdColonia = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.ColoniaId)).ColumnaId;
-                List<MEElemento> vBancos = NBancos.BancoCmb();
-                EVConExpedientes.CombosProveedores = new Dictionary<Int64, List<MEElemento>>()
+                EV.ParamProveedorColumnaIdPais = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.PaisId)).ColumnaId;
+                EV.ParamProveedorColumnaIdEstado = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.EstadoId)).ColumnaId;
+                EV.ParamProveedorColumnaIdMunicipio = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.MunicipioId)).ColumnaId;
+                EV.ParamProveedorColumnaIdColonia = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.ColoniaId)).ColumnaId;
+                List<MEElemento> vBancos = await NBancos.BancoCmb();
+                EV.CombosProveedores = new Dictionary<Int64, List<MEElemento>>()
                 {
-                    { EVConExpedientes.ParamProveedorColumnaIdPais, NPaises.PaisCmb() },
-                    { EVConExpedientes.ParamProveedorColumnaIdEstado, null},
-                    { EVConExpedientes.ParamProveedorColumnaIdMunicipio, null},
-                    { EVConExpedientes.ParamProveedorColumnaIdColonia, null},
+                    { EV.ParamProveedorColumnaIdPais, await NPaises.PaisCmb() },
+                    { EV.ParamProveedorColumnaIdEstado, null},
+                    { EV.ParamProveedorColumnaIdMunicipio, null},
+                    { EV.ParamProveedorColumnaIdColonia, null},
                     { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.BancoId)).ColumnaId, vBancos },
                     { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.BancoId2)).ColumnaId, vBancos },
                     { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.BancoId3)).ColumnaId, vBancos },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapSociedadId)).ColumnaId, NSapSociedades.SapSociedadCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapSociedadGLId)).ColumnaId, NSapSociedadesGL.SapSociedadGLCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoCuentaId)).ColumnaId, NSapGrupoCuentas.SapGrupoCuentaCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapOrganizacionCompraId)).ColumnaId, NSapOrganizacionesCompra.SapOrganizacionCompraCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapTratamientoId)).ColumnaId, NSapTratamientos.SapTratamientoCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCuentaAsociadaId)).ColumnaId, NSapCuentasAsociadas.SapCuentaAsociadaCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoTesoreriaId)).ColumnaId, NSapGruposTesoreria.SapGrupoTesoreriaCmb() },
-                    //falta banco
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCondicionPagoId)).ColumnaId, NSapCondicionesPago.SapCondicionPagoCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapViaPagoId)).ColumnaId, NSapViasPago.SapViaPagoCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoToleranciaId)).ColumnaId, NSapGruposTolerancia.SapGrupoToleranciaCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapSociedadId)).ColumnaId, await NSapSociedades.SapSociedadCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapSociedadGLId)).ColumnaId, await NSapSociedadesGL.SapSociedadGLCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoCuentaId)).ColumnaId, await NSapGrupoCuentas.SapGrupoCuentaCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapOrganizacionCompraId)).ColumnaId, await NSapOrganizacionesCompra.SapOrganizacionCompraCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapTratamientoId)).ColumnaId, await NSapTratamientos.SapTratamientoCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCuentaAsociadaId)).ColumnaId, await NSapCuentasAsociadas.SapCuentaAsociadaCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoTesoreriaId)).ColumnaId, await NSapGruposTesoreria.SapGrupoTesoreriaCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapBancoId)).ColumnaId, await NSapBancos.SapBancoCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCondicionPagoId)).ColumnaId, await NSapCondicionesPago.SapCondicionPagoCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapViaPagoId)).ColumnaId, await NSapViasPago.SapViaPagoCmb() },
+                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoToleranciaId)).ColumnaId, await NSapGruposTolerancia.SapGrupoToleranciaCmb() },
                 };
             }
             //No config Proveedor
@@ -290,227 +275,222 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             return RedirectToAction(nameof(ConExpedienteCon));
         }
         [MValidaSeg(nameof(ConExpedienteInicia))]
-        public IActionResult ConExpedienteCon()
+        public async Task<IActionResult> ConExpedienteCon()
         {
-            EVConExpedientes.ConExpedienteFiltro.ProcesoOperativoId = EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId;
-            EVConExpedientes.ConExpedienteFiltro.ControlEstatus = EVConExpedientes.ConExpProcOperativoSel.ControlEstatus;
-            base.MCargaFiltroPagYOrd(EVConExpedientes.ConExpedienteFiltro,
-                                     EVConExpedientes.ConExpedientePag,
-                                     EVConExpedientes.ConExpedienteColOrden,
-                                     nameof(EConExpediente));
+            EV.ConExpediente.Filtro.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId;
+            EV.ConExpediente.Filtro.ControlEstatus = EV.ConExpProcOperativo.Sel.ControlEstatus;
+
+            await Servicios.Pag.CargaPagOrdYFil(EV.ConExpediente);
 
             //Adi
-            EVConExpedientes.ConExpedienteFiltro.ColumnaId =
-                XString.XToInt64(EVConExpedientes.ConExpedienteFiltro.ColumnaOrden);
-            if (EVConExpedientes.ConExpedienteFiltro.ColumnaId < 0)
-                EVConExpedientes.ConExpedienteFiltro.ColumnaId *= -1;
-            if (EVConExpedientes.ConExpedienteFiltro.ColumnaId > 0)
-                EVConExpedientes.ConExpedienteFiltro.Ascendente =
-                    !EVConExpedientes.ConExpedienteFiltro.ColumnaOrden.StartsWith("-");
+            EV.ConExpediente.Filtro.ColumnaId =
+                XString.XToInt64(EV.ConExpediente.Filtro.ColumnaOrden);
+            if (EV.ConExpediente.Filtro.ColumnaId < 0)
+                EV.ConExpediente.Filtro.ColumnaId *= -1;
+            if (EV.ConExpediente.Filtro.ColumnaId > 0)
+                EV.ConExpediente.Filtro.Ascendente =
+                    !EV.ConExpediente.Filtro.ColumnaOrden.StartsWith("-");
 
-            EVConExpedientes.ConExpedientePag = NConExpedientes.ConExpedientePag(EVConExpedientes.ConExpedienteFiltro);
-            base.MActualizaTamPag(EVConExpedientes.ConExpedientePag?.DatPag);
+            EV.ConExpediente.Pag = await NConExpedientes.ConExpedientePag(EV.ConExpediente.Filtro);
+            await Servicios.Pag.ActTamPag(EV.ConExpediente);
 
-            ViewBag.Mensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
-            ViewBag.DatPag = EVConExpedientes.ConExpedientePag?.DatPag;
-            ViewBag.Orden = EVConExpedientes.ConExpedienteColOrden;
-            ViewBag.Filtro = EVConExpedientes.ConExpedienteFiltro;
-            ViewBag.Indice = EVConExpedientes.ConExpedienteIndice;
-            ViewBag.SelColGrupoId = EVConExpedientes.ConExpedienteSelColGrupoId;
+            ViewBag.Mensajes = NConExpedientes.Mensajes;
+            ViewBag.EV = EV;
 
             ViewBag.ProcesosOperativosEst =
-                NProcesosOperativos.ProcesoOperativoEstCmb(EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId); //Mod
+                 await NProcesosOperativos.ProcesoOperativoEstCmb(EV.ConExpProcOperativo.Sel.ProcesoOperativoId); //Mod
 
             //Adi
-            //ViewBag.ProcOperColumnas = EVConExpedientes.ProcOperColumnasCon;
-
             ViewBag.ProcOperColumnas =
-                (from vCol in EVConExpedientes.ProcOperColumnasCon
+                (from vCol in EV.ProcOperColumnasCon
                  where vCol.ConOrden > 0
                  orderby vCol.ConOrden
                  select vCol).ToList();
 
-            ViewBag.ControlEstatus = EVConExpedientes.ConExpProcOperativoSel.ControlEstatus;
+            ViewBag.ControlEstatus = EV.ConExpProcOperativo.Sel.ControlEstatus;
 
-            return View(nameof(ConExpedienteCon), EVConExpedientes.ConExpedientePag?.Pagina);
+            return View(nameof(ConExpedienteCon), EV.ConExpediente.Pag?.Pagina);
         }
 
-        public IActionResult ConExpedienteXId(Int32 indice)
+        public async Task<IActionResult> ConExpedienteXId(Int32 indice)
         {
-            EVConExpedientes.Accion = MAccionesGen.Consulta;
-            EVConExpedientes.ConExpedienteIndice = indice;
-            return ConExpedienteCaptura(EVConExpedientes.ConExpedientePag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.ConExpediente.Indice = indice;
+            return await ConExpedienteCaptura(EV.ConExpediente.Pag.Pagina[indice]);
         }
         [MValidaSeg(nameof(ConExpedienteInserta))]
-        public IActionResult ConExpedienteInsertaIni()
+        public async Task<IActionResult> ConExpedienteInsertaIni()
         {
-            EVConExpedientes.Accion = MAccionesGen.Inserta;
-            return ConExpedienteInsertaCap(new EConExpediente());
+            EV.Accion = MAccionesGen.Inserta;
+            return await ConExpedienteInsertaCap(new EConExpediente());
         }
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(ConExpedienteInserta))]
-        public IActionResult ConExpedienteInsertaCap(EConExpediente conExpediente)
+        public async Task<IActionResult> ConExpedienteInsertaCap(EConExpediente conExpediente)
         {
-            return ConExpedienteCaptura(conExpediente);
+            return await ConExpedienteCaptura(conExpediente);
         }
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(ConExpedienteInserta))]
-        public IActionResult ConExpedienteInsertaCap2(IFormCollection conExp, Int64 PEMColumnaId)
+        public async Task<IActionResult> ConExpedienteInsertaCap2(IFormCollection conExp, Int64 PEMColumnaId)
         {
             EConExpediente conExpediente = ObtenExpediente(conExp);
-            conExpediente.ProcesoOperativoId = EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId; //Llave padre
-            conExpediente.ControlEstatus = EVConExpedientes.ConExpProcOperativoSel.ControlEstatus;
+            conExpediente.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId; //Llave padre
+            conExpediente.ControlEstatus = EV.ConExpProcOperativo.Sel.ControlEstatus;
             AjustaComboCascadaPEMProv(conExpediente, PEMColumnaId);
-            return ConExpedienteInsertaCap(conExpediente);
+            return await ConExpedienteInsertaCap(conExpediente);
         }
         [ValidateAntiForgeryToken]
-        public IActionResult ConExpedienteInserta(IFormCollection conExp)
+        public async Task<IActionResult> ConExpedienteInserta(IFormCollection conExp)
         {
             EConExpediente conExpediente = ObtenExpediente(conExp);
-            conExpediente.ProcesoOperativoId = EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId; //Llave padre
-            conExpediente.ControlEstatus = EVConExpedientes.ConExpProcOperativoSel.ControlEstatus;
+            conExpediente.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId; //Llave padre
+            conExpediente.ControlEstatus = EV.ConExpProcOperativo.Sel.ControlEstatus;
             //conExpediente.ProcesoOperativoEstId = 0L;
 
-            if (EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId == EVConExpedientes.ParamProveedorProcesoOperativoId)
+            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
             {
-                String vNombre = ObtenValor(conExpediente, EVConExpedientes.ParamProveedorColumnaIdNombre).ToString();
-                String vCorreo = ObtenValor(conExpediente, EVConExpedientes.ParamProveedorColumnaIdCorreo).ToString();
+                String vNombre = ObtenValor(conExpediente, EV.ParamProveedorColumnaIdNombre).ToString();
+                String vCorreo = ObtenValor(conExpediente, EV.ParamProveedorColumnaIdCorreo).ToString();
                 if (String.IsNullOrWhiteSpace(vNombre))
                     NExpedientes.Mensajes.AddError("El campo [Nombre o razón social] es obligatorio.");
                 if (String.IsNullOrWhiteSpace(vNombre))
                     NExpedientes.Mensajes.AddError("El campo [Correo] es obligatorio.");
                 if (!NExpedientes.Mensajes.Ok)
-                    return ConExpedienteInsertaCap(conExpediente);
+                    return await ConExpedienteInsertaCap(conExpediente);
 
-                conExpediente.ExpedienteId = NConExpedientes.ConExpedienteInserta(conExpediente);
+                conExpediente.ExpedienteId = await NConExpedientes.ConExpedienteInserta(conExpediente);
                 if (!NConExpedientes.Mensajes.Ok)
-                    return ConExpedienteInsertaCap(conExpediente);
+                    return await ConExpedienteInsertaCap(conExpediente);
 
-                EClave vCve = CreaUsuario(conExpediente, out EUsuario vUsuario);
+                //JRD VERIFICAR
+                var vResultado = await CreaUsuario(conExpediente);
+                EClave vCve = vResultado.Item1;
+                EUsuario vUsuario = vResultado.Item2;
+
                 if (NExpedientes.Mensajes.Ok)
                 {
                     foreach (var vValor in conExpediente.Valores)
                     {
-                        if (vValor.ColumnaId == EVConExpedientes.ProveedorColumnaIdUsuario)
+                        if (vValor.ColumnaId == EV.ProveedorColumnaIdUsuario)
                             EstableceValor(vValor, TiposColumna.Entero, vCve.UsuarioId.ToString());
                     }
-                    NConExpedientes.ConExpedienteActualiza(conExpediente);
+                    await NConExpedientes.ConExpedienteActualiza(conExpediente);
 
                     EnviaCorreo(vUsuario.CorreoElectronico,
                                 "Su usuario de Rediin Proveedores ha sido creado.",
                                 String.Format("Bienvenido a Rediin Proveedores.<br/><br/>Su usuario es {0}<br/>Su contraseña es {1}<br/><br/>La URL donde puede acceder a sus sistema es:<br/>{2}",
-                                        vUsuario.Usuario, vCve.ClaveVerif, EVConExpedientes.ParamUrlRediinProveedores));
+                                        vUsuario.Usuario, vCve.ClaveVerif, EV.ParamUrlRediinProveedores));
                 }
 
-                MMensajesTemp = NExpedientes.Mensajes.ToString();
                 return RedirectToAction(nameof(ConExpedienteCon));
             }
             else
             {
-                NConExpedientes.ConExpedienteInserta(conExpediente);
+                await NConExpedientes.ConExpedienteInserta(conExpediente);
                 if (NConExpedientes.Mensajes.Ok)
                     return RedirectToAction(nameof(ConExpedienteCon));
 
-                return ConExpedienteInsertaCap(conExpediente);
+                return await ConExpedienteInsertaCap(conExpediente);
             }
         }
         [MValidaSeg(nameof(ConExpedienteActualiza))]
-        public IActionResult ConExpedienteActualizaIni(Int32 indice)
+        public async Task<IActionResult> ConExpedienteActualizaIni(Int32 indice)
         {
-            EVConExpedientes.Accion = MAccionesGen.Actualiza;
-            EVConExpedientes.ConExpedienteIndice = indice;
-            EVConExpedientes.ConExpedienteSel = EVConExpedientes.ConExpedientePag.Pagina[indice];
-            return ConExpedienteActualizaCap(EVConExpedientes.ConExpedienteSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.ConExpediente.Indice = indice;
+            EV.ConExpediente.Sel = EV.ConExpediente.Pag.Pagina[indice];
+            return await ConExpedienteActualizaCap(EV.ConExpediente.Sel);
         }
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(ConExpedienteActualiza))]
-        public IActionResult ConExpedienteActualizaCap(EConExpediente conExpediente)
+        public async Task<IActionResult> ConExpedienteActualizaCap(EConExpediente conExpediente)
         {
-            return ConExpedienteCaptura(conExpediente);
+            return await ConExpedienteCaptura(conExpediente);
         }
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(ConExpedienteActualiza))]
-        public IActionResult ConExpedienteActualizaCap2(IFormCollection conExp, Int64 PEMColumnaId)
+        public async Task<IActionResult> ConExpedienteActualizaCap2(IFormCollection conExp, Int64 PEMColumnaId)
         {
             EConExpediente conExpediente = ObtenExpediente(conExp);
-            conExpediente.ProcesoOperativoId = EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId; //Llave padre
-            conExpediente.ProcesoOperativoEstId = EVConExpedientes.ConExpedienteSel.ProcesoOperativoEstId;
+            conExpediente.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId; //Llave padre
+            conExpediente.ProcesoOperativoEstId = EV.ConExpediente.Sel.ProcesoOperativoEstId;
             AjustaComboCascadaPEMProv(conExpediente, PEMColumnaId);
-            return ConExpedienteActualizaCap(conExpediente);
+            return await ConExpedienteActualizaCap(conExpediente);
         }
         [ValidateAntiForgeryToken]
-        public IActionResult ConExpedienteActualiza(IFormCollection conExp)
+        public async Task<IActionResult> ConExpedienteActualiza(IFormCollection conExp)
         {
             EConExpediente conExpediente = ObtenExpediente(conExp);
-            conExpediente.ProcesoOperativoId = EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId; //Llave padre
-            conExpediente.ProcesoOperativoEstId = EVConExpedientes.ConExpedienteSel.ProcesoOperativoEstId;
-            if (NConExpedientes.ConExpedienteActualiza(conExpediente))
+            conExpediente.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId; //Llave padre
+            conExpediente.ProcesoOperativoEstId = EV.ConExpediente.Sel.ProcesoOperativoEstId;
+            if (await NConExpedientes.ConExpedienteActualiza(conExpediente))
                 return RedirectToAction(nameof(ConExpedienteCon));
 
-            return ConExpedienteActualizaCap(conExpediente);
+            return await ConExpedienteActualizaCap(conExpediente);
         }
-        public IActionResult ConExpedienteElimina(Int32 indice)
+        public async Task<IActionResult> ConExpedienteElimina(Int32 indice)
         {
-            NConExpedientes.ConExpedienteElimina(EVConExpedientes.ConExpedientePag.Pagina[indice]);
-            base.MMensajesTemp = NConExpedientes.Mensajes.ToString();
+            await NConExpedientes.ConExpedienteElimina(EV.ConExpediente.Pag.Pagina[indice]);
             return RedirectToAction(nameof(ConExpedienteCon));
         }
         /// <summary>
         /// Acción personalizada CambioEstatus.
         /// </summary>
         [MValidaSeg(nameof(ConExpedienteInicia))]
-        public IActionResult ConExpedienteCambioEstatusIni(Int32 indice, Int64 procesoOperativoEstIdSig)
+        public async Task<IActionResult> ConExpedienteCambioEstatusIni(Int32 indice, Int64 procesoOperativoEstIdSig)
         {
-            EVConExpedientes.ConExpedienteIndice = indice;
-            EVConExpedientes.ConExpedienteSel = EVConExpedientes.ConExpedientePag.Pagina[indice];
+            EV.ConExpediente.Indice = indice;
+            EV.ConExpediente.Sel = EV.ConExpediente.Pag.Pagina[indice];
 
             EConExpedienteCambioEstatus vConExpedienteCambioEstatus = new EConExpedienteCambioEstatus();
             vConExpedienteCambioEstatus.ProcesoOperativoEstId = procesoOperativoEstIdSig; //Adi
             vConExpedienteCambioEstatus.Comentarios = String.Empty;
 
             //Adi
-            if (EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId == EVConExpedientes.ParamProveedorProcesoOperativoId &&
-               procesoOperativoEstIdSig == EVConExpedientes.ParamEstIdCaptura)
-                return ConExpedienteCambioEstatusCap(vConExpedienteCambioEstatus);
+            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId &&
+               procesoOperativoEstIdSig == EV.ParamEstIdCaptura)
+                return await ConExpedienteCambioEstatusCap(vConExpedienteCambioEstatus);
             else
-                return ConExpedienteCambioEstatus(vConExpedienteCambioEstatus);
+                return await ConExpedienteCambioEstatus(vConExpedienteCambioEstatus);
         }
         /// <summary>
         /// Acción personalizada CambioEstatus.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(ConExpedienteInicia))]
-        public IActionResult ConExpedienteCambioEstatusCap(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
+        public async Task<IActionResult> ConExpedienteCambioEstatusCap(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
         {
             ViewBag.CambioEstatus = true;
-            ViewBag.CAESMensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
+            //ViewBag.CAESMensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
+            ViewBag.CAESMensajes = NConExpedientes.Mensajes;
             ViewBag.ConExpedienteCambioEstatus = conExpedienteCambioEstatus;
 
-            return ConExpedienteCon();
+            return await ConExpedienteCon();
         }
 
         /// <summary>
         /// Acción personalizada CambioEstatus.
         /// </summary>
         [MValidaSeg(nameof(ConExpedienteInicia))]
-        public IActionResult ConExpedienteCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
+        public async Task<IActionResult> ConExpedienteCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
         {
-            conExpedienteCambioEstatus.ExpedienteId = EVConExpedientes.ConExpedienteSel.ExpedienteId;
-            //Eli conExpedienteCambioEstatus.ProcesoOperativoEstId = EVConExpedientes.ConExpedienteSel.ProcesoOperativoEstId;
-            if (NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus))
+            conExpedienteCambioEstatus.ExpedienteId = EV.ConExpediente.Sel.ExpedienteId;
+            //Eli conExpedienteCambioEstatus.ProcesoOperativoEstId = EV.ConExpediente.Sel.ProcesoOperativoEstId;
+            if (await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus))
             {
                 //Adi
-                if (EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId == EVConExpedientes.ParamProveedorProcesoOperativoId)
+                if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
                 {
-                    String vCorreo = ObtenValor(EVConExpedientes.ConExpedienteSel, EVConExpedientes.ParamProveedorColumnaIdCorreo).ToString();
-                    String vProveedor = ObtenValor(EVConExpedientes.ConExpedienteSel, EVConExpedientes.ParamProveedorColumnaIdNombre).ToString();
-                    if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EVConExpedientes.ParamEstIdCaptura)
+                    String vCorreo = ObtenValor(EV.ConExpediente.Sel, EV.ParamProveedorColumnaIdCorreo).ToString();
+                    String vProveedor = ObtenValor(EV.ConExpediente.Sel, EV.ParamProveedorColumnaIdNombre).ToString();
+                    if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.ParamEstIdCaptura)
                     {
                         EnviaCorreo(vCorreo,
                                     "Seguimiento en Portal de Rediin Proveedores",
                                     $"Estimado {vProveedor}:<br/><br/>Su alta como proveedor tiene las siguientes observaciones:<br/>{conExpedienteCambioEstatus.Comentarios}");
                     }
-                    else if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EVConExpedientes.ParamEstIdAutorizado)
+                    else if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.ParamEstIdAutorizado)
                     {
                         EnviaCorreo(vCorreo,
                                     "Seguimiento en Portal de Rediin Proveedores",
@@ -522,50 +502,49 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             }
 
             //Adi
-            if (EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId == EVConExpedientes.ParamProveedorProcesoOperativoId &&
-               conExpedienteCambioEstatus.ProcesoOperativoEstId == EVConExpedientes.ParamEstIdCaptura)
-                return ConExpedienteCambioEstatusCap(conExpedienteCambioEstatus);
+            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId &&
+               conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.ParamEstIdCaptura)
+                return await ConExpedienteCambioEstatusCap(conExpedienteCambioEstatus);
             else
             {
-                base.MMensajesTemp = NConExpedientes.Mensajes.ToString();
                 return RedirectToAction(nameof(ConExpedienteCon));
             }
         }
         #endregion
 
         #region Funciones
-        private IActionResult ConExpedienteCaptura(EConExpediente conExpediente)
+        private async Task<IActionResult> ConExpedienteCaptura(EConExpediente conExpediente)
         {
-            ViewBag.Mensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
-            ViewBag.Accion = EVConExpedientes.Accion;
-            ViewBag.Reglas = EVConExpedientes.ConExpedienteReglas;
+            ViewBag.Mensajes = NConExpedientes.Mensajes;
+            ViewBag.EV = EV;
+
             //Adi
-            ViewBag.ProcOperColumnas = EVConExpedientes.ProcOperColumnasCap;
-            ViewBag.ParamProveedorProcesoOperativoId = EVConExpedientes.ParamProveedorProcesoOperativoId;
+            ViewBag.ProcOperColumnas = EV.ProcOperColumnasCap;
+            ViewBag.ParamProveedorProcesoOperativoId = EV.ParamProveedorProcesoOperativoId;
 
-            conExpediente.ProcesoOperativoId = EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId;
-            if (EVConExpedientes.ConExpProcOperativoSel.ProcesoOperativoId == EVConExpedientes.ParamProveedorProcesoOperativoId)
+            conExpediente.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId;
+            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
             {
-                ViewBag.EVConExpedientes = EVConExpedientes;
-                EVConExpedientes.CombosProveedores[EVConExpedientes.ParamProveedorColumnaIdEstado] = null;
-                EVConExpedientes.CombosProveedores[EVConExpedientes.ParamProveedorColumnaIdMunicipio] = null;
-                EVConExpedientes.CombosProveedores[EVConExpedientes.ParamProveedorColumnaIdColonia] = null;
+                ViewBag.EVConExpedientes = EV;
+                EV.CombosProveedores[EV.ParamProveedorColumnaIdEstado] = null;
+                EV.CombosProveedores[EV.ParamProveedorColumnaIdMunicipio] = null;
+                EV.CombosProveedores[EV.ParamProveedorColumnaIdColonia] = null;
 
-                Int64 vPaisId = XObject.ToInt64(ObtenValor(conExpediente, EVConExpedientes.ParamProveedorColumnaIdPais));
+                Int64 vPaisId = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdPais));
                 if (vPaisId > 0)
                 {
-                    EVConExpedientes.CombosProveedores[EVConExpedientes.ParamProveedorColumnaIdEstado] =
-                        NPaises.EstadoCmb(vPaisId);
-                    Int64 vEstadoId = XObject.ToInt64(ObtenValor(conExpediente, EVConExpedientes.ParamProveedorColumnaIdEstado));
+                    EV.CombosProveedores[EV.ParamProveedorColumnaIdEstado] =
+                        await NPaises.EstadoCmb(vPaisId);
+                    Int64 vEstadoId = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdEstado));
                     if (vEstadoId > 0)
                     {
-                        EVConExpedientes.CombosProveedores[EVConExpedientes.ParamProveedorColumnaIdMunicipio] =
-                            NPaises.MunicipioCmb(vEstadoId);
-                        Int64 vMunicipio = XObject.ToInt64(ObtenValor(conExpediente, EVConExpedientes.ParamProveedorColumnaIdMunicipio));
+                        EV.CombosProveedores[EV.ParamProveedorColumnaIdMunicipio] =
+                            await NPaises.MunicipioCmb(vEstadoId);
+                        Int64 vMunicipio = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdMunicipio));
                         if (vMunicipio > 0)
                         {
-                            EVConExpedientes.CombosProveedores[EVConExpedientes.ParamProveedorColumnaIdColonia] =
-                                NPaises.ColoniaCmb(vMunicipio);
+                            EV.CombosProveedores[EV.ParamProveedorColumnaIdColonia] =
+                                await NPaises.ColoniaCmb(vMunicipio);
                         }
                     }
                 }
@@ -575,30 +554,30 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         }
         private void AjustaComboCascadaPEMProv(EConExpediente conExpediente, Int64 columnaId)
         {
-            if (columnaId == EVConExpedientes.ParamProveedorColumnaIdPais)
+            if (columnaId == EV.ParamProveedorColumnaIdPais)
             {
                 foreach (var vVal in conExpediente.Valores)
                 {
-                    if (vVal.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdEstado ||
-                       vVal.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdMunicipio ||
-                       vVal.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdColonia)
+                    if (vVal.ColumnaId == EV.ParamProveedorColumnaIdEstado ||
+                       vVal.ColumnaId == EV.ParamProveedorColumnaIdMunicipio ||
+                       vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
                         EstableceValor(vVal, TiposColumna.Entero, "0");
                 }
             }
-            else if (columnaId == EVConExpedientes.ParamProveedorColumnaIdEstado)
+            else if (columnaId == EV.ParamProveedorColumnaIdEstado)
             {
                 foreach (var vVal in conExpediente.Valores)
                 {
-                    if (vVal.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdMunicipio ||
-                        vVal.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdColonia)
+                    if (vVal.ColumnaId == EV.ParamProveedorColumnaIdMunicipio ||
+                        vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
                         EstableceValor(vVal, TiposColumna.Entero, "0");
                 }
             }
-            else if (columnaId == EVConExpedientes.ParamProveedorColumnaIdMunicipio)
+            else if (columnaId == EV.ParamProveedorColumnaIdMunicipio)
             {
                 foreach (var vVal in conExpediente.Valores)
                 {
-                    if (vVal.ColumnaId == EVConExpedientes.ParamProveedorColumnaIdColonia)
+                    if (vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
                         EstableceValor(vVal, TiposColumna.Entero, "0");
                 }
             }
@@ -621,7 +600,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             EConExpValores vVal = null;
             if (conExp.ContainsKey(nameof(EConExpediente.ExpedienteId)))
                 conExpediente.ExpedienteId = XObject.ToInt64(conExp[nameof(EConExpediente.ExpedienteId)].ToString());
-            foreach (EProcesoOperativoCol vCol in EVConExpedientes.ProcOperColumnasCon)
+            foreach (EProcesoOperativoCol vCol in EV.ProcOperColumnasCon)
             {
                 vVal = new EConExpValores();
                 vVal.ExpedienteId = conExpediente.ExpedienteId;
@@ -634,15 +613,15 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             return conExpediente;
         }
         //No config Proveedor
-        private EClave CreaUsuario(EConExpediente conExpediente, out EUsuario usuario)
+        private async Task<(EClave, EUsuario)> CreaUsuario(EConExpediente conExpediente)
         {
-            String vProveedor = ObtenValor(conExpediente, EVConExpedientes.ParamProveedorColumnaIdNombre).ToString();
+            EUsuario usuario = new();
+            String vProveedor = ObtenValor(conExpediente, EV.ParamProveedorColumnaIdNombre).ToString();
             String[] vNombres = vProveedor.Split(" ");
 
-            usuario = new EUsuario();
-            usuario.CorreoElectronico = ObtenValor(conExpediente, EVConExpedientes.ParamProveedorColumnaIdCorreo).ToString();
-            usuario.EstablecimientoId = base.EVDatosPortal.UsuarioSesion.EstablecimientoId;
-            usuario.PerfilId = EVConExpedientes.ParamPerfilIdNvoUsr;
+            usuario.CorreoElectronico = ObtenValor(conExpediente, EV.ParamProveedorColumnaIdCorreo).ToString();
+            usuario.EstablecimientoId = Servicios.EVDatosPortal.UsuarioSesion.EstablecimientoId;
+            usuario.PerfilId = EV.ParamPerfilIdNvoUsr;
 
             if (vNombres.Length >= 3)
             {
@@ -676,23 +655,28 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 
             try
             {
-                return NUsuarios.UsuarioInsertaAuto(usuario);
+                return (await NUsuarios.UsuarioInsertaAuto(usuario), usuario);
             }
             catch (Exception e)
             {
                 NUsuarios.Mensajes.AddError(e.Message);
-                return null;
+                return (null, null);
             }
         }
-        private void EnviaCorreo(String correoDestino, String subject, String body)
+        private async void EnviaCorreo(String correoDestino, String subject, String body)
         {
-            var vCorreo = base.ServidorCorreo("RediinProveedoresMail");
-            vCorreo.To.Add(vCorreo.NewUser("Cliente", correoDestino));
+            //JRD REVISAR QUE ESTE BIEN
+            IMCorreo vCorreo = await Servicios.ServCorreo.ServCorreo("RediinProveedoresMail");
+            vCorreo.To.Add(vCorreo.CreateUser("Cliente", correoDestino));
             vCorreo.Send(subject, body);
+
+            //var vCorreo = base.ServidorCorreo("RediinProveedoresMail");
+            //vCorreo.To.Add(vCorreo.NewUser("Cliente", correoDestino));
+            //vCorreo.Send(subject, body);
         }
         private Object ObtenValor(EConExpediente conExpediente, Int64 columnaId)
         {
-            return UtilExpediente.ObtenValor(EVConExpedientes.ProcOperColumnasCon,
+            return UtilExpediente.ObtenValor(EV.ProcOperColumnasCon,
                                              conExpediente,
                                              columnaId);
         }
@@ -703,46 +687,46 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         [MValidaSeg(nameof(ConExpedienteInicia))]
         public IActionResult ConExpedientePaginacion(MEDatosPaginador datPag)
         {
-            EVConExpedientes.ConExpedientePag.DatPag = datPag;
+            EV.ConExpediente.Pag.DatPag = datPag;
             return RedirectToAction(nameof(ConExpedienteCon));
         }
         [MValidaSeg(nameof(ConExpedienteInicia))]
-        public IActionResult ConExpedientePaginacionSigPag()
+        public async Task<IActionResult> ConExpedientePaginacionSigPag()
         {
-            EVConExpedientes.ConExpedientePag.DatPag.CurrentPage += 1;
-            return RedirectToAction(nameof(ConExpedienteCon));
+            EV.ConExpediente.Pag.DatPag.CurrentPage += 1;
+            return await Task.FromResult(RedirectToAction(nameof(ConExpedienteCon)));
         }
         [MValidaSeg(nameof(ConExpedienteInicia))]
-        public IActionResult ConExpedientePaginacionAntPag()
+        public async Task<IActionResult> ConExpedientePaginacionAntPag()
         {
-            if (EVConExpedientes.ConExpedientePag.DatPag.CurrentPage > 1)
-                EVConExpedientes.ConExpedientePag.DatPag.CurrentPage -= 1;
+            if (EV.ConExpediente.Pag.DatPag.CurrentPage > 1)
+                EV.ConExpediente.Pag.DatPag.CurrentPage -= 1;
 
-            return RedirectToAction(nameof(ConExpedienteCon));
+            return await Task.FromResult(RedirectToAction(nameof(ConExpedienteCon)));
         }
 
         [MValidaSeg(nameof(ConExpedienteInicia))]
         public IActionResult ConExpedienteOrdena(String orden)
         {
-            EVConExpedientes.ConExpedienteColOrden = orden;
+            EV.ConExpediente.ColOrden = orden;
             return RedirectToAction(nameof(ConExpedienteCon));
         }
         [MValidaSeg(nameof(ConExpedienteInicia))]
         public IActionResult ConExpedienteFiltra(EConExpedienteFiltro filtro)
         {
-            EVConExpedientes.ConExpedienteFiltro = filtro;
+            EV.ConExpediente.Filtro = filtro;
             return RedirectToAction(nameof(ConExpedienteCon));
         }
         [MValidaSeg(nameof(ConExpedienteInicia))]
         public IActionResult ConExpedienteLimpiaFiltros()
         {
-            EVConExpedientes.ConExpedienteFiltro = new EConExpedienteFiltro();
+            EV.ConExpediente.Filtro = new EConExpedienteFiltro();
             return RedirectToAction(nameof(ConExpedienteCon));
         }
         [MValidaSeg(nameof(ConExpedienteInicia))]
         public IActionResult ConExpedienteSelCol(String selColGrupoId)
         {
-            EVConExpedientes.ConExpedienteSelColGrupoId = selColGrupoId;
+            EV.ConExpedienteSelColGrupoId = selColGrupoId;
             return RedirectToAction(nameof(ConExpedienteCon));
         }
         #endregion
@@ -752,76 +736,60 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         #region ConExpedienteObjeto (Objs)
 
         #region Acciones
-        public IActionResult ConExpedienteObjetoInicia(Int32 indice)
+        public async Task<IActionResult> ConExpedienteObjetoInicia(Int32 indice)
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVConExpedientes.ConExpedienteObjetoColOrden))
-                EVConExpedientes.ConExpedienteObjetoColOrden = nameof(EConExpedienteObjeto.ExpedienteObjetoId);
+            await Servicios.Gen.InicializaSF(EV.ConExpedienteObjeto, nameof(EConExpedienteObjeto.ExpedienteObjetoId),
+                async () => await NConExpedientes.ConExpedienteObjetoReglas());
 
-            if (EVConExpedientes.ConExpedienteObjetoReglas == null)
-            {
-                EVConExpedientes.ConExpedienteObjetoReglas = NConExpedientes.ConExpedienteObjetoReglas();
-                base.MMensajesTemp = NConExpedientes.Mensajes.ToString();
-            }
-
-            if (indice >= 0)
-            {
-                EVConExpedientes.ConExpedienteIndice = indice;
-                EVConExpedientes.ConExpedienteSel = EVConExpedientes.ConExpedientePag.Pagina[indice];
-            }
+            Servicios.Gen.InicializaSFInd(EV.ConExpediente, indice);
 
             return RedirectToAction(nameof(ConExpedienteObjetoCon));
         }
         [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
-        public IActionResult ConExpedienteObjetoCon()
+        public async Task<IActionResult> ConExpedienteObjetoCon()
         {
-            EVConExpedientes.ConExpedienteObjetoFiltro.ExpedienteId = EVConExpedientes.ConExpedienteSel.ExpedienteId;
-            base.MCargaFiltroPagYOrd(EVConExpedientes.ConExpedienteObjetoFiltro,
-                                     EVConExpedientes.ConExpedienteObjetoPag,
-                                     EVConExpedientes.ConExpedienteObjetoColOrden,
-                                     nameof(EConExpedienteObjeto));
+            EV.ConExpedienteObjeto.Filtro.ExpedienteId = EV.ConExpediente.Sel.ExpedienteId;
 
-            EVConExpedientes.ConExpedienteObjetoPag = NConExpedientes.ConExpedienteObjetoPag(EVConExpedientes.ConExpedienteObjetoFiltro);
-            base.MActualizaTamPag(EVConExpedientes.ConExpedienteObjetoPag?.DatPag);
+            await Servicios.Pag.CargaPagOrdYFil(EV.ConExpedienteObjeto);
+            EV.ConExpedienteObjeto.Pag = await NConExpedientes.ConExpedienteObjetoPag(EV.ConExpedienteObjeto.Filtro);
+            await Servicios.Pag.ActTamPag(EV.ConExpedienteObjeto.Pag?.DatPag);
 
-            ViewBag.Mensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
-            ViewBag.DatPag = EVConExpedientes.ConExpedienteObjetoPag?.DatPag;
-            ViewBag.Orden = EVConExpedientes.ConExpedienteObjetoColOrden;
-            ViewBag.Filtro = EVConExpedientes.ConExpedienteObjetoFiltro;
-            ViewBag.Indice = EVConExpedientes.ConExpedienteObjetoIndice;
+            ViewBag.Mensajes = NConExpedientes.Mensajes;
+            ViewBag.EV = EV;
 
-            return View(nameof(ConExpedienteObjetoCon), EVConExpedientes.ConExpedienteObjetoPag?.Pagina);
+            return View(nameof(ConExpedienteObjetoCon), EV.ConExpedienteObjeto.Pag?.Pagina);
         }
-        public IActionResult ConExpedienteObjetoXId(Int32 indice)
+        public async Task<IActionResult> ConExpedienteObjetoXId(Int32 indice)
         {
-            EVConExpedientes.Accion = MAccionesGen.Consulta;
-            EVConExpedientes.ConExpedienteObjetoIndice = indice;
-            return ConExpedienteObjetoCaptura(EVConExpedientes.ConExpedienteObjetoPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.ConExpedienteObjeto.Indice = indice;
+            return await ConExpedienteObjetoCaptura(EV.ConExpedienteObjeto.Pag.Pagina[indice]);
         }
         [MValidaSeg(nameof(ConExpedienteObjetoInserta))]
-        public IActionResult ConExpedienteObjetoInsertaIni()
+        public async Task<IActionResult> ConExpedienteObjetoInsertaIni()
         {
-            EVConExpedientes.Accion = MAccionesGen.Inserta;
-            return ConExpedienteObjetoInsertaCap(new EConExpedienteObjeto()
+            EV.Accion = MAccionesGen.Inserta;
+            return await ConExpedienteObjetoInsertaCap(new EConExpedienteObjeto()
             {
                 Activo = true
             });
         }
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(ConExpedienteObjetoInserta))]
-        public IActionResult ConExpedienteObjetoInsertaCap(EConExpedienteObjeto conExpedienteObjeto)
+        public async Task<IActionResult> ConExpedienteObjetoInsertaCap(EConExpedienteObjeto conExpedienteObjeto)
         {
-            return ConExpedienteObjetoCaptura(conExpedienteObjeto);
+            return await ConExpedienteObjetoCaptura(conExpedienteObjeto);
         }
         [ValidateAntiForgeryToken]
-        public IActionResult ConExpedienteObjetoInserta(EConExpedienteObjeto conExpedienteObjeto,
-                                                        IFormFile archivoFisico)
+        public async Task<IActionResult> ConExpedienteObjetoInserta(EConExpedienteObjeto conExpedienteObjeto,
+                                                                    IFormFile archivoFisico)
         {
             //Adi
             if (archivoFisico == null)
             {
                 NConExpedientes.Mensajes.AddError("No ha seleccionado un archivo.");
-                return ConExpedienteObjetoInsertaCap(conExpedienteObjeto);
+                return await ConExpedienteObjetoInsertaCap(conExpedienteObjeto);
             }
 
             //Subimos el archivo
@@ -836,7 +804,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             conExpedienteObjeto.Ruta =
                 Path.Combine(vRutaBase,
                              vEntidad,
-                             EVConExpedientes.ConExpedienteSel.ExpedienteId.ToString());
+                             EV.ConExpediente.Sel.ExpedienteId.ToString());
 
             String vRutaYNombre = Path.Combine(conExpedienteObjeto.Ruta, conExpedienteObjeto.ArchivoNombre);
 
@@ -848,84 +816,120 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
 
             if (System.IO.File.Exists(vRutaYNombre))
             {
-                NConExpedientes.Mensajes.AddError("EL nombre del arhivo ya existe, no se puede insertar.");
-                return ConExpedienteObjetoInsertaCap(conExpedienteObjeto);
+                NConExpedientes.Mensajes.AddError("EL nombre del archivo ya existe, no se puede insertar.");
+                return await ConExpedienteObjetoInsertaCap(conExpedienteObjeto);
             }
 
-            base.MRecibeArchivoDeCliente(NConExpedientes.Mensajes,
-                                         archivoFisico,
-                                         vRutaYNombre);
+            await Servicios.Archivos.SubeArchivo(new MEArchivo()
+            {
+                Archivo = MUtilMvc.MBytes(archivoFisico),
+                Nombre = vRutaYNombre
+            });
+            //base.MRecibeArchivoDeCliente(NConExpedientes.Mensajes,
+            //                             archivoFisico,
+            //                             vRutaYNombre);
 
             if (!NConExpedientes.Mensajes.Ok)
-                return ConExpedienteObjetoInsertaCap(conExpedienteObjeto);
+                return await ConExpedienteObjetoInsertaCap(conExpedienteObjeto);
             //Fin Adi
 
-            conExpedienteObjeto.ExpedienteId = EVConExpedientes.ConExpedienteSel.ExpedienteId; //Llave padre
-            NConExpedientes.ConExpedienteObjetoInserta(conExpedienteObjeto);
+            conExpedienteObjeto.ExpedienteId = EV.ConExpediente.Sel.ExpedienteId; //Llave padre
+            await NConExpedientes.ConExpedienteObjetoInserta(conExpedienteObjeto);
             if (NConExpedientes.Mensajes.Ok)
             {
                 return RedirectToAction(nameof(ConExpedienteObjetoCon));
             }
 
-            return ConExpedienteObjetoInsertaCap(conExpedienteObjeto);
+            return await ConExpedienteObjetoInsertaCap(conExpedienteObjeto);
         }
-        public IActionResult ConExpedienteObjetoElimina(Int32 indice)
+        public async Task<IActionResult> ConExpedienteObjetoElimina(Int32 indice)
         {
-            NConExpedientes.ConExpedienteObjetoElimina(EVConExpedientes.ConExpedienteObjetoPag.Pagina[indice]);
-            base.MMensajesTemp = NConExpedientes.Mensajes.ToString();
+            await NConExpedientes.ConExpedienteObjetoElimina(EV.ConExpedienteObjeto.Pag.Pagina[indice]);
+            //base.MMensajesTemp = NConExpedientes.Mensajes.ToString();
             return RedirectToAction(nameof(ConExpedienteObjetoCon));
         }
         /// <summary>
         /// Acción personalizada Descarga.
         /// </summary>
-        public Task<IActionResult> ConExpedienteObjetoDescarga(Int32 indice)
+        public async Task<IActionResult> ConExpedienteObjetoDescarga(Int32 indice)
         {
-            EConExpedienteObjeto vObj = EVConExpedientes.ConExpedienteObjetoPag.Pagina[indice];
-            return base.MEnviaArchivoACliente(NConExpedientes.Mensajes, Path.Combine(vObj.Ruta, vObj.ArchivoNombre));
-            //NConExpedientes.ConExpedienteObjetoDescarga();
-            //base.MMensajesTemp = NConExpedientes.Mensajes.ToString();
-            //return RedirectToAction(nameof(ConExpedienteObjetoCon));
+            EConExpedienteObjeto vObj = EV.ConExpedienteObjeto.Pag.Pagina[indice];
+
+            String vCont;
+            if (vObj.ArchivoNombre.EndsWith("xlsb"))
+                vCont = "application/vnd.ms-excel";
+            else
+                vCont = "application/pdf";
+
+            using MemoryStream vMS = new MemoryStream();
+            using FileStream vFS = new FileStream(Path.Combine(vObj.Ruta, vObj.ArchivoNombre), FileMode.Open);
+            vFS.CopyTo(vMS);
+            return await Task.FromResult(File(vMS.ToArray(), vCont, "Archivo" + Path.GetExtension(vObj.ArchivoNombre)));
         }
+        [MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
+        public async Task<IActionResult> ConExpedienteObjetoDescarga2(Int32 indice)
+        {
+            Int32 totalPaginas = 0;
+            EConExpedienteObjeto vObj = EV.ConExpedienteObjeto.Pag.Pagina[indice];
+            String imageFilesPath = Path.Combine(Path.Combine(vObj.Ruta, "temp"), "page-{0}.png");
+            using GroupDocs.Viewer.Viewer v = new GroupDocs.Viewer.Viewer(Path.Combine(vObj.Ruta, vObj.ArchivoNombre));
+            GroupDocs.Viewer.Results.ViewInfo i = v.GetViewInfo(GroupDocs.Viewer.Options.ViewInfoOptions.ForPngView(false));
+            totalPaginas = i.Pages.Count;
+            GroupDocs.Viewer.Options.PngViewOptions o = new PngViewOptions(imageFilesPath);
+            v.View(o);
+            return await Task.FromResult(new JsonResult(totalPaginas));
+        }
+        [MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
+        public async Task<IActionResult> ConExpedienteObjetoDescargaImg(Int32 indice, Int32 pagina)
+        {
+            EConExpedienteObjeto vObj = EV.ConExpedienteObjeto.Pag.Pagina[indice];
+            String vRutaImgTemp = Path.Combine(vObj.Ruta, "temp", $"page-{pagina}.png");
+            using MemoryStream vMS = new MemoryStream();
+            using FileStream vFS = new FileStream(vRutaImgTemp, FileMode.Open);
+            vFS.CopyTo(vMS);
+            return await Task.FromResult(File(vMS.ToArray(), "image/png"));
+        }
+
         /// <summary>
         /// Acción personalizada SelArchivo.
         /// </summary>
         [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
-        public IActionResult ConExpedienteObjetoSelArchivoIni(Int32 indice)
+        public async Task<IActionResult> ConExpedienteObjetoSelArchivoIni(Int32 indice)
         {
-            EVConExpedientes.ConExpedienteObjetoIndice = indice;
-            EVConExpedientes.ConExpedienteObjetoSel = EVConExpedientes.ConExpedienteObjetoPag.Pagina[indice];
+            EV.ConExpedienteObjeto.Indice = indice;
+            EV.ConExpedienteObjeto.Sel = EV.ConExpedienteObjeto.Pag.Pagina[indice];
             EConExpedienteObjetoSelArchivo vConExpedienteObjetoSelArchivo = new EConExpedienteObjetoSelArchivo();
-            vConExpedienteObjetoSelArchivo.ExpedienteObjetoId = EVConExpedientes.ConExpedienteObjetoSel.ExpedienteObjetoId;
+            vConExpedienteObjetoSelArchivo.ExpedienteObjetoId = EV.ConExpedienteObjeto.Sel.ExpedienteObjetoId;
             vConExpedienteObjetoSelArchivo.ArchivoNombre = String.Empty;
-            return ConExpedienteObjetoSelArchivoCap(vConExpedienteObjetoSelArchivo);
+            return await ConExpedienteObjetoSelArchivoCap(vConExpedienteObjetoSelArchivo);
         }
         /// <summary>
         /// Acción personalizada SelArchivo.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
-        public IActionResult ConExpedienteObjetoSelArchivoCap(EConExpedienteObjetoSelArchivo conExpedienteObjetoSelArchivo)
+        public async Task<IActionResult> ConExpedienteObjetoSelArchivoCap(EConExpedienteObjetoSelArchivo conExpedienteObjetoSelArchivo)
         {
             ViewBag.SelArchivo = true;
-            ViewBag.SEARMensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
+            //ViewBag.SEARMensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
+            ViewBag.SEARMensajes = NConExpedientes.Mensajes;
             ViewBag.ConExpedienteObjetoSelArchivo = conExpedienteObjetoSelArchivo;
 
-            return ConExpedienteObjetoCon();
+            return await ConExpedienteObjetoCon();
         }
         /// <summary>
         /// Acción personalizada SelArchivo.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
-        public IActionResult ConExpedienteObjetoSelArchivo(EConExpedienteObjetoSelArchivo conExpedienteObjetoSelArchivo,
-                                                           IFormFile archivoFisico)
+        public async Task<IActionResult> ConExpedienteObjetoSelArchivo(EConExpedienteObjetoSelArchivo conExpedienteObjetoSelArchivo,
+                                                                       IFormFile archivoFisico)
         {
-
             //Adi
             if (archivoFisico == null)
             {
                 NConExpedientes.Mensajes.AddError("No ha seleccionado un archivo.");
-                return ConExpedienteObjetoSelArchivoCap(conExpedienteObjetoSelArchivo);
+                return await ConExpedienteObjetoSelArchivoCap(conExpedienteObjetoSelArchivo);
             }
 
             //Subimos el archivo
@@ -940,7 +944,7 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             conExpedienteObjetoSelArchivo.Ruta =
                 Path.Combine(vRutaBase,
                              vEntidad,
-                             EVConExpedientes.ConExpedienteSel.ExpedienteId.ToString());
+                             EV.ConExpediente.Sel.ExpedienteId.ToString());
 
             String vRutaYNombre = Path.Combine(conExpedienteObjetoSelArchivo.Ruta, conExpedienteObjetoSelArchivo.ArchivoNombre);
 
@@ -953,39 +957,41 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
             if (System.IO.File.Exists(vRutaYNombre))
             {
                 NConExpedientes.Mensajes.AddError("EL nombre del arhivo ya existe, no se puede insertar.");
-                return ConExpedienteObjetoSelArchivoCap(conExpedienteObjetoSelArchivo);
+                return await ConExpedienteObjetoSelArchivoCap(conExpedienteObjetoSelArchivo);
             }
 
-            base.MRecibeArchivoDeCliente(NConExpedientes.Mensajes,
-                                         archivoFisico,
-                                         vRutaYNombre);
-
+            await Servicios.Archivos.SubeArchivo(new MEArchivo()
+            {
+                Archivo = MUtilMvc.MBytes(archivoFisico),
+                Nombre = vRutaYNombre
+            });
+            //base.MRecibeArchivoDeCliente(NConExpedientes.Mensajes,
+            //                             archivoFisico,
+            //                             vRutaYNombre);
 
             if (!NConExpedientes.Mensajes.Ok)
-                return ConExpedienteObjetoSelArchivoCap(conExpedienteObjetoSelArchivo);
+                return await ConExpedienteObjetoSelArchivoCap(conExpedienteObjetoSelArchivo);
             //Fin Adi
 
-            conExpedienteObjetoSelArchivo.ExpedienteId = EVConExpedientes.ConExpedienteObjetoSel.ExpedienteId;
-            //conExpedienteObjetoSelArchivo.Ruta = EVConExpedientes.ConExpedienteObjetoSel.Ruta;
-            if (NConExpedientes.ConExpedienteObjetoSelArchivo(conExpedienteObjetoSelArchivo))
+            conExpedienteObjetoSelArchivo.ExpedienteId = EV.ConExpedienteObjeto.Sel.ExpedienteId;
+            if (await NConExpedientes.ConExpedienteObjetoSelArchivo(conExpedienteObjetoSelArchivo))
             {
                 return RedirectToAction(nameof(ConExpedienteObjetoCon));
             }
 
-            return ConExpedienteObjetoSelArchivoCap(conExpedienteObjetoSelArchivo);
+            return await ConExpedienteObjetoSelArchivoCap(conExpedienteObjetoSelArchivo);
         }
         #endregion
 
         #region Funciones
-        private IActionResult ConExpedienteObjetoCaptura(EConExpedienteObjeto conExpedienteObjeto)
+        private async Task<IActionResult> ConExpedienteObjetoCaptura(EConExpedienteObjeto conExpedienteObjeto)
         {
-            ViewBag.Mensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
-            ViewBag.Accion = EVConExpedientes.Accion;
-            ViewBag.Reglas = EVConExpedientes.ConExpedienteObjetoReglas;
+            ViewBag.Mensajes = NConExpedientes.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.ProcesosOperativosObjetos = NProcesosOperativos.ProcesoOperativoObjetoCmb(EVConExpedientes.ConExpedienteSel.ProcesoOperativoId);
+            ViewBag.ProcesosOperativosObjetos = await NProcesosOperativos.ProcesoOperativoObjetoCmb(EV.ConExpediente.Sel.ProcesoOperativoId);
 
-            return ViewCap(nameof(ConExpedienteObjetoCaptura), conExpedienteObjeto);
+            return await Task.FromResult(ViewCap(nameof(ConExpedienteObjetoCaptura), conExpedienteObjeto));
         }
         #endregion
 
@@ -993,25 +999,25 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
         public IActionResult ConExpedienteObjetoPaginacion(MEDatosPaginador datPag)
         {
-            EVConExpedientes.ConExpedienteObjetoPag.DatPag = datPag;
+            EV.ConExpedienteObjeto.Pag.DatPag = datPag;
             return RedirectToAction(nameof(ConExpedienteObjetoCon));
         }
         [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
         public IActionResult ConExpedienteObjetoOrdena(String orden)
         {
-            EVConExpedientes.ConExpedienteObjetoColOrden = orden;
+            EV.ConExpedienteObjeto.ColOrden = orden;
             return RedirectToAction(nameof(ConExpedienteObjetoCon));
         }
         [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
         public IActionResult ConExpedienteObjetoFiltra(EConExpedienteObjetoFiltro filtro)
         {
-            EVConExpedientes.ConExpedienteObjetoFiltro = filtro;
+            EV.ConExpedienteObjeto.Filtro = filtro;
             return RedirectToAction(nameof(ConExpedienteObjetoCon));
         }
         [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
         public IActionResult ConExpedienteObjetoLimpiaFiltros()
         {
-            EVConExpedientes.ConExpedienteObjetoFiltro = new EConExpedienteObjetoFiltro();
+            EV.ConExpedienteObjeto.Filtro = new EConExpedienteObjetoFiltro();
             return RedirectToAction(nameof(ConExpedienteObjetoCon));
         }
         #endregion
@@ -1021,48 +1027,38 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         #region ExpedienteEstatu (ExpeEsta)
 
         #region Acciones
-        public IActionResult ExpedienteEstatuInicia(Int32 indice)
+        public async Task<IActionResult> ExpedienteEstatuInicia(Int32 indice)
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVConExpedientes.ExpedienteEstatuColOrden))
-                EVConExpedientes.ExpedienteEstatuColOrden = "-" + nameof(EExpedienteEstatu.FechaCreacion);
+            await Servicios.Gen.InicializaSF(EV.ExpedienteEstatu, "-" + nameof(EExpedienteEstatu.FechaCreacion));
 
-            if (indice >= 0)
-            {
-                EVConExpedientes.ConExpedienteIndice = indice;
-                EVConExpedientes.ConExpedienteSel = EVConExpedientes.ConExpedientePag.Pagina[indice];
-            }
+            Servicios.Gen.InicializaSFInd(EV.ConExpediente, indice);
 
             return RedirectToAction(nameof(ExpedienteEstatuCon));
         }
         [MValidaSeg(nameof(ExpedienteEstatuInicia))]
-        public IActionResult ExpedienteEstatuCon()
+        public async Task<IActionResult> ExpedienteEstatuCon()
         {
-            EVConExpedientes.ExpedienteEstatuFiltro.ExpedienteId = EVConExpedientes.ConExpedienteSel.ExpedienteId;
-            base.MCargaFiltroPagYOrd(EVConExpedientes.ExpedienteEstatuFiltro,
-                                     EVConExpedientes.ExpedienteEstatuPag,
-                                     EVConExpedientes.ExpedienteEstatuColOrden,
-                                     nameof(EExpedienteEstatu));
+            EV.ExpedienteEstatu.Filtro.ExpedienteId = EV.ConExpediente.Sel.ExpedienteId;
 
-            EVConExpedientes.ExpedienteEstatuPag = NConExpedientes.ExpedienteEstatuPag(EVConExpedientes.ExpedienteEstatuFiltro);
-            base.MActualizaTamPag(EVConExpedientes.ExpedienteEstatuPag?.DatPag);
+            await Servicios.Pag.CargaPagOrdYFil(EV.ExpedienteEstatu);
+            EV.ExpedienteEstatu.Pag = await NConExpedientes.ExpedienteEstatuPag(EV.ExpedienteEstatu.Filtro);
+            await Servicios.Pag.ActTamPag(EV.ExpedienteEstatu.Pag?.DatPag);
 
-            ViewBag.Mensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
-            ViewBag.DatPag = EVConExpedientes.ExpedienteEstatuPag?.DatPag;
-            ViewBag.Orden = EVConExpedientes.ExpedienteEstatuColOrden;
-            ViewBag.Indice = EVConExpedientes.ExpedienteEstatuIndice;
+            ViewBag.Mensajes = NConExpedientes.Mensajes;
+            ViewBag.EV = EV;
 
-            return View(nameof(ExpedienteEstatuCon), EVConExpedientes.ExpedienteEstatuPag?.Pagina);
+            return View(nameof(ExpedienteEstatuCon), EV.ExpedienteEstatu.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
         [MValidaSeg(nameof(ExpedienteEstatuInicia))]
-        public IActionResult ExpedienteEstatuXId(Int32 indice)
+        public async Task<IActionResult> ExpedienteEstatuXId(Int32 indice)
         {
-            EVConExpedientes.Accion = MAccionesGen.Consulta;
-            EVConExpedientes.ExpedienteEstatuIndice = indice;
-            return ExpedienteEstatuCaptura(EVConExpedientes.ExpedienteEstatuPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.ExpedienteEstatu.Indice = indice;
+            return await ExpedienteEstatuCaptura(EV.ExpedienteEstatu.Pag.Pagina[indice]);
         }
         #endregion
 
@@ -1070,12 +1066,12 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult ExpedienteEstatuCaptura(EExpedienteEstatu expedienteEstatu)
+        private async Task<IActionResult> ExpedienteEstatuCaptura(EExpedienteEstatu expedienteEstatu)
         {
-            ViewBag.Mensajes = base.MObtenMensajes(NConExpedientes.Mensajes);
-            ViewBag.Accion = EVConExpedientes.Accion;
+            ViewBag.Mensajes = NConExpedientes.Mensajes;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(ExpedienteEstatuCaptura), expedienteEstatu);
+            return await Task.FromResult(ViewCap(nameof(ExpedienteEstatuCaptura), expedienteEstatu));
         }
         #endregion
 
@@ -1083,13 +1079,13 @@ namespace Rediin2022Web.Areas.PriOperacion.Controllers
         [MValidaSeg(nameof(ExpedienteEstatuInicia))]
         public IActionResult ExpedienteEstatuPaginacion(MEDatosPaginador datPag)
         {
-            EVConExpedientes.ExpedienteEstatuPag.DatPag = datPag;
+            EV.ExpedienteEstatu.Pag.DatPag = datPag;
             return RedirectToAction(nameof(ExpedienteEstatuCon));
         }
         [MValidaSeg(nameof(ExpedienteEstatuInicia))]
         public IActionResult ExpedienteEstatuOrdena(String orden)
         {
-            EVConExpedientes.ExpedienteEstatuColOrden = orden;
+            EV.ExpedienteEstatu.ColOrden = orden;
             return RedirectToAction(nameof(ExpedienteEstatuCon));
         }
         #endregion

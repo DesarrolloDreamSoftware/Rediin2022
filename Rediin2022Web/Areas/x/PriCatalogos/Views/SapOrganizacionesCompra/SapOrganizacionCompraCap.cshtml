@@ -1,0 +1,37 @@
+﻿@model ESapOrganizacionCompra
+
+@{
+    ViewData["Title"] = "Captura";
+}
+
+<form asp-action="_SapOrganizacionCompraCaptura">
+    <div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._SapOrganizacionCompraTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="SapOrganizacionCompraId" mval-accion="@ViewBag.Accion"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Activo"/>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="12">
+                    <input mval="Model" xval-for="SapOrganizacionCompraNombre"/>
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <button maccion="Guarda"
+                    asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(SapOrganizacionesCompraController.SapOrganizacionCompraInserta) : nameof(SapOrganizacionesCompraController.SapOrganizacionCompraActualiza))"
+                    xvalidate="@nameof(ESapOrganizacionCompra)"></button>
+            &nbsp;
+            <a maccion="Regresa" asp-action="@nameof(SapOrganizacionesCompraController.SapOrganizacionCompraCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

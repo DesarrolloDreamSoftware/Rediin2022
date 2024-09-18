@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Nullable>disable</Nullable>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
@@ -10,11 +11,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="DSEntityNetX">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.dll</HintPath>
+    <Compile Remove="x\**" />
+    <EmbeddedResource Remove="x\**" />
+    <None Remove="x\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DSEntityNetX.Entities">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Entities.dll</HintPath>
     </Reference>
-    <Reference Include="DSMetodNetX">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.dll</HintPath>
+    <Reference Include="DSMetodNetX.Entidades">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Entidades.dll</HintPath>
+    </Reference>
+    <Reference Include="Sisegui2020.Entidades">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\Sisegui2020.Entidades.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -47,59 +48,59 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad SapSociedadGL.
         /// </summary>
-        public ESapSociedadGLPag SapSociedadGLPag(ESapSociedadGLFiltro sapSociedadGLFiltro)
+        public async Task<ESapSociedadGLPag> SapSociedadGLPag(ESapSociedadGLFiltro sapSociedadGLFiltro)
         {
-            return NSapSociedadesGL.SapSociedadGLPag(sapSociedadGLFiltro);
+            return await NSapSociedadesGL.SapSociedadGLPag(sapSociedadGLFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad SapSociedadGL.
         /// </summary>
         [HttpGet("{sapSociedadGLId}")]
-        public ESapSociedadGL SapSociedadGLXId(String sapSociedadGLId)
+        public async Task<ESapSociedadGL> SapSociedadGLXId(String sapSociedadGLId)
         {
-            return NSapSociedadesGL.SapSociedadGLXId(sapSociedadGLId);
+            return await NSapSociedadesGL.SapSociedadGLXId(sapSociedadGLId);
         }
         /// <summary>
         /// Consulta para combos de la entidad SapSociedadGL.
         /// </summary>
-        public List<MEElemento> SapSociedadGLCmb()
+        public async Task<List<MEElemento>> SapSociedadGLCmb()
         {
-            return NSapSociedadesGL.SapSociedadGLCmb();
+            return await NSapSociedadesGL.SapSociedadGLCmb();
         }
         /// <summary>
         /// Permite insertar la entidad SapSociedadGL.
         /// </summary>
-        public Boolean SapSociedadGLInserta(ESapSociedadGL sapSociedadGL)
+        public async Task<Boolean> SapSociedadGLInserta(ESapSociedadGL sapSociedadGL)
         {
-            return NSapSociedadesGL.SapSociedadGLInserta(sapSociedadGL);
+            return await NSapSociedadesGL.SapSociedadGLInserta(sapSociedadGL);
         }
         /// <summary>
         /// Permite actualizar la entidad SapSociedadGL.
         /// </summary>
-        public Boolean SapSociedadGLActualiza(ESapSociedadGL sapSociedadGL)
+        public async Task<Boolean> SapSociedadGLActualiza(ESapSociedadGL sapSociedadGL)
         {
-            return NSapSociedadesGL.SapSociedadGLActualiza(sapSociedadGL);
+            return await NSapSociedadesGL.SapSociedadGLActualiza(sapSociedadGL);
         }
         /// <summary>
         /// Permite eliminar la entidad SapSociedadGL.
         /// </summary>
-        public Boolean SapSociedadGLElimina(ESapSociedadGL sapSociedadGL)
+        public async Task<Boolean> SapSociedadGLElimina(ESapSociedadGL sapSociedadGL)
         {
-            return NSapSociedadesGL.SapSociedadGLElimina(sapSociedadGL);
+            return await NSapSociedadesGL.SapSociedadGLElimina(sapSociedadGL);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapSociedadGLExporta(ESapSociedadGLFiltro sapSociedadGLFiltro)
+        public async Task<string> SapSociedadGLExporta(ESapSociedadGLFiltro sapSociedadGLFiltro)
         {
-            return NSapSociedadesGL.SapSociedadGLExporta(sapSociedadGLFiltro);
+            return await NSapSociedadesGL.SapSociedadGLExporta(sapSociedadGLFiltro);
         }
         /// <summary>
         /// Reglas de negocio de la entidad SapSociedadGL.
         /// </summary>
-        public List<MEReglaNeg> SapSociedadGLReglas()
+        public async Task<List<MEReglaNeg>> SapSociedadGLReglas()
         {
-            return NSapSociedadesGL.SapSociedadGLReglas();
+            return await NSapSociedadesGL.SapSociedadGLReglas();
         }
         #endregion
 

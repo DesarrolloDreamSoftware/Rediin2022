@@ -1,11 +1,13 @@
-﻿@model EProcesoOperativoObjeto
+@model EProcesoOperativoObjeto
 
 @{
     ViewData["Title"] = "Captura";
+    EVProcesosOperativos EV = ViewBag.EV;
 }
 
 <form asp-action="_ProcesoOperativoObjetoCaptura">
-    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+    <div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.ProcesoOperativoObjeto.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
         <div msub-panel="CapTitulo">
             @MensajesXId._ProcesoOperativoObjetoTitCap
         </div>
@@ -42,7 +44,7 @@
         </div>
         <div msub-panel="CapAccionesGen">
             <button maccion="Guarda"
-                    asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoObjetoInserta) : nameof(ProcesosOperativosController.ProcesoOperativoObjetoActualiza))"
+                    asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoObjetoInserta) : nameof(ProcesosOperativosController.ProcesoOperativoObjetoActualiza))"
                     xvalidate="@nameof(EProcesoOperativoObjeto)"></button>
             &nbsp;
             <a maccion="Regresa" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoCon)"></a>

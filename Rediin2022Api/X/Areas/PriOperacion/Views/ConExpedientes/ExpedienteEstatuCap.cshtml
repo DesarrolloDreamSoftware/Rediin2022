@@ -1,0 +1,27 @@
+@model EExpedienteEstatu
+
+@{
+    ViewData["Title"] = "Captura";
+    EVConExpedientes EV = ViewBag.EV;
+}
+
+<form asp-action="_ExpedienteEstatuCaptura">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="@EV.ExpedienteEstatu.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._ExpedienteEstatuTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="12">
+                    <textarea mval="Model" xval-for="Comentarios" xval-enabled="false" style="height:200px"></textarea>
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <a maccion="Regresa" asp-action="@nameof(ConExpedientesController.ExpedienteEstatuCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

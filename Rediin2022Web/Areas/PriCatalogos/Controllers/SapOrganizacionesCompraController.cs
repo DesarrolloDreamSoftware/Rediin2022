@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapOrganizacionesCompra EVSapOrganizacionesCompra
+        private EVSapOrganizacionesCompra EV
         {
-            get
-            {
-                if (base.MSesion<EVSapOrganizacionesCompra>() == null)
-                    base.MSesion(new EVSapOrganizacionesCompra());
-
-                return base.MSesionAuto<EVSapOrganizacionesCompra>();
-            }
+            get { return base.MEVCtrl<EVSapOrganizacionesCompra>(); }
         }
         #endregion
 
@@ -63,14 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapOrganizacionCompraInicia()
+        public async Task<IActionResult> SapOrganizacionCompraInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapOrganizacionesCompra.SapOrganizacionCompraColOrden))
-                EVSapOrganizacionesCompra.SapOrganizacionCompraColOrden = nameof(ESapOrganizacionCompra.SapOrganizacionCompraId);
-
-            if (EVSapOrganizacionesCompra.SapOrganizacionCompraReglas == null)
-                EVSapOrganizacionesCompra.SapOrganizacionCompraReglas = NSapOrganizacionesCompra.SapOrganizacionCompraReglas();
+            await Servicios.Gen.InicializaSF(EV.SapOrganizacionCompra, nameof(ESapOrganizacionCompra.SapOrganizacionCompraId),
+                async () => await NSapOrganizacionesCompra.SapOrganizacionCompraReglas());
 
             return RedirectToAction(nameof(SapOrganizacionCompraCon));
         }
@@ -78,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapOrganizacionCompraInicia))]
-        public IActionResult SapOrganizacionCompraCon()
+        public async Task<IActionResult> SapOrganizacionCompraCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapOrganizacionesCompra.SapOrganizacionCompraFiltro,
-                                     EVSapOrganizacionesCompra.SapOrganizacionCompraPag,
-                                     EVSapOrganizacionesCompra.SapOrganizacionCompraColOrden,
-                                     nameof(ESapOrganizacionCompra));
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapOrganizacionCompra);
+            EV.SapOrganizacionCompra.Pag = await NSapOrganizacionesCompra.SapOrganizacionCompraPag(EV.SapOrganizacionCompra.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapOrganizacionCompra);
 
-            EVSapOrganizacionesCompra.SapOrganizacionCompraPag = NSapOrganizacionesCompra.SapOrganizacionCompraPag(EVSapOrganizacionesCompra.SapOrganizacionCompraFiltro);
-            base.MActualizaTamPag(EVSapOrganizacionesCompra.SapOrganizacionCompraPag?.DatPag);
+            ViewBag.Mensajes = NSapOrganizacionesCompra.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = NSapOrganizacionesCompra.Mensajes.Copy();
-            ViewBag.Reglas = EVSapOrganizacionesCompra.SapOrganizacionCompraReglas;
-            ViewBag.DatPag = EVSapOrganizacionesCompra.SapOrganizacionCompraPag?.DatPag;
-            ViewBag.Orden = EVSapOrganizacionesCompra.SapOrganizacionCompraColOrden;
-            ViewBag.Filtro = EVSapOrganizacionesCompra.SapOrganizacionCompraFiltro;
-            ViewBag.Indice = EVSapOrganizacionesCompra.SapOrganizacionCompraIndice;
-
-            return View(nameof(SapOrganizacionCompraCon), EVSapOrganizacionesCompra.SapOrganizacionCompraPag?.Pagina);
+            return View(nameof(SapOrganizacionCompraCon), EV.SapOrganizacionCompra.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapOrganizacionCompraXId(Int32 indice)
+        public async Task<IActionResult> SapOrganizacionCompraXId(Int32 indice)
         {
-            EVSapOrganizacionesCompra.Accion = MAccionesGen.Consulta;
-            EVSapOrganizacionesCompra.SapOrganizacionCompraIndice = indice;
-            return SapOrganizacionCompraCaptura(EVSapOrganizacionesCompra.SapOrganizacionCompraPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapOrganizacionCompra.Indice = indice;
+            return await SapOrganizacionCompraCaptura(EV.SapOrganizacionCompra.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapOrganizacionCompraInserta))]
-        public IActionResult SapOrganizacionCompraInsertaIni()
+        public async Task<IActionResult> SapOrganizacionCompraInsertaIni()
         {
-            EVSapOrganizacionesCompra.Accion = MAccionesGen.Inserta;
-            return SapOrganizacionCompraInsertaCap(new ESapOrganizacionCompra()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapOrganizacionCompraInsertaCap(new ESapOrganizacionCompra()
             {
                 Activo = true
             });
@@ -123,58 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapOrganizacionCompraInserta))]
-        public IActionResult SapOrganizacionCompraInsertaCap(ESapOrganizacionCompra sapOrganizacionCompra)
+        public async Task<IActionResult> SapOrganizacionCompraInsertaCap(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            return SapOrganizacionCompraCaptura(sapOrganizacionCompra);
+            return await SapOrganizacionCompraCaptura(sapOrganizacionCompra);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapOrganizacionCompraInserta(ESapOrganizacionCompra sapOrganizacionCompra)
+        public async Task<IActionResult> SapOrganizacionCompraInserta(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            if (NSapOrganizacionesCompra.SapOrganizacionCompraInserta(sapOrganizacionCompra))
+            if (await NSapOrganizacionesCompra.SapOrganizacionCompraInserta(sapOrganizacionCompra))
                 return RedirectToAction(nameof(SapOrganizacionCompraCon));
 
-            return SapOrganizacionCompraInsertaCap(sapOrganizacionCompra);
+            return await SapOrganizacionCompraInsertaCap(sapOrganizacionCompra);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapOrganizacionCompraActualiza))]
-        public IActionResult SapOrganizacionCompraActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapOrganizacionCompraActualizaIni(Int32 indice)
         {
-            EVSapOrganizacionesCompra.Accion = MAccionesGen.Actualiza;
-            EVSapOrganizacionesCompra.SapOrganizacionCompraIndice = indice;
-            EVSapOrganizacionesCompra.SapOrganizacionCompraSel = EVSapOrganizacionesCompra.SapOrganizacionCompraPag.Pagina[indice];
-            return SapOrganizacionCompraActualizaCap(EVSapOrganizacionesCompra.SapOrganizacionCompraSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapOrganizacionCompra.Indice = indice;
+            EV.SapOrganizacionCompra.Sel = EV.SapOrganizacionCompra.Pag.Pagina[indice];
+            return await SapOrganizacionCompraActualizaCap(EV.SapOrganizacionCompra.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapOrganizacionCompraActualiza))]
-        public IActionResult SapOrganizacionCompraActualizaCap(ESapOrganizacionCompra sapOrganizacionCompra)
+        public async Task<IActionResult> SapOrganizacionCompraActualizaCap(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            return SapOrganizacionCompraCaptura(sapOrganizacionCompra);
+            return await SapOrganizacionCompraCaptura(sapOrganizacionCompra);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapOrganizacionCompraActualiza(ESapOrganizacionCompra sapOrganizacionCompra)
+        public async Task<IActionResult> SapOrganizacionCompraActualiza(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            if (NSapOrganizacionesCompra.SapOrganizacionCompraActualiza(sapOrganizacionCompra))
+            if (await NSapOrganizacionesCompra.SapOrganizacionCompraActualiza(sapOrganizacionCompra))
                 return RedirectToAction(nameof(SapOrganizacionCompraCon));
 
-            return SapOrganizacionCompraActualizaCap(sapOrganizacionCompra);
+            return await SapOrganizacionCompraActualizaCap(sapOrganizacionCompra);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapOrganizacionCompraElimina(Int32 indice)
+        public async Task<IActionResult> SapOrganizacionCompraElimina(Int32 indice)
         {
-            NSapOrganizacionesCompra.SapOrganizacionCompraElimina(EVSapOrganizacionesCompra.SapOrganizacionCompraPag.Pagina[indice]);
+            await NSapOrganizacionesCompra.SapOrganizacionCompraElimina(EV.SapOrganizacionCompra.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapOrganizacionCompraCon));
         }
         /// <summary>
@@ -182,18 +165,18 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapOrganizacionCompraExporta()
         {
-            EVSapOrganizacionesCompra.SapOrganizacionCompraFiltro.ColumnaOrden = EVSapOrganizacionesCompra.SapOrganizacionCompraColOrden;
-            EVSapOrganizacionesCompra.SapOrganizacionCompraFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapOrganizacionCompra.Filtro.ColumnaOrden = EV.SapOrganizacionCompra.ColOrden;
+            EV.SapOrganizacionCompra.Filtro.Columnas = new Dictionary<String, String>()
                                                   {
                                                       { nameof(ESapOrganizacionCompra.Activo), String.Empty },
                                                       { nameof(ESapOrganizacionCompra.SapOrganizacionCompraId), String.Empty },
                                                       { nameof(ESapOrganizacionCompra.SapOrganizacionCompraNombre), String.Empty }
                                                   };
 
-            MEDatosArchivo vDA = NSapOrganizacionesCompra.SapOrganizacionCompraExporta(EVSapOrganizacionesCompra.SapOrganizacionCompraFiltro);
-            EVSapOrganizacionesCompra.SapOrganizacionCompraFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NSapOrganizacionesCompra.SapOrganizacionCompraExporta(EV.SapOrganizacionCompra.Filtro);
+            EV.SapOrganizacionCompra.Filtro.Columnas = null;
             if (NSapOrganizacionesCompra.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapOrganizacionesCompra.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
             return RedirectToAction(nameof(SapOrganizacionCompraCon));
         }
@@ -203,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapOrganizacionCompraCaptura(ESapOrganizacionCompra sapOrganizacionCompra)
+        private async Task<IActionResult> SapOrganizacionCompraCaptura(ESapOrganizacionCompra sapOrganizacionCompra)
         {
             ViewBag.Mensajes = NSapOrganizacionesCompra.Mensajes.Copy();
-            ViewBag.Accion = EVSapOrganizacionesCompra.Accion;
-            ViewBag.Reglas = EVSapOrganizacionesCompra.SapOrganizacionCompraReglas;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapOrganizacionCompraCaptura), sapOrganizacionCompra);
+            return await Task.FromResult(ViewCap(nameof(SapOrganizacionCompraCaptura), sapOrganizacionCompra));
         }
         #endregion
 
@@ -220,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapOrganizacionCompraInicia))]
         public IActionResult SapOrganizacionCompraPaginacion(MEDatosPaginador datPag)
         {
-            EVSapOrganizacionesCompra.SapOrganizacionCompraPag.DatPag = datPag;
+            EV.SapOrganizacionCompra.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapOrganizacionCompraCon));
         }
         /// <summary>
@@ -229,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapOrganizacionCompraInicia))]
         public IActionResult SapOrganizacionCompraOrdena(String orden)
         {
-            EVSapOrganizacionesCompra.SapOrganizacionCompraColOrden = orden;
+            EV.SapOrganizacionCompra.ColOrden = orden;
             return RedirectToAction(nameof(SapOrganizacionCompraCon));
         }
         /// <summary>
@@ -238,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapOrganizacionCompraInicia))]
         public IActionResult SapOrganizacionCompraFiltra(ESapOrganizacionCompraFiltro filtro)
         {
-            EVSapOrganizacionesCompra.SapOrganizacionCompraFiltro = filtro;
+            EV.SapOrganizacionCompra.Filtro = filtro;
             return RedirectToAction(nameof(SapOrganizacionCompraCon));
         }
         /// <summary>
@@ -247,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapOrganizacionCompraInicia))]
         public IActionResult SapOrganizacionCompraLimpiaFiltros()
         {
-            EVSapOrganizacionesCompra.SapOrganizacionCompraFiltro = new ESapOrganizacionCompraFiltro();
+            EV.SapOrganizacionCompra.Filtro = new ESapOrganizacionCompraFiltro();
             return RedirectToAction(nameof(SapOrganizacionCompraCon));
         }
         #endregion

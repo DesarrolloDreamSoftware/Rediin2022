@@ -1,12 +1,14 @@
-﻿@model EBanco
+@model EBanco
 
 @{
     ViewData["Title"] = "Captura";
+    EVBancos EV = ViewBag.EV;
 }
 
 <form asp-action="_BancoCaptura">
-    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" 
-    xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+    <div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.Banco.Reglas" 
+    
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
         <div msub-panel="CapTitulo">
             @MensajesXId._BancoTitCap
         </div>
@@ -27,7 +29,7 @@
         </div>
         <div msub-panel="CapAccionesGen">
             <button maccion="Guarda"
-                    asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(BancosController.BancoInserta) : nameof(BancosController.BancoActualiza))"
+                    asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(BancosController.BancoInserta) : nameof(BancosController.BancoActualiza))"
                     xvalidate="@nameof(EBanco)"></button>
             &nbsp;
             <a maccion="Regresa" asp-action="@nameof(BancosController.BancoCon)"></a>

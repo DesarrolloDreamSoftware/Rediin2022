@@ -1,23 +1,33 @@
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Rediin2022.AccesoDatos.PriCatalogos
 {
     [Serializable]
     public class RProcesosOperativos : MRepositorio
     {
+        #region Variables
+        /// <summary>
+        /// Conexión.
+        /// </summary>
+        private IMConexionEntidad _conexion;
+        #endregion
+
         #region Constructores
         public RProcesosOperativos(IMConexionEntidad conexion)
             : base(conexion)
         {
+            _conexion = conexion;
         }
         #endregion
 
@@ -27,73 +37,84 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativo.
         /// </summary>
-        protected EProcesoOperativoPag ProcesoOperativoPag(EProcesoOperativoFiltro procesoOperativoFiltro)
+        protected async Task<EProcesoOperativoPag> ProcesoOperativoPag(EProcesoOperativoFiltro procesoOperativoFiltro)
         {
-            EProcesoOperativoPag vProcesoOperativoPag = new EProcesoOperativoPag();
+            return await _conexion.EntidadPagAsync<EProcesoOperativo,
+                                                    EProcesoOperativoPag,
+                                                    EProcesoOperativoFiltro>(procesoOperativoFiltro, "NCProcesosOperativosCP");
 
-            _conexion.AddParamIn(MMetaDatos.establecimientoId, _conexion.UsuarioSesion.EstablecimientoId);
-            _conexion.AddParamFilterTL(procesoOperativoFiltro);
-            _conexion.LoadEntity<EProcesoOperativoPag>("NCProcesosOperativosCP", vProcesoOperativoPag);
-            if (!_mensajes.Ok)
-                return vProcesoOperativoPag;
+            //           EProcesoOperativoPag vProcesoOperativoPag = new EProcesoOperativoPag();
 
-            base.MProcesaDatPag(procesoOperativoFiltro, vProcesoOperativoPag);
+            //           _conexion.AddParamIn(MMetaDatos.establecimientoId, _conexion.UsuarioSesion.EstablecimientoId);
+            //           _conexion.AddParamFilterTL(procesoOperativoFiltro);
+            //await _conexion.LoadEntityAsync<EProcesoOperativoPag>("NCProcesosOperativosCP", vProcesoOperativoPag);
+            //if (!Mensajes.Ok)
+            //    return vProcesoOperativoPag;
 
-            _conexion.AddParamIn(MMetaDatos.establecimientoId, _conexion.UsuarioSesion.EstablecimientoId);
-            _conexion.AddParamFilterPag(procesoOperativoFiltro);
-            vProcesoOperativoPag.Pagina = _conexion.LoadEntities<EProcesoOperativo>("NCProcesosOperativosCP");
+            //base.MProcesaDatPag(procesoOperativoFiltro, vProcesoOperativoPag);
 
-            return vProcesoOperativoPag;
+            //_conexion.AddParamIn(MMetaDatos.establecimientoId, _conexion.UsuarioSesion.EstablecimientoId);
+            //_conexion.AddParamFilterPag(procesoOperativoFiltro);
+            //vProcesoOperativoPag.Pagina = await _conexion.LoadEntitiesAsync<EProcesoOperativo>("NCProcesosOperativosCP");
+
+            //return vProcesoOperativoPag;
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativo.
         /// </summary>
-        protected EProcesoOperativo ProcesoOperativoXId(Int64 procesoOperativoId)
+        protected async Task<EProcesoOperativo> ProcesoOperativoXId(Int64 procesoOperativoId)
         {
-            _conexion.AddParamIn(nameof(procesoOperativoId), procesoOperativoId);
-            return _conexion.LoadEntity<EProcesoOperativo>("NCProcesosOperativosCI");
+            _conexion.AddParamIn(procesoOperativoId);
+            return await _conexion.LoadEntityAsync<EProcesoOperativo>("NCProcesosOperativosCI");
         }
         /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativo.
         /// </summary>
-        public List<MEElemento> ProcesoOperativoCmb()
+        public async Task<List<MEElemento>> ProcesoOperativoCmb()
         {
-            return _conexion.LoadCmb<MEElemento>("NCProcesosOperativosCCmb");
+            return await _conexion.EntidadCmbAsync("NCProcesosOperativosCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativo.
         /// </summary>
-        protected Int64 ProcesoOperativoInserta(EProcesoOperativo procesoOperativo)
+        protected async Task<Int64> ProcesoOperativoInserta(EProcesoOperativo procesoOperativo)
         {
-            _conexion.AddParamEntity(procesoOperativo, MAccionesBd.Inserta);
-            Int64 vResultado = _conexion.ExecuteScalarVal("NCProcesosOperativosIAE",
-                                                          MensajesXId.ProcesoOperativoNombre,
-                                                          MensajesXId.Orden);
-            return vResultado;
+            await _conexion.EntityUpdateAsync(procesoOperativo, MAccionesBd.Inserta, "NCProcesosOperativosIAE");
+            return procesoOperativo.ProcesoOperativoId;
+
+            //           _conexion.AddParamEntity(procesoOperativo, MAccionesBd.Inserta);
+            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NCProcesosOperativosIAE",
+            //                                              MensajesXId.ProcesoOperativoNombre,
+            //                                              MensajesXId.Orden);
+            //return vResultado;
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativo.
         /// </summary>
-        protected Boolean ProcesoOperativoActualiza(EProcesoOperativo procesoOperativo)
+        protected async Task<Boolean> ProcesoOperativoActualiza(EProcesoOperativo procesoOperativo)
         {
-            _conexion.AddParamEntity(procesoOperativo, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCProcesosOperativosIAE",
-                                       MensajesXId.ProcesoOperativoNombre,
-                                       MensajesXId.Orden);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(procesoOperativo, MAccionesBd.Actualiza, "NCProcesosOperativosIAE");
+
+            //           _conexion.AddParamEntity(procesoOperativo, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCProcesosOperativosIAE",
+            //                           MensajesXId.ProcesoOperativoNombre,
+            //                           MensajesXId.Orden);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativo.
         /// </summary>
-        protected Boolean ProcesoOperativoElimina(EProcesoOperativo procesoOperativo)
+        protected async Task<Boolean> ProcesoOperativoElimina(EProcesoOperativo procesoOperativo)
         {
-            _conexion.AddParamEntity(procesoOperativo, MAccionesBd.Elimina);
-            //Mod
-            Int64 vResultado = _conexion.ExecuteScalarVal("NCProcesosOperativosIAE");
-            if (vResultado == -101)
-                _mensajes.AddError("El proceso operativo ya contiene expedientes, no se puede eliminar");
+            return await _conexion.EntityUpdateAsync(procesoOperativo, MAccionesBd.Elimina, "NCProcesosOperativosIAE");
 
-            return _mensajes.Ok;
+            //_conexion.AddParamEntity(procesoOperativo, MAccionesBd.Elimina);
+            ////Mod
+            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NCProcesosOperativosIAE");
+            //if (vResultado == -101)
+            //    Mensajes.AddError("El proceso operativo ya contiene expedientes, no se puede eliminar");
+
+            //return Mensajes.Ok;
         }
         #endregion
 
@@ -101,81 +122,96 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativoCol.
         /// </summary>
-        public EProcesoOperativoColPag ProcesoOperativoColPag(EProcesoOperativoColFiltro procesoOperativoColFiltro)
+        public async Task<EProcesoOperativoColPag> ProcesoOperativoColPag(EProcesoOperativoColFiltro procesoOperativoColFiltro)
         {
-            EProcesoOperativoColPag vProcesoOperativoColPag = new EProcesoOperativoColPag();
+            return await _conexion.EntidadPagAsync<EProcesoOperativoCol,
+                                                    EProcesoOperativoColPag,
+                                                    EProcesoOperativoColFiltro>(procesoOperativoColFiltro, "NCProcesosOperativosColsCP");
 
-            _conexion.AddParamFilterTL(procesoOperativoColFiltro);
-            _conexion.LoadEntity<EProcesoOperativoColPag>("NCProcesosOperativosColsCP", vProcesoOperativoColPag);
-            if (!_mensajes.Ok)
-                return vProcesoOperativoColPag;
+            //EProcesoOperativoColPag vProcesoOperativoColPag = new EProcesoOperativoColPag();
 
-            base.MProcesaDatPag(procesoOperativoColFiltro, vProcesoOperativoColPag);
+            //_conexion.AddParamFilterTL(procesoOperativoColFiltro);
+            //await _conexion.LoadEntityAsync<EProcesoOperativoColPag>("NCProcesosOperativosColsCP", vProcesoOperativoColPag);
+            //if (!Mensajes.Ok)
+            //    return vProcesoOperativoColPag;
 
-            _conexion.AddParamFilterPag(procesoOperativoColFiltro);
-            vProcesoOperativoColPag.Pagina = _conexion.LoadEntities<EProcesoOperativoCol>("NCProcesosOperativosColsCP");
+            //base.MProcesaDatPag(procesoOperativoColFiltro, vProcesoOperativoColPag);
 
-            return vProcesoOperativoColPag;
+            //_conexion.AddParamFilterPag(procesoOperativoColFiltro);
+            //vProcesoOperativoColPag.Pagina = await _conexion.LoadEntitiesAsync<EProcesoOperativoCol>("NCProcesosOperativosColsCP");
+
+            //return vProcesoOperativoColPag;
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativoCol.
         /// </summary>
-        public EProcesoOperativoCol ProcesoOperativoColXId(Int64 procesoOperativoId,
-                                                           Int64 columnaId)
+        public async Task<EProcesoOperativoCol> ProcesoOperativoColXId(Int64 procesoOperativoId,
+                                                                       Int64 columnaId)
         {
-            _conexion.AddParamIn(nameof(procesoOperativoId), procesoOperativoId);
-            _conexion.AddParamIn(nameof(columnaId), columnaId);
-            return _conexion.LoadEntity<EProcesoOperativoCol>("NCProcesosOperativosColsCI");
+            _conexion.AddParamIn(procesoOperativoId);
+            _conexion.AddParamIn(columnaId);
+            return await _conexion.LoadEntityAsync<EProcesoOperativoCol>("NCProcesosOperativosColsCI");
         }
         /// <summary>
         /// Consulta adicional de la entidad ProcesoOperativoCol.
         /// </summary>
-        public List<EProcesoOperativoCol> ProcesoOperativoColCT(Int64 procesoOperativoId)
+        public async Task<List<EProcesoOperativoCol>> ProcesoOperativoColCT(Int64 procesoOperativoId)
         {
-            _conexion.AddParamIn(nameof(procesoOperativoId), procesoOperativoId);
-            return _conexion.LoadEntities<EProcesoOperativoCol>("NCProcesosOperativosColsCT");
+            _conexion.AddParamIn(procesoOperativoId);
+            return await _conexion.LoadEntitiesAsync<EProcesoOperativoCol>("NCProcesosOperativosColsCT");
         }
         /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativoCol.
         /// </summary>
-        public List<MEElemento> ProcesoOperativoColCmb(Int64 procesoOperativoId)
+        public async Task<List<MEElemento>> ProcesoOperativoColCmb(Int64 procesoOperativoId)
         {
-            _conexion.AddParamInOpt(nameof(procesoOperativoId), procesoOperativoId);
-            return _conexion.LoadCmb<MEElemento>("NCProcesosOperativosColsCCmb");
+            _conexion.AddParamInOpt(procesoOperativoId);
+            return await _conexion.EntidadCmbAsync("NCProcesosOperativosColsCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoCol.
         /// </summary>
-        protected Int64 ProcesoOperativoColInserta(EProcesoOperativoCol procesoOperativoCol)
+        protected async Task<Int64> ProcesoOperativoColInserta(EProcesoOperativoCol procesoOperativoCol)
         {
-            _conexion.AddParamEntity(procesoOperativoCol, MAccionesBd.Inserta);
-            Int64 vResultado = _conexion.ExecuteScalarVal("NCProcesosOperativosColsIAE",
-                                                          MensajesXId.Etiqueta);
-            return vResultado;
+            await _conexion.EntityUpdateAsync(procesoOperativoCol, MAccionesBd.Inserta, "NCProcesosOperativosColsIAE");
+            return procesoOperativoCol.ColumnaId;
 
+            //_conexion.AddParamEntity(procesoOperativoCol, MAccionesBd.Inserta);
+            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NCProcesosOperativosColsIAE",
+            //                                              MensajesXId.Etiqueta);
+            //return vResultado;
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoCol.
         /// </summary>
-        protected Boolean ProcesoOperativoColActualiza(EProcesoOperativoCol procesoOperativoCol)
+        protected async Task<Boolean> ProcesoOperativoColActualiza(EProcesoOperativoCol procesoOperativoCol)
         {
-            _conexion.AddParamEntity(procesoOperativoCol, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCProcesosOperativosColsIAE",
-                                       MensajesXId.Etiqueta);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(procesoOperativoCol, MAccionesBd.Actualiza, "NCProcesosOperativosColsIAE");
+
+            //_conexion.AddParamEntity(procesoOperativoCol, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCProcesosOperativosColsIAE",
+            //                           MensajesXId.Etiqueta);
+            //return Mensajes.Ok;
 
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoCol.
         /// </summary>
-        protected Boolean ProcesoOperativoColElimina(EProcesoOperativoCol procesoOperativoCol)
+        protected async Task<Boolean> ProcesoOperativoColElimina(EProcesoOperativoCol procesoOperativoCol)
         {
-            _conexion.AddParamEntity(procesoOperativoCol, MAccionesBd.Elimina);
-            Int64 vResultado = _conexion.ExecuteScalarVal("NCProcesosOperativosColsIAE");
-            if (vResultado == -101)
-                _mensajes.AddError("Ya existen expedientes para el proceso operativo, no se puede eliminar la columna");
+            return await _conexion.EntityUpdateAsync(procesoOperativoCol, MAccionesBd.Elimina, "NCProcesosOperativosColsIAE",
+                vResultado =>
+                {
+                    if (vResultado == -101)
+                        Mensajes.AddError("Ya existen expedientes para el proceso operativo, no se puede eliminar la columna");
+                });
 
-            return _mensajes.Ok;
+            //_conexion.AddParamEntity(procesoOperativoCol, MAccionesBd.Elimina);
+            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NCProcesosOperativosColsIAE");
+            //if (vResultado == -101)
+            //    Mensajes.AddError("Ya existen expedientes para el proceso operativo, no se puede eliminar la columna");
+
+            //return Mensajes.Ok;
         }
         #endregion
 
@@ -183,70 +219,86 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativoObjeto.
         /// </summary>
-        public EProcesoOperativoObjetoPag ProcesoOperativoObjetoPag(EProcesoOperativoObjetoFiltro procesoOperativoObjetoFiltro)
+        public async Task<EProcesoOperativoObjetoPag> ProcesoOperativoObjetoPag(EProcesoOperativoObjetoFiltro procesoOperativoObjetoFiltro)
         {
-            EProcesoOperativoObjetoPag vProcesoOperativoObjetoPag = new EProcesoOperativoObjetoPag();
+            return await _conexion.EntidadPagAsync<EProcesoOperativoObjeto,
+                                                    EProcesoOperativoObjetoPag,
+                                                    EProcesoOperativoObjetoFiltro>(procesoOperativoObjetoFiltro, "NCProcesosOperativosObjetosCP");
 
-            _conexion.AddParamFilterTL(procesoOperativoObjetoFiltro);
-            _conexion.LoadEntity<EProcesoOperativoObjetoPag>("NCProcesosOperativosObjetosCP", vProcesoOperativoObjetoPag);
-            if (!_mensajes.Ok)
-                return vProcesoOperativoObjetoPag;
+            //EProcesoOperativoObjetoPag vProcesoOperativoObjetoPag = new EProcesoOperativoObjetoPag();
 
-            base.MProcesaDatPag(procesoOperativoObjetoFiltro, vProcesoOperativoObjetoPag);
+            //_conexion.AddParamFilterTL(procesoOperativoObjetoFiltro);
+            //await _conexion.LoadEntityAsync<EProcesoOperativoObjetoPag>("NCProcesosOperativosObjetosCP", vProcesoOperativoObjetoPag);
+            //if (!Mensajes.Ok)
+            //    return vProcesoOperativoObjetoPag;
 
-            _conexion.AddParamFilterPag(procesoOperativoObjetoFiltro);
-            vProcesoOperativoObjetoPag.Pagina = _conexion.LoadEntities<EProcesoOperativoObjeto>("NCProcesosOperativosObjetosCP");
+            //base.MProcesaDatPag(procesoOperativoObjetoFiltro, vProcesoOperativoObjetoPag);
 
-            return vProcesoOperativoObjetoPag;
+            //_conexion.AddParamFilterPag(procesoOperativoObjetoFiltro);
+            //vProcesoOperativoObjetoPag.Pagina = await _conexion.LoadEntitiesAsync<EProcesoOperativoObjeto>("NCProcesosOperativosObjetosCP");
+
+            //return vProcesoOperativoObjetoPag;
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativoObjeto.
         /// </summary>
-        public EProcesoOperativoObjeto ProcesoOperativoObjetoXId(Int64 procesoOperativoObjetoId)
+        public async Task<EProcesoOperativoObjeto> ProcesoOperativoObjetoXId(Int64 procesoOperativoObjetoId)
         {
-            _conexion.AddParamIn(nameof(procesoOperativoObjetoId), procesoOperativoObjetoId);
-            return _conexion.LoadEntity<EProcesoOperativoObjeto>("NCProcesosOperativosObjetosCI");
+            _conexion.AddParamIn(procesoOperativoObjetoId);
+            return await _conexion.LoadEntityAsync<EProcesoOperativoObjeto>("NCProcesosOperativosObjetosCI");
         }
         /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativoObjeto.
         /// </summary>
-        public List<MEElemento> ProcesoOperativoObjetoCmb(Int64 procesoOperativoId)
+        public async Task<List<MEElemento>> ProcesoOperativoObjetoCmb(Int64 procesoOperativoId)
         {
-            _conexion.AddParamInOpt(nameof(procesoOperativoId), procesoOperativoId);
-            return _conexion.LoadCmb<MEElemento>("NCProcesosOperativosObjetosCCmb");
+            _conexion.AddParamInOpt(procesoOperativoId);
+            return await _conexion.EntidadCmbAsync("NCProcesosOperativosObjetosCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoObjeto.
         /// </summary>
-        protected Int64 ProcesoOperativoObjetoInserta(EProcesoOperativoObjeto procesoOperativoObjeto)
+        protected async Task<Int64> ProcesoOperativoObjetoInserta(EProcesoOperativoObjeto procesoOperativoObjeto)
         {
-            _conexion.AddParamEntity(procesoOperativoObjeto, MAccionesBd.Inserta);
-            Int64 vResultado = _conexion.ExecuteScalarVal("NCProcesosOperativosObjetosIAE",
-                                                          MensajesXId.ProcesoOperativoObjetoNombre);
-            return vResultado;
+            await _conexion.EntityUpdateAsync(procesoOperativoObjeto, MAccionesBd.Inserta, "NCProcesosOperativosObjetosIAE");
+            return procesoOperativoObjeto.ProcesoOperativoObjetoId;
+
+            //_conexion.AddParamEntity(procesoOperativoObjeto, MAccionesBd.Inserta);
+            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NCProcesosOperativosObjetosIAE",
+            //                                              MensajesXId.ProcesoOperativoObjetoNombre);
+            //return vResultado;
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoObjeto.
         /// </summary>
-        protected Boolean ProcesoOperativoObjetoActualiza(EProcesoOperativoObjeto procesoOperativoObjeto)
+        protected async Task<Boolean> ProcesoOperativoObjetoActualiza(EProcesoOperativoObjeto procesoOperativoObjeto)
         {
-            _conexion.AddParamEntity(procesoOperativoObjeto, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCProcesosOperativosObjetosIAE",
-                                       MensajesXId.ProcesoOperativoObjetoNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(procesoOperativoObjeto, MAccionesBd.Actualiza, "NCProcesosOperativosObjetosIAE");
+
+            //_conexion.AddParamEntity(procesoOperativoObjeto, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCProcesosOperativosObjetosIAE",
+            //                           MensajesXId.ProcesoOperativoObjetoNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoObjeto.
         /// </summary>
-        protected Boolean ProcesoOperativoObjetoElimina(EProcesoOperativoObjeto procesoOperativoObjeto)
+        protected async Task<Boolean> ProcesoOperativoObjetoElimina(EProcesoOperativoObjeto procesoOperativoObjeto)
         {
-            _conexion.AddParamEntity(procesoOperativoObjeto, MAccionesBd.Elimina);
-            //Mod
-            Int64 vResultado = _conexion.ExecuteScalarVal("NCProcesosOperativosObjetosIAE");
-            if (vResultado == -101)
-                _mensajes.AddError("El objeto ya se esta usando en un expediente, no se puede eliminar.");
+            return await _conexion.EntityUpdateAsync(procesoOperativoObjeto, MAccionesBd.Elimina, "NCProcesosOperativosObjetosIAE",
+                vResultado =>
+                {
+                    if (vResultado == -101)
+                        Mensajes.AddError("El objeto ya se esta usando en un expediente, no se puede eliminar.");
+                });
 
-            return _mensajes.Ok;
+            //_conexion.AddParamEntity(procesoOperativoObjeto, MAccionesBd.Elimina);
+            ////Mod
+            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NCProcesosOperativosObjetosIAE");
+            //if (vResultado == -101)
+            //    Mensajes.AddError("El objeto ya se esta usando en un expediente, no se puede eliminar.");
+
+            //return Mensajes.Ok;
         }
         #endregion
 
@@ -254,65 +306,76 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativoEst.
         /// </summary>
-        public EProcesoOperativoEstPag ProcesoOperativoEstPag(EProcesoOperativoEstFiltro procesoOperativoEstFiltro)
+        public async Task<EProcesoOperativoEstPag> ProcesoOperativoEstPag(EProcesoOperativoEstFiltro procesoOperativoEstFiltro)
         {
-            EProcesoOperativoEstPag vProcesoOperativoEstPag = new EProcesoOperativoEstPag();
+            return await _conexion.EntidadPagAsync<EProcesoOperativoEst,
+                                                    EProcesoOperativoEstPag,
+                                                    EProcesoOperativoEstFiltro>(procesoOperativoEstFiltro, "NCProcesosOperativosEstCP");
 
-            _conexion.AddParamFilterTL(procesoOperativoEstFiltro);
-            _conexion.LoadEntity<EProcesoOperativoEstPag>("NCProcesosOperativosEstCP", vProcesoOperativoEstPag);
-            if (!_mensajes.Ok)
-                return vProcesoOperativoEstPag;
+            //EProcesoOperativoEstPag vProcesoOperativoEstPag = new EProcesoOperativoEstPag();
 
-            base.MProcesaDatPag(procesoOperativoEstFiltro, vProcesoOperativoEstPag);
+            //_conexion.AddParamFilterTL(procesoOperativoEstFiltro);
+            //await _conexion.LoadEntityAsync<EProcesoOperativoEstPag>("NCProcesosOperativosEstCP", vProcesoOperativoEstPag);
+            //if (!Mensajes.Ok)
+            //    return vProcesoOperativoEstPag;
 
-            _conexion.AddParamFilterPag(procesoOperativoEstFiltro);
-            vProcesoOperativoEstPag.Pagina = _conexion.LoadEntities<EProcesoOperativoEst>("NCProcesosOperativosEstCP");
+            //base.MProcesaDatPag(procesoOperativoEstFiltro, vProcesoOperativoEstPag);
 
-            return vProcesoOperativoEstPag;
+            //_conexion.AddParamFilterPag(procesoOperativoEstFiltro);
+            //vProcesoOperativoEstPag.Pagina = await _conexion.LoadEntitiesAsync<EProcesoOperativoEst>("NCProcesosOperativosEstCP");
+
+            //return vProcesoOperativoEstPag;
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativoEst.
         /// </summary>
-        public EProcesoOperativoEst ProcesoOperativoEstXId(Int64 procesoOperativoEstId)
+        public async Task<EProcesoOperativoEst> ProcesoOperativoEstXId(Int64 procesoOperativoEstId)
         {
-            _conexion.AddParamIn(nameof(procesoOperativoEstId), procesoOperativoEstId);
-            return _conexion.LoadEntity<EProcesoOperativoEst>("NCProcesosOperativosEstCI");
+            _conexion.AddParamIn(procesoOperativoEstId);
+            return await _conexion.LoadEntityAsync<EProcesoOperativoEst>("NCProcesosOperativosEstCI");
         }
         /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativoEst.
         /// </summary>
-        public List<MEElemento> ProcesoOperativoEstCmb(Int64 procesoOperativoId)
+        public async Task<List<MEElemento>> ProcesoOperativoEstCmb(Int64 procesoOperativoId)
         {
-            _conexion.AddParamInOpt(nameof(procesoOperativoId), procesoOperativoId);
-            return _conexion.LoadCmb<MEElemento>("NCProcesosOperativosEstCCmb");
+            _conexion.AddParamInOpt(procesoOperativoId);
+            return await _conexion.EntidadCmbAsync("NCProcesosOperativosEstCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoEst.
         /// </summary>
-        protected Int64 ProcesoOperativoEstInserta(EProcesoOperativoEst procesoOperativoEst)
+        protected async Task<Int64> ProcesoOperativoEstInserta(EProcesoOperativoEst procesoOperativoEst)
         {
-            _conexion.AddParamEntity(procesoOperativoEst, MAccionesBd.Inserta);
-            Int64 vResultado = _conexion.ExecuteScalarVal("NCProcesosOperativosEstIAE",
-                                                          MensajesXId.EstatusNombre);
-            return vResultado;
+            await _conexion.EntityUpdateAsync(procesoOperativoEst, MAccionesBd.Inserta, "NCProcesosOperativosEstIAE");
+            return procesoOperativoEst.ProcesoOperativoEstId;
+
+            //_conexion.AddParamEntity(procesoOperativoEst, MAccionesBd.Inserta);
+            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NCProcesosOperativosEstIAE",
+            //                                              MensajesXId.EstatusNombre);
+            //return vResultado;
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoEst.
         /// </summary>
-        protected Boolean ProcesoOperativoEstActualiza(EProcesoOperativoEst procesoOperativoEst)
+        protected async Task<Boolean> ProcesoOperativoEstActualiza(EProcesoOperativoEst procesoOperativoEst)
         {
-            _conexion.AddParamEntity(procesoOperativoEst, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCProcesosOperativosEstIAE",
-                                       MensajesXId.EstatusNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(procesoOperativoEst, MAccionesBd.Actualiza, "NCProcesosOperativosEstIAE");
+
+            //_conexion.AddParamEntity(procesoOperativoEst, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCProcesosOperativosEstIAE",
+            //                           MensajesXId.EstatusNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoEst.
         /// </summary>
-        protected Boolean ProcesoOperativoEstElimina(EProcesoOperativoEst procesoOperativoEst)
+        protected async Task<Boolean> ProcesoOperativoEstElimina(EProcesoOperativoEst procesoOperativoEst)
         {
-            _conexion.AddParamEntity(procesoOperativoEst, MAccionesBd.Elimina);
-            return _conexion.ExecuteNonQueryRet("NCProcesosOperativosEstIAE");
+            return await _conexion.EntityUpdateAsync(procesoOperativoEst, MAccionesBd.Elimina, "NCProcesosOperativosEstIAE");
+
+            //_conexion.AddParamEntity(procesoOperativoEst, MAccionesBd.Elimina);
+            //return await _conexion.ExecuteNonQueryRetAsync("NCProcesosOperativosEstIAE");
         }
         #endregion
 
@@ -320,70 +383,87 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad ProcesoOperativoEstSec.
         /// </summary>
-        public EProcesoOperativoEstSecPag ProcesoOperativoEstSecPag(EProcesoOperativoEstSecFiltro procesoOperativoEstSecFiltro)
+        public async Task<EProcesoOperativoEstSecPag> ProcesoOperativoEstSecPag(EProcesoOperativoEstSecFiltro procesoOperativoEstSecFiltro)
         {
-            EProcesoOperativoEstSecPag vProcesoOperativoEstSecPag = new EProcesoOperativoEstSecPag();
+            return await _conexion.EntidadPagAsync<EProcesoOperativoEstSec,
+                                                    EProcesoOperativoEstSecPag,
+                                                    EProcesoOperativoEstSecFiltro>(procesoOperativoEstSecFiltro, "NCProcesosOperativosEstSecCP");
 
-            _conexion.AddParamFilterTL(procesoOperativoEstSecFiltro);
-            _conexion.LoadEntity<EProcesoOperativoEstSecPag>("NCProcesosOperativosEstSecCP", vProcesoOperativoEstSecPag);
-            if (!_mensajes.Ok)
-                return vProcesoOperativoEstSecPag;
+            //EProcesoOperativoEstSecPag vProcesoOperativoEstSecPag = new EProcesoOperativoEstSecPag();
 
-            base.MProcesaDatPag(procesoOperativoEstSecFiltro, vProcesoOperativoEstSecPag);
+            //_conexion.AddParamFilterTL(procesoOperativoEstSecFiltro);
+            //await _conexion.LoadEntityAsync<EProcesoOperativoEstSecPag>("NCProcesosOperativosEstSecCP", vProcesoOperativoEstSecPag);
+            //if (!Mensajes.Ok)
+            //    return vProcesoOperativoEstSecPag;
 
-            _conexion.AddParamFilterPag(procesoOperativoEstSecFiltro);
-            vProcesoOperativoEstSecPag.Pagina = _conexion.LoadEntities<EProcesoOperativoEstSec>("NCProcesosOperativosEstSecCP");
+            //base.MProcesaDatPag(procesoOperativoEstSecFiltro, vProcesoOperativoEstSecPag);
 
-            return vProcesoOperativoEstSecPag;
+            //_conexion.AddParamFilterPag(procesoOperativoEstSecFiltro);
+            //vProcesoOperativoEstSecPag.Pagina = await _conexion.LoadEntitiesAsync<EProcesoOperativoEstSec>("NCProcesosOperativosEstSecCP");
+
+            //return vProcesoOperativoEstSecPag;
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativoEstSec.
         /// </summary>
-        public EProcesoOperativoEstSec ProcesoOperativoEstSecXId(Int64 procesoOperativoEstSecId)
+        public async Task<EProcesoOperativoEstSec> ProcesoOperativoEstSecXId(Int64 procesoOperativoEstSecId)
         {
-            _conexion.AddParamIn(nameof(procesoOperativoEstSecId), procesoOperativoEstSecId);
-            return _conexion.LoadEntity<EProcesoOperativoEstSec>("NCProcesosOperativosEstSecCI");
+            _conexion.AddParamIn(procesoOperativoEstSecId);
+            return await _conexion.LoadEntityAsync<EProcesoOperativoEstSec>("NCProcesosOperativosEstSecCI");
         }
         /// <summary>
         /// Consulta adicional de la entidad ProcesoOperativoEstSec.
         /// </summary>
-        public List<EProcesoOperativoEstSec> ProcesoOperativoEstSecCTXIdPadre(Int64 procesoOperativoEstId)
+        public async Task<List<EProcesoOperativoEstSec>> ProcesoOperativoEstSecCTXIdPadre(Int64 procesoOperativoEstId)
         {
-            _conexion.AddParamIn(nameof(procesoOperativoEstId), procesoOperativoEstId);
-            return _conexion.LoadEntities<EProcesoOperativoEstSec>("NCProcesosOperativosEstSecCTXIdPadre");
+            _conexion.AddParamIn(procesoOperativoEstId);
+            return await _conexion.LoadEntitiesAsync<EProcesoOperativoEstSec>("NCProcesosOperativosEstSecCTXIdPadre");
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoEstSec.
         /// </summary>
-        protected Int64 ProcesoOperativoEstSecInserta(EProcesoOperativoEstSec procesoOperativoEstSec)
+        protected async Task<Int64> ProcesoOperativoEstSecInserta(EProcesoOperativoEstSec procesoOperativoEstSec)
         {
-            _conexion.AddParamEntity(procesoOperativoEstSec, MAccionesBd.Inserta);
-            Int64 vResultado = _conexion.ExecuteScalarVal("NCProcesosOperativosEstSecIAE",
-                                                          MensajesXId.ProcesoOperativoEstIdSig);
+            await _conexion.EntityUpdateAsync(procesoOperativoEstSec, MAccionesBd.Inserta, "NCProcesosOperativosEstSecIAE",
+                vResultado =>
+                {
+                    //Adi
+                    if (vResultado == -101)
+                        Mensajes.AddError("Solo hasta dos estatus se permiten indicar para la secuencia.");
+                });
+            return procesoOperativoEstSec.ProcesoOperativoEstSecId;
 
-            //Adi
-            if (vResultado == -101)
-                _mensajes.AddError("Solo hasta dos estatus se permiten indicar para la secuencia.");
+            //_conexion.AddParamEntity(procesoOperativoEstSec, MAccionesBd.Inserta);
+            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NCProcesosOperativosEstSecIAE",
+            //                                              MensajesXId.ProcesoOperativoEstIdSig);
 
-            return vResultado;
+            ////Adi
+            //if (vResultado == -101)
+            //    Mensajes.AddError("Solo hasta dos estatus se permiten indicar para la secuencia.");
+
+            //return vResultado;
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoEstSec.
         /// </summary>
-        protected Boolean ProcesoOperativoEstSecActualiza(EProcesoOperativoEstSec procesoOperativoEstSec)
+        protected async Task<Boolean> ProcesoOperativoEstSecActualiza(EProcesoOperativoEstSec procesoOperativoEstSec)
         {
-            _conexion.AddParamEntity(procesoOperativoEstSec, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCProcesosOperativosEstSecIAE",
-                                       MensajesXId.ProcesoOperativoEstIdSig);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(procesoOperativoEstSec, MAccionesBd.Actualiza, "NCProcesosOperativosEstSecIAE");
+
+            //_conexion.AddParamEntity(procesoOperativoEstSec, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCProcesosOperativosEstSecIAE",
+            //                           MensajesXId.ProcesoOperativoEstIdSig);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoEstSec.
         /// </summary>
-        protected Boolean ProcesoOperativoEstSecElimina(EProcesoOperativoEstSec procesoOperativoEstSec)
+        protected async Task<Boolean> ProcesoOperativoEstSecElimina(EProcesoOperativoEstSec procesoOperativoEstSec)
         {
-            _conexion.AddParamEntity(procesoOperativoEstSec, MAccionesBd.Elimina);
-            return _conexion.ExecuteNonQueryRet("NCProcesosOperativosEstSecIAE");
+            return await _conexion.EntityUpdateAsync(procesoOperativoEstSec, MAccionesBd.Elimina, "NCProcesosOperativosEstSecIAE");
+
+            //_conexion.AddParamEntity(procesoOperativoEstSec, MAccionesBd.Elimina);
+            //return await _conexion.ExecuteNonQueryRetAsync("NCProcesosOperativosEstSecIAE");
         }
         #endregion
 

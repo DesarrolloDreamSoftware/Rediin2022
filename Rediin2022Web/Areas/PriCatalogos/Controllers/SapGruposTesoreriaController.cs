@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapGruposTesoreria EVSapGruposTesoreria
+        private EVSapGruposTesoreria EV
         {
-            get
-            {
-                if (base.MSesion<EVSapGruposTesoreria>() == null)
-                    base.MSesion(new EVSapGruposTesoreria());
-
-                return base.MSesionAuto<EVSapGruposTesoreria>();
-            }
+            get { return base.MEVCtrl<EVSapGruposTesoreria>(); }
         }
         #endregion
 
@@ -63,14 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapGrupoTesoreriaInicia()
+        public async Task<IActionResult> SapGrupoTesoreriaInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapGruposTesoreria.SapGrupoTesoreriaColOrden))
-                EVSapGruposTesoreria.SapGrupoTesoreriaColOrden = nameof(ESapGrupoTesoreria.SapGrupoTesoreriaId);
-
-            if (EVSapGruposTesoreria.SapGrupoTesoreriaReglas == null)
-                EVSapGruposTesoreria.SapGrupoTesoreriaReglas = NSapGruposTesoreria.SapGrupoTesoreriaReglas();
+            await Servicios.Gen.InicializaSF(EV.SapGrupoTesoreria, nameof(ESapGrupoTesoreria.SapGrupoTesoreriaId),
+                async () => await NSapGruposTesoreria.SapGrupoTesoreriaReglas());
 
             return RedirectToAction(nameof(SapGrupoTesoreriaCon));
         }
@@ -78,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapGrupoTesoreriaInicia))]
-        public IActionResult SapGrupoTesoreriaCon()
+        public async Task<IActionResult> SapGrupoTesoreriaCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapGruposTesoreria.SapGrupoTesoreriaFiltro,
-                                     EVSapGruposTesoreria.SapGrupoTesoreriaPag,
-                                     EVSapGruposTesoreria.SapGrupoTesoreriaColOrden,
-                                     nameof(ESapGrupoTesoreria));
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapGrupoTesoreria);
+            EV.SapGrupoTesoreria.Pag = await NSapGruposTesoreria.SapGrupoTesoreriaPag(EV.SapGrupoTesoreria.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapGrupoTesoreria);
 
-            EVSapGruposTesoreria.SapGrupoTesoreriaPag = NSapGruposTesoreria.SapGrupoTesoreriaPag(EVSapGruposTesoreria.SapGrupoTesoreriaFiltro);
-            base.MActualizaTamPag(EVSapGruposTesoreria.SapGrupoTesoreriaPag?.DatPag);
+            ViewBag.Mensajes = NSapGruposTesoreria.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = NSapGruposTesoreria.Mensajes.Copy();
-            ViewBag.Reglas = EVSapGruposTesoreria.SapGrupoTesoreriaReglas;
-            ViewBag.DatPag = EVSapGruposTesoreria.SapGrupoTesoreriaPag?.DatPag;
-            ViewBag.Orden = EVSapGruposTesoreria.SapGrupoTesoreriaColOrden;
-            ViewBag.Filtro = EVSapGruposTesoreria.SapGrupoTesoreriaFiltro;
-            ViewBag.Indice = EVSapGruposTesoreria.SapGrupoTesoreriaIndice;
-
-            return View(nameof(SapGrupoTesoreriaCon), EVSapGruposTesoreria.SapGrupoTesoreriaPag?.Pagina);
+            return View(nameof(SapGrupoTesoreriaCon), EV.SapGrupoTesoreria.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapGrupoTesoreriaXId(Int32 indice)
+        public async Task<IActionResult> SapGrupoTesoreriaXId(Int32 indice)
         {
-            EVSapGruposTesoreria.Accion = MAccionesGen.Consulta;
-            EVSapGruposTesoreria.SapGrupoTesoreriaIndice = indice;
-            return SapGrupoTesoreriaCaptura(EVSapGruposTesoreria.SapGrupoTesoreriaPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapGrupoTesoreria.Indice = indice;
+            return await SapGrupoTesoreriaCaptura(EV.SapGrupoTesoreria.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapGrupoTesoreriaInserta))]
-        public IActionResult SapGrupoTesoreriaInsertaIni()
+        public async Task<IActionResult> SapGrupoTesoreriaInsertaIni()
         {
-            EVSapGruposTesoreria.Accion = MAccionesGen.Inserta;
-            return SapGrupoTesoreriaInsertaCap(new ESapGrupoTesoreria()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapGrupoTesoreriaInsertaCap(new ESapGrupoTesoreria()
             {
                 Activo = true
             });
@@ -123,58 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapGrupoTesoreriaInserta))]
-        public IActionResult SapGrupoTesoreriaInsertaCap(ESapGrupoTesoreria sapGrupoTesoreria)
+        public async Task<IActionResult> SapGrupoTesoreriaInsertaCap(ESapGrupoTesoreria sapGrupoTesoreria)
         {
-            return SapGrupoTesoreriaCaptura(sapGrupoTesoreria);
+            return await SapGrupoTesoreriaCaptura(sapGrupoTesoreria);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapGrupoTesoreriaInserta(ESapGrupoTesoreria sapGrupoTesoreria)
+        public async Task<IActionResult> SapGrupoTesoreriaInserta(ESapGrupoTesoreria sapGrupoTesoreria)
         {
-            if (NSapGruposTesoreria.SapGrupoTesoreriaInserta(sapGrupoTesoreria))
+            if (await NSapGruposTesoreria.SapGrupoTesoreriaInserta(sapGrupoTesoreria))
                 return RedirectToAction(nameof(SapGrupoTesoreriaCon));
 
-            return SapGrupoTesoreriaInsertaCap(sapGrupoTesoreria);
+            return await SapGrupoTesoreriaInsertaCap(sapGrupoTesoreria);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapGrupoTesoreriaActualiza))]
-        public IActionResult SapGrupoTesoreriaActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapGrupoTesoreriaActualizaIni(Int32 indice)
         {
-            EVSapGruposTesoreria.Accion = MAccionesGen.Actualiza;
-            EVSapGruposTesoreria.SapGrupoTesoreriaIndice = indice;
-            EVSapGruposTesoreria.SapGrupoTesoreriaSel = EVSapGruposTesoreria.SapGrupoTesoreriaPag.Pagina[indice];
-            return SapGrupoTesoreriaActualizaCap(EVSapGruposTesoreria.SapGrupoTesoreriaSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapGrupoTesoreria.Indice = indice;
+            EV.SapGrupoTesoreria.Sel = EV.SapGrupoTesoreria.Pag.Pagina[indice];
+            return await SapGrupoTesoreriaActualizaCap(EV.SapGrupoTesoreria.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapGrupoTesoreriaActualiza))]
-        public IActionResult SapGrupoTesoreriaActualizaCap(ESapGrupoTesoreria sapGrupoTesoreria)
+        public async Task<IActionResult> SapGrupoTesoreriaActualizaCap(ESapGrupoTesoreria sapGrupoTesoreria)
         {
-            return SapGrupoTesoreriaCaptura(sapGrupoTesoreria);
+            return await SapGrupoTesoreriaCaptura(sapGrupoTesoreria);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapGrupoTesoreriaActualiza(ESapGrupoTesoreria sapGrupoTesoreria)
+        public async Task<IActionResult> SapGrupoTesoreriaActualiza(ESapGrupoTesoreria sapGrupoTesoreria)
         {
-            if (NSapGruposTesoreria.SapGrupoTesoreriaActualiza(sapGrupoTesoreria))
+            if (await NSapGruposTesoreria.SapGrupoTesoreriaActualiza(sapGrupoTesoreria))
                 return RedirectToAction(nameof(SapGrupoTesoreriaCon));
 
-            return SapGrupoTesoreriaActualizaCap(sapGrupoTesoreria);
+            return await SapGrupoTesoreriaActualizaCap(sapGrupoTesoreria);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapGrupoTesoreriaElimina(Int32 indice)
+        public async Task<IActionResult> SapGrupoTesoreriaElimina(Int32 indice)
         {
-            NSapGruposTesoreria.SapGrupoTesoreriaElimina(EVSapGruposTesoreria.SapGrupoTesoreriaPag.Pagina[indice]);
+            await NSapGruposTesoreria.SapGrupoTesoreriaElimina(EV.SapGrupoTesoreria.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapGrupoTesoreriaCon));
         }
         /// <summary>
@@ -182,18 +165,18 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapGrupoTesoreriaExporta()
         {
-            EVSapGruposTesoreria.SapGrupoTesoreriaFiltro.ColumnaOrden = EVSapGruposTesoreria.SapGrupoTesoreriaColOrden;
-            EVSapGruposTesoreria.SapGrupoTesoreriaFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapGrupoTesoreria.Filtro.ColumnaOrden = EV.SapGrupoTesoreria.ColOrden;
+            EV.SapGrupoTesoreria.Filtro.Columnas = new Dictionary<String, String>()
                                          {
                                              { nameof(ESapGrupoTesoreria.Activo), String.Empty },
                                              { nameof(ESapGrupoTesoreria.SapGrupoTesoreriaId), String.Empty },
                                              { nameof(ESapGrupoTesoreria.SapGrupoTesoreriaNombre), String.Empty }
                                          };
 
-            MEDatosArchivo vDA = NSapGruposTesoreria.SapGrupoTesoreriaExporta(EVSapGruposTesoreria.SapGrupoTesoreriaFiltro);
-            EVSapGruposTesoreria.SapGrupoTesoreriaFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NSapGruposTesoreria.SapGrupoTesoreriaExporta(EV.SapGrupoTesoreria.Filtro);
+            EV.SapGrupoTesoreria.Filtro.Columnas = null;
             if (NSapGruposTesoreria.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapGruposTesoreria.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
             return RedirectToAction(nameof(SapGrupoTesoreriaCon));
         }
@@ -203,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapGrupoTesoreriaCaptura(ESapGrupoTesoreria sapGrupoTesoreria)
+        private async Task<IActionResult> SapGrupoTesoreriaCaptura(ESapGrupoTesoreria sapGrupoTesoreria)
         {
             ViewBag.Mensajes = NSapGruposTesoreria.Mensajes.Copy();
-            ViewBag.Accion = EVSapGruposTesoreria.Accion;
-            ViewBag.Reglas = EVSapGruposTesoreria.SapGrupoTesoreriaReglas;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapGrupoTesoreriaCaptura), sapGrupoTesoreria);
+            return await Task.FromResult(ViewCap(nameof(SapGrupoTesoreriaCaptura), sapGrupoTesoreria));
         }
         #endregion
 
@@ -220,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoTesoreriaInicia))]
         public IActionResult SapGrupoTesoreriaPaginacion(MEDatosPaginador datPag)
         {
-            EVSapGruposTesoreria.SapGrupoTesoreriaPag.DatPag = datPag;
+            EV.SapGrupoTesoreria.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapGrupoTesoreriaCon));
         }
         /// <summary>
@@ -229,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoTesoreriaInicia))]
         public IActionResult SapGrupoTesoreriaOrdena(String orden)
         {
-            EVSapGruposTesoreria.SapGrupoTesoreriaColOrden = orden;
+            EV.SapGrupoTesoreria.ColOrden = orden;
             return RedirectToAction(nameof(SapGrupoTesoreriaCon));
         }
         /// <summary>
@@ -238,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoTesoreriaInicia))]
         public IActionResult SapGrupoTesoreriaFiltra(ESapGrupoTesoreriaFiltro filtro)
         {
-            EVSapGruposTesoreria.SapGrupoTesoreriaFiltro = filtro;
+            EV.SapGrupoTesoreria.Filtro = filtro;
             return RedirectToAction(nameof(SapGrupoTesoreriaCon));
         }
         /// <summary>
@@ -247,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoTesoreriaInicia))]
         public IActionResult SapGrupoTesoreriaLimpiaFiltros()
         {
-            EVSapGruposTesoreria.SapGrupoTesoreriaFiltro = new ESapGrupoTesoreriaFiltro();
+            EV.SapGrupoTesoreria.Filtro = new ESapGrupoTesoreriaFiltro();
             return RedirectToAction(nameof(SapGrupoTesoreriaCon));
         }
         #endregion

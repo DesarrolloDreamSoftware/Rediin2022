@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -47,59 +48,59 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad SapSociedad.
         /// </summary>
-        public ESapSociedadPag SapSociedadPag(ESapSociedadFiltro sapSociedadFiltro)
+        public async Task<ESapSociedadPag> SapSociedadPag(ESapSociedadFiltro sapSociedadFiltro)
         {
-            return NSapSociedades.SapSociedadPag(sapSociedadFiltro);
+            return await NSapSociedades.SapSociedadPag(sapSociedadFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad SapSociedad.
         /// </summary>
         [HttpGet("{sapSociedadId}")]
-        public ESapSociedad SapSociedadXId(String sapSociedadId)
+        public async Task<ESapSociedad> SapSociedadXId(String sapSociedadId)
         {
-            return NSapSociedades.SapSociedadXId(sapSociedadId);
+            return await NSapSociedades.SapSociedadXId(sapSociedadId);
         }
         /// <summary>
         /// Consulta para combos de la entidad SapSociedad.
         /// </summary>
-        public List<MEElemento> SapSociedadCmb()
+        public async Task<List<MEElemento>> SapSociedadCmb()
         {
-            return NSapSociedades.SapSociedadCmb();
+            return await NSapSociedades.SapSociedadCmb();
         }
         /// <summary>
         /// Permite insertar la entidad SapSociedad.
         /// </summary>
-        public Boolean SapSociedadInserta(ESapSociedad sapSociedad)
+        public async Task<Boolean> SapSociedadInserta(ESapSociedad sapSociedad)
         {
-            return NSapSociedades.SapSociedadInserta(sapSociedad);
+            return await NSapSociedades.SapSociedadInserta(sapSociedad);
         }
         /// <summary>
         /// Permite actualizar la entidad SapSociedad.
         /// </summary>
-        public Boolean SapSociedadActualiza(ESapSociedad sapSociedad)
+        public async Task<Boolean> SapSociedadActualiza(ESapSociedad sapSociedad)
         {
-            return NSapSociedades.SapSociedadActualiza(sapSociedad);
+            return await NSapSociedades.SapSociedadActualiza(sapSociedad);
         }
         /// <summary>
         /// Permite eliminar la entidad SapSociedad.
         /// </summary>
-        public Boolean SapSociedadElimina(ESapSociedad sapSociedad)
+        public async Task<Boolean> SapSociedadElimina(ESapSociedad sapSociedad)
         {
-            return NSapSociedades.SapSociedadElimina(sapSociedad);
+            return await NSapSociedades.SapSociedadElimina(sapSociedad);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapSociedadExporta(ESapSociedadFiltro sapSociedadFiltro)
+        public async Task<string> SapSociedadExporta(ESapSociedadFiltro sapSociedadFiltro)
         {
-            return NSapSociedades.SapSociedadExporta(sapSociedadFiltro);
+            return await NSapSociedades.SapSociedadExporta(sapSociedadFiltro);
         }
         /// <summary>
         /// Reglas de negocio de la entidad SapSociedad.
         /// </summary>
-        public List<MEReglaNeg> SapSociedadReglas()
+        public async Task<List<MEReglaNeg>> SapSociedadReglas()
         {
-            return NSapSociedades.SapSociedadReglas();
+            return await NSapSociedades.SapSociedadReglas();
         }
         #endregion
 

@@ -1,16 +1,18 @@
-﻿@model List<EConExpProcOperativo>
+@model List<EConExpProcOperativo>
 @{
 	ViewData["Title"] = "Consulta";
+    EVConExpedientes EV = ViewBag.EV;
 }
-<div mpanel="Display" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas">
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes">
 	<div msub-panel="ConTitulo">
 		@MensajesXId._ConExpProcOperativoTitCon
 	</div>
 	<div msub-panel="ConFiltro">
-		<partial name="_ConExpProcOperativoFiltra" model="(EConExpProcOperativoFiltro)ViewBag.Filtro" view-data="ViewData" />
+		<partial name="_ConExpProcOperativoFiltra" model="@EV.ConExpProcOperativo.Filtro" view-data="ViewData" />
 	</div>
 	<div msub-panel="ConDatos">
-		<table melemento="ConTabla" xsort-action="@nameof(ConExpedientesController.ConExpProcOperativoOrdena)" xsort-current="@ViewBag.orden">
+		<table melemento="ConTabla" xsort-action="@nameof(ConExpedientesController.ConExpProcOperativoOrdena)" 
+            xsort-current="@EV.ConExpProcOperativo.ColOrden">
 			<thead melemento="ConTablaEnc">
 				<tr>
 					<th></th>
@@ -31,7 +33,7 @@
 					for (int i = 0; i < Model.Count(); i++)
 					{
 						String vDivAcciones = "divPanelAcciones" + i.ToString();
-						<tr class="@(ViewBag.Indice == i ? "conTablaLinSel" : null)">
+						<tr class="@(EV.ConExpProcOperativo.Indice == i ? "conTablaLinSel" : null)">
 							<td nowrap>
 								<a maccion="PorRegistro" asp-action="@nameof(ConExpedientesController.ConExpedienteInicia)" asp-route-indice="@i">@MensajesXId._ConExpedienteInicia</a>
 								@*<div msub-panel="ConAccionesXReg" id="@vDivAcciones">
@@ -54,7 +56,7 @@
 		</table>
 	</div>
 	<div msub-panel="ConPaginador">
-		<div mdata-pager="@ViewBag.DatPag" xdp-action="@nameof(ConExpedientesController.ConExpProcOperativoPaginacion)"></div>
+		<div mdata-pager="@EV.ConExpProcOperativo.Pag?.DatPag" xdp-action="@nameof(ConExpedientesController.ConExpProcOperativoPaginacion)"></div>
 	</div>
 	<div msub-panel="ConAccionesGen">
 	</div>
