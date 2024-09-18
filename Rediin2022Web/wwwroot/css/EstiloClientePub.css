@@ -243,6 +243,9 @@ input[type="checkbox"] {
     color: red;
 }
 
+.estiloInput {
+}
+
 /* Adicionales de no autentificado */
 .autentifPanel{
 }

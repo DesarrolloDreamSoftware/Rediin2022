@@ -1,12 +1,14 @@
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.AccesoDatos.PriCatalogos
 {
@@ -16,6 +18,13 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
     [Serializable]
     public class RIdentificaciones : MRepositorio
     {
+    #region Variables
+    /// <summary>
+    /// Conexión.
+    /// </summary>
+    private IMConexionEntidad _conexion;
+    #endregion
+
         #region Constructores
         /// <summary>
         /// Repositorio.
@@ -23,7 +32,8 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         public RIdentificaciones(IMConexionEntidad conexion)
             : base(conexion)
         {
-        }
+            _conexion = conexion;
+    }
         #endregion
 
         #region Funciones
@@ -32,62 +42,73 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad Identificacion.
         /// </summary>
-        public EIdentificacionPag IdentificacionPag(EIdentificacionFiltro identificacionFiltro)
+        public async Task<EIdentificacionPag> IdentificacionPag(EIdentificacionFiltro identificacionFiltro)
         {
-            return base.EntidadPag<EIdentificacionPag>(identificacionFiltro,
-                identificacionPag =>
-                {
-                    _conexion.AddParamFilterTL(identificacionFiltro);
-                    _conexion.LoadEntity<EIdentificacionPag>("NCIdentificacionesCP", identificacionPag);
-                },
-                identificacionPag =>
-                {
-                    _conexion.AddParamFilterPag(identificacionFiltro);
-                    identificacionPag.Pagina = _conexion.LoadEntities<EIdentificacion>("NCIdentificacionesCP");
-                });
+        return await _conexion.EntidadPagAsync<EIdentificacion,
+                                                EIdentificacionPag,
+                                                EIdentificacionFiltro>(identificacionFiltro, "NCIdentificacionesCP");
+
+            //return base.EntidadPagAsync<EIdentificacionPag>(identificacionFiltro,
+            //               identificacionPag =>
+            //    {
+            //        _conexion.AddParamFilterTL(identificacionFiltro);
+            //        _conexion.LoadEntity<EIdentificacionPag>("NCIdentificacionesCP", identificacionPag);
+            //    },
+            //    identificacionPag =>
+            //    {
+            //        _conexion.AddParamFilterPag(identificacionFiltro);
+            //        identificacionPag.Pagina = _conexion.LoadEntities<EIdentificacion>("NCIdentificacionesCP");
+            //    });
         }
         /// <summary>
         /// Consulta por id de la entidad Identificacion.
         /// </summary>
-        public EIdentificacion IdentificacionXId(Int64 identificacionId)
+        public async Task<EIdentificacion> IdentificacionXId(Int64 identificacionId)
         {
-            _conexion.AddParamIn(nameof(identificacionId), identificacionId);
-            return _conexion.LoadEntity<EIdentificacion>("NCIdentificacionesCI");
+            _conexion.AddParamIn(identificacionId);
+            return await _conexion.LoadEntityAsync<EIdentificacion>("NCIdentificacionesCI");
         }
         /// <summary>
         /// Consulta para combos de la entidad Identificacion.
         /// </summary>
-        public List<MEElemento> IdentificacionCmb()
+        public async Task<List<MEElemento>> IdentificacionCmb()
         {
-            return _conexion.LoadCmb<MEElemento>("NCIdentificacionesCCmb");
+            return await _conexion.EntidadCmbAsync("NCIdentificacionesCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad Identificacion.
         /// </summary>
-        protected Int64 IdentificacionInserta(EIdentificacion identificacion)
+        protected async Task<Int64> IdentificacionInserta(EIdentificacion identificacion)
         {
-            _conexion.AddParamEntity(identificacion, MAccionesBd.Inserta);
-            Int64 vResultado = _conexion.ExecuteScalarVal("NCIdentificacionesIAE",
-                                                          MensajesXId.IdentificacionNombre);
-            return vResultado;
+        await _conexion.EntityUpdateAsync(identificacion, MAccionesBd.Inserta, "NCIdentificacionesIAE");
+                   return identificacion.IdentificacionId;
+
+            //           _conexion.AddParamEntity(identificacion, MAccionesBd.Inserta);
+            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NCIdentificacionesIAE",
+            //                                              MensajesXId.IdentificacionNombre);
+            //return vResultado;
         }
         /// <summary>
         /// Permite actualizar la entidad Identificacion.
         /// </summary>
-        protected Boolean IdentificacionActualiza(EIdentificacion identificacion)
+        protected async Task<Boolean> IdentificacionActualiza(EIdentificacion identificacion)
         {
-            _conexion.AddParamEntity(identificacion, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCIdentificacionesIAE",
-                                       MensajesXId.IdentificacionNombre);
-            return _mensajes.Ok;
+        return await _conexion.EntityUpdateAsync(identificacion, MAccionesBd.Actualiza, "NCIdentificacionesIAE");
+
+            //           _conexion.AddParamEntity(identificacion, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCIdentificacionesIAE",
+            //                           MensajesXId.IdentificacionNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad Identificacion.
         /// </summary>
-        protected Boolean IdentificacionElimina(EIdentificacion identificacion)
+        protected async Task<Boolean> IdentificacionElimina(EIdentificacion identificacion)
         {
-            _conexion.AddParamEntity(identificacion, MAccionesBd.Elimina);
-            return _conexion.ExecuteNonQueryRet("NCIdentificacionesIAE");
+        return await _conexion.EntityUpdateAsync(identificacion, MAccionesBd.Elimina, "NCIdentificacionesIAE");
+
+            //           _conexion.AddParamEntity(identificacion, MAccionesBd.Elimina);
+            //return await _conexion.ExecuteNonQueryRetAsync("NCIdentificacionesIAE");
         }
         #endregion
 

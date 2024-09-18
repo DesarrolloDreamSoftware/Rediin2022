@@ -1,4 +1,4 @@
-using DSEntityNetX.DataAccess;
+
 using DSMetodNetX.Entidades;
 using System;
 
@@ -8,13 +8,14 @@ namespace Rediin2022.Entidades.PriCatalogos
     /// Entidad.
     /// </summary>
     [Serializable]
+    [MDAErrorDuplicado(-1, nameof(IdentificacionNombre))]
     public class EIdentificacion: MEntidad
     {
         #region Propiedades
         //Columnas principales
-        [XMain] public Int64 IdentificacionId { get; set; } = 0L;
-        [XMain] public String IdentificacionNombre { get; set; } = String.Empty;
-        [XMain] public Boolean Activo { get; set; } = false;
+        [MDAMain] public Int64 IdentificacionId { get; set; } = 0L;
+        [MDAMain] public String IdentificacionNombre { get; set; } = String.Empty;
+        [MDAMain] public Boolean Activo { get; set; } = false;
         #endregion
     }
 }

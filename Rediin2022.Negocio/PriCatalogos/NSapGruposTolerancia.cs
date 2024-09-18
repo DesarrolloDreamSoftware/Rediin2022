@@ -2,14 +2,16 @@ using DSEntityNetX.Business;
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using DSMetodNetX.Negocio;
 using Rediin2022.AccesoDatos.PriCatalogos;
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.Negocio.PriCatalogos
 {
@@ -47,68 +49,68 @@ namespace Rediin2022.Negocio.PriCatalogos
         /// <summary>
         /// Esta funcion valida e inserta un registro en la base de datos.
         /// </summary>
-        public new Boolean SapGrupoToleranciaInserta(ESapGrupoTolerancia sapGrupoTolerancia)
+        public new async Task<Boolean> SapGrupoToleranciaInserta(ESapGrupoTolerancia sapGrupoTolerancia)
         {
             //Validacion
             if (!SapGrupoToleranciaValida(sapGrupoTolerancia))
                 return false;
 
             //Persistencia
-            return base.SapGrupoToleranciaInserta(sapGrupoTolerancia);
+            return await base.SapGrupoToleranciaInserta(sapGrupoTolerancia);
         }
         /// <summary>
         /// Valida y actualiza un registro en la base de datos.
         /// </summary>
-        public new Boolean SapGrupoToleranciaActualiza(ESapGrupoTolerancia sapGrupoTolerancia)
+        public new async Task<Boolean> SapGrupoToleranciaActualiza(ESapGrupoTolerancia sapGrupoTolerancia)
         {
             //Validacion
             if (!SapGrupoToleranciaValida(sapGrupoTolerancia))
                 return false;
 
             //Persistencia
-            return base.SapGrupoToleranciaActualiza(sapGrupoTolerancia);
+            return await base.SapGrupoToleranciaActualiza(sapGrupoTolerancia);
         }
         /// <summary>
         /// Elimina un registro de la base de datos.
         /// </summary>
         /// <returns></returns>
-        public new Boolean SapGrupoToleranciaElimina(ESapGrupoTolerancia sapGrupoTolerancia)
+        public new async Task<Boolean> SapGrupoToleranciaElimina(ESapGrupoTolerancia sapGrupoTolerancia)
         {
             //Validacion
             SapGrupoToleranciaReglasNeg().ValidateProperty(sapGrupoTolerancia, e => e.SapGrupoToleranciaId);
-            if (!_mensajes.Ok)
+            if (!Mensajes.Ok)
                 return false;
 
             //Persistencia
-            return base.SapGrupoToleranciaElimina(sapGrupoTolerancia);
+            return await base.SapGrupoToleranciaElimina(sapGrupoTolerancia);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapGrupoToleranciaExporta(ESapGrupoToleranciaFiltro sapGrupoToleranciaFiltro)
+        public async Task<string> SapGrupoToleranciaExporta(ESapGrupoToleranciaFiltro sapGrupoToleranciaFiltro)
         {
-            return base.SapGrupoToleranciaExporta(sapGrupoToleranciaFiltro,
-                                                  _archivoExcel);
+            return await base.SapGrupoToleranciaExporta(sapGrupoToleranciaFiltro,
+                                                        _archivoExcel);
         }
         /// <summary>
         /// Reglas de negocio.
         /// </summary>
-        public List<MEReglaNeg> SapGrupoToleranciaReglas()
+        public async Task<List<MEReglaNeg>> SapGrupoToleranciaReglas()
         {
-            return SapGrupoToleranciaReglasNeg().Rules;
+            return await Task.Run(() => SapGrupoToleranciaReglasNeg().Rules);
         }
         /// <summary>
         /// Validacion para inserta y actualiza.
         /// </summary>
         private Boolean SapGrupoToleranciaValida(ESapGrupoTolerancia sapGrupoTolerancia)
         {
-            _mensajes.Initialize();
+            Mensajes.Initialize();
             if (!SapGrupoToleranciaReglasNeg().Validate(sapGrupoTolerancia))
                 return false;
 
             //Validaciones adicionales
 
-            return _mensajes.Ok;
+            return Mensajes.Ok;
         }
         /// <summary>
         /// Crea las reglas de negocio.
@@ -118,7 +120,7 @@ namespace Rediin2022.Negocio.PriCatalogos
             if (_sapGrupoToleranciaReglas != null)
                 return _sapGrupoToleranciaReglas;
 
-            _sapGrupoToleranciaReglas = Validaciones.CreaReglasNeg<ESapGrupoTolerancia>(_mensajes);
+            _sapGrupoToleranciaReglas = Validaciones.CreaReglasNeg<ESapGrupoTolerancia>(Mensajes);
             _sapGrupoToleranciaReglas.AddSL(e => e.SapGrupoToleranciaId, 2, 50);
             _sapGrupoToleranciaReglas.AddSL(e => e.SapGrupoToleranciaNombre, 2, 120);
             _sapGrupoToleranciaReglas.AddSL(e => e.Activo);

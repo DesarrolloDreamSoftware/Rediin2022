@@ -1,0 +1,62 @@
+﻿@model EConExpedienteObjeto
+
+@{
+	ViewData["Title"] = "Captura";
+}
+
+<form asp-action="_ConExpedienteObjetoCaptura" enctype="multipart/form-data">
+	<div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+		<div msub-panel="CapTitulo">
+			@MensajesXId._ConExpedienteObjetoTitCap
+		</div>
+		<div msub-panel="CapDatos">
+			<div melemento="CapLin">
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="ExpedienteObjetoId" xval-enabled="false" />
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+					<input mval="Model" xval-for="Activo" />
+				</div>
+			</div>
+			<div melemento="CapLin">
+				<div melemento="CapCol" melem-cols="3">
+					<select mval="Model" xval-for="ProcesoOperativoObjetoId" xval-items="ViewBag.ProcesosOperativosObjetos"></select>
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+				</div>
+				<div melemento="CapCol" melem-cols="3">
+				</div>
+			</div>
+			@*			<div melemento="CapLin">
+			<div melemento="CapCol" melem-cols="12">
+			<input mval="Model" xval-for="Ruta" xval-enabled="false" />
+			</div>
+			</div>
+			*@
+			<div melemento="CapLin">
+				<div melemento="CapCol" melem-cols="6">
+					<input mval="Model" xval-for="ArchivoNombre" />
+				</div>
+				<div melemento="CapCol" melem-cols="6">
+					<input type="file" id="ArchivoFisico" mval="Text" xval-req="true"
+						   xval-min="1" xval-max="1000" xval-group="EConExpedienteObjeto" />
+				</div>
+			</div>
+		</div>
+		<div msub-panel="CapAccionesGen">
+			<button maccion="Guarda"
+					asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoInserta)"
+					xvalidate="@nameof(EConExpedienteObjeto)"></button>
+			&nbsp;
+			<a maccion="Regresa" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoCon)"></a>
+			&nbsp;
+			<div mauditoriacb="@Model"></div>
+		</div>
+	</div>
+</form>

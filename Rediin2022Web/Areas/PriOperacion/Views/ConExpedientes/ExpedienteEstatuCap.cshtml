@@ -1,11 +1,13 @@
-﻿@model EExpedienteEstatu
+@model EExpedienteEstatu
 
 @{
     ViewData["Title"] = "Captura";
+    EVConExpedientes EV = ViewBag.EV;
 }
 
 <form asp-action="_ExpedienteEstatuCaptura">
-    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+    <div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes"
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
         <div msub-panel="CapTitulo">
             @MensajesXId._ExpedienteEstatuTitCap
         </div>

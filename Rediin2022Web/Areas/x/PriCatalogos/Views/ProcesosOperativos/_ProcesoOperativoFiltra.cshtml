@@ -1,0 +1,18 @@
+﻿@model EProcesoOperativoFiltro
+
+<form asp-action="_FiltraProcesoOperativo">
+    <div mpanel="Base" xpnl-rules="ViewBag.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilProcesoOperativoNombre"/>
+            </div>
+            <div melemento="FilCol" melem-cols="4">
+                <select mval-filter="Model" xval-for="FilActivo"></select>
+            </div>
+            <div melemento="FilColBtn" melem-cols="4">
+                <button maccion="Filtra" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>

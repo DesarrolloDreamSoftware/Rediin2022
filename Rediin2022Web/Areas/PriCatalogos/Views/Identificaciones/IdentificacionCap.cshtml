@@ -1,11 +1,13 @@
-﻿@model EIdentificacion
+@model EIdentificacion
 
 @{
     ViewData["Title"] = "Captura";
+    EVIdentificaciones EV = ViewBag.EV;
 }
 
 <form asp-action="_IdentificacionCaptura">
-    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+    <div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.Identificacion.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
         <div msub-panel="CapTitulo">
             @MensajesXId._IdentificacionTitCap
         </div>
@@ -26,7 +28,7 @@
         </div>
         <div msub-panel="CapAccionesGen">
             <button maccion="Guarda"
-                    asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(IdentificacionesController.IdentificacionInserta) : nameof(IdentificacionesController.IdentificacionActualiza))"
+                    asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(IdentificacionesController.IdentificacionInserta) : nameof(IdentificacionesController.IdentificacionActualiza))"
                     xvalidate="@nameof(EIdentificacion)"></button>
             &nbsp;
             <a maccion="Regresa" asp-action="@nameof(IdentificacionesController.IdentificacionCon)"></a>

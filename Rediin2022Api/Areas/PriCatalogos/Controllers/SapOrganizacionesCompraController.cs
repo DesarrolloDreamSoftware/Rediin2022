@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -47,59 +48,59 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad SapOrganizacionCompra.
         /// </summary>
-        public ESapOrganizacionCompraPag SapOrganizacionCompraPag(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro)
+        public async Task<ESapOrganizacionCompraPag> SapOrganizacionCompraPag(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro)
         {
-            return NSapOrganizacionesCompra.SapOrganizacionCompraPag(sapOrganizacionCompraFiltro);
+            return await NSapOrganizacionesCompra.SapOrganizacionCompraPag(sapOrganizacionCompraFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad SapOrganizacionCompra.
         /// </summary>
         [HttpGet("{sapOrganizacionCompraId}")]
-        public ESapOrganizacionCompra SapOrganizacionCompraXId(String sapOrganizacionCompraId)
+        public async Task<ESapOrganizacionCompra> SapOrganizacionCompraXId(String sapOrganizacionCompraId)
         {
-            return NSapOrganizacionesCompra.SapOrganizacionCompraXId(sapOrganizacionCompraId);
+            return await NSapOrganizacionesCompra.SapOrganizacionCompraXId(sapOrganizacionCompraId);
         }
         /// <summary>
         /// Consulta para combos de la entidad SapOrganizacionCompra.
         /// </summary>
-        public List<MEElemento> SapOrganizacionCompraCmb()
+        public async Task<List<MEElemento>> SapOrganizacionCompraCmb()
         {
-            return NSapOrganizacionesCompra.SapOrganizacionCompraCmb();
+            return await NSapOrganizacionesCompra.SapOrganizacionCompraCmb();
         }
         /// <summary>
         /// Permite insertar la entidad SapOrganizacionCompra.
         /// </summary>
-        public Boolean SapOrganizacionCompraInserta(ESapOrganizacionCompra sapOrganizacionCompra)
+        public async Task<Boolean> SapOrganizacionCompraInserta(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            return NSapOrganizacionesCompra.SapOrganizacionCompraInserta(sapOrganizacionCompra);
+            return await NSapOrganizacionesCompra.SapOrganizacionCompraInserta(sapOrganizacionCompra);
         }
         /// <summary>
         /// Permite actualizar la entidad SapOrganizacionCompra.
         /// </summary>
-        public Boolean SapOrganizacionCompraActualiza(ESapOrganizacionCompra sapOrganizacionCompra)
+        public async Task<Boolean> SapOrganizacionCompraActualiza(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            return NSapOrganizacionesCompra.SapOrganizacionCompraActualiza(sapOrganizacionCompra);
+            return await NSapOrganizacionesCompra.SapOrganizacionCompraActualiza(sapOrganizacionCompra);
         }
         /// <summary>
         /// Permite eliminar la entidad SapOrganizacionCompra.
         /// </summary>
-        public Boolean SapOrganizacionCompraElimina(ESapOrganizacionCompra sapOrganizacionCompra)
+        public async Task<Boolean> SapOrganizacionCompraElimina(ESapOrganizacionCompra sapOrganizacionCompra)
         {
-            return NSapOrganizacionesCompra.SapOrganizacionCompraElimina(sapOrganizacionCompra);
+            return await NSapOrganizacionesCompra.SapOrganizacionCompraElimina(sapOrganizacionCompra);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapOrganizacionCompraExporta(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro)
+        public async Task<string> SapOrganizacionCompraExporta(ESapOrganizacionCompraFiltro sapOrganizacionCompraFiltro)
         {
-            return NSapOrganizacionesCompra.SapOrganizacionCompraExporta(sapOrganizacionCompraFiltro);
+            return await NSapOrganizacionesCompra.SapOrganizacionCompraExporta(sapOrganizacionCompraFiltro);
         }
         /// <summary>
         /// Reglas de negocio de la entidad SapOrganizacionCompra.
         /// </summary>
-        public List<MEReglaNeg> SapOrganizacionCompraReglas()
+        public async Task<List<MEReglaNeg>> SapOrganizacionCompraReglas()
         {
-            return NSapOrganizacionesCompra.SapOrganizacionCompraReglas();
+            return await NSapOrganizacionesCompra.SapOrganizacionCompraReglas();
         }
         #endregion
 

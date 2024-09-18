@@ -1,16 +1,18 @@
-﻿@model List<ESapCondicionPago>
+@model List<ESapCondicionPago>
 @{
     ViewData["Title"] = "Consulta";
+    EVSapCondicionesPago EV = ViewBag.EV;
 }
-<div mpanel="Display" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas">
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.SapCondicionPago.Reglas">
     <div msub-panel="ConTitulo">
         @MensajesXId._SapCondicionPagoTitCon
     </div>
     <div msub-panel="ConFiltro">
-        <partial name="_SapCondicionPagoFiltra" model="(ESapCondicionPagoFiltro)ViewBag.Filtro" view-data="ViewData" />
+        <partial name="_SapCondicionPagoFiltra" model="@EV.SapCondicionPago.Filtro" view-data="ViewData" />
     </div>
     <div msub-panel="ConDatos">
-        <table melemento="ConTabla" xsort-action="@nameof(SapCondicionesPagoController.SapCondicionPagoOrdena)" xsort-current="@ViewBag.orden">
+        <table melemento="ConTabla" xsort-action="@nameof(SapCondicionesPagoController.SapCondicionPagoOrdena)" 
+            xsort-current="@EV.SapCondicionPago.ColOrden">
             <thead melemento="ConTablaEnc">
                 <tr>
                     <th></th>
@@ -31,7 +33,7 @@
                     for (int i = 0; i < Model.Count(); i++)
                     {
                         String vDivAcciones = "divPanelAcciones" + i.ToString();
-                        <tr class="@(ViewBag.Indice == i ? "conTablaLinSel" : null)">
+                        <tr class="@(EV.SapCondicionPago.Indice == i ? "conTablaLinSel" : null)">
                             <td nowrap>
                                 <a maccion="IniciaActualiza" asp-action="@nameof(SapCondicionesPagoController.SapCondicionPagoActualizaIni)" asp-route-indice="@i"></a>
                                 <div msub-panel="ConAccionesXReg" id="@vDivAcciones">
@@ -55,7 +57,7 @@
         </table>
     </div>
     <div msub-panel="ConPaginador">
-        <div mdata-pager="@ViewBag.DatPag" xdp-action="@nameof(SapCondicionesPagoController.SapCondicionPagoPaginacion)"></div>
+        <div mdata-pager="@EV.SapCondicionPago.Pag?.DatPag" xdp-action="@nameof(SapCondicionesPagoController.SapCondicionPagoPaginacion)"></div>
     </div>
     <div msub-panel="ConAccionesGen">
         <a maccion="IniciaInserta" asp-action="@nameof(SapCondicionesPagoController.SapCondicionPagoInsertaIni)" asp-route-indice="-1"></a>

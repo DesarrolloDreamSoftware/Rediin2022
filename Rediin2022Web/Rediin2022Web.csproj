@@ -9,8 +9,6 @@
     <Compile Remove="Areas\SiseguiPriSeguridad\**" />
     <Compile Remove="Areas\SiseguiPubSeguridad\**" />
     <Compile Remove="Areas\x\**" />
-    <Compile Remove="Areas\x\SiseguiPriSeguridad\**" />
-    <Compile Remove="Areas\x\SiseguiPubSeguridad\**" />
     <Compile Remove="Models\**" />
     <Compile Remove="obj\**" />
     <Compile Remove="Views\**" />
@@ -19,8 +17,6 @@
     <Content Remove="Areas\SiseguiPriSeguridad\**" />
     <Content Remove="Areas\SiseguiPubSeguridad\**" />
     <Content Remove="Areas\x\**" />
-    <Content Remove="Areas\x\SiseguiPriSeguridad\**" />
-    <Content Remove="Areas\x\SiseguiPubSeguridad\**" />
     <Content Remove="Models\**" />
     <Content Remove="obj\**" />
     <Content Remove="Views\**" />
@@ -29,8 +25,6 @@
     <EmbeddedResource Remove="Areas\SiseguiPriSeguridad\**" />
     <EmbeddedResource Remove="Areas\SiseguiPubSeguridad\**" />
     <EmbeddedResource Remove="Areas\x\**" />
-    <EmbeddedResource Remove="Areas\x\SiseguiPriSeguridad\**" />
-    <EmbeddedResource Remove="Areas\x\SiseguiPubSeguridad\**" />
     <EmbeddedResource Remove="Models\**" />
     <EmbeddedResource Remove="obj\**" />
     <EmbeddedResource Remove="Views\**" />
@@ -39,8 +33,6 @@
     <None Remove="Areas\SiseguiPriSeguridad\**" />
     <None Remove="Areas\SiseguiPubSeguridad\**" />
     <None Remove="Areas\x\**" />
-    <None Remove="Areas\x\SiseguiPriSeguridad\**" />
-    <None Remove="Areas\x\SiseguiPubSeguridad\**" />
     <None Remove="Models\**" />
     <None Remove="obj\**" />
     <None Remove="Views\**" />
@@ -49,9 +41,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GroupDocs.Viewer" Version="23.1.0" />
-    <PackageReference Include="MailKit" Version="3.4.3" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
+    <PackageReference Include="GroupDocs.Viewer" Version="24.8.0" />
+    <PackageReference Include="MailKit" Version="4.7.1.1" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,17 +51,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DSEntityNetX">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.dll</HintPath>
+    <Reference Include="DSEntityNetX.Application">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Application.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Common">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Entities">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Entities.dll</HintPath>
     </Reference>
     <Reference Include="DSEntityNetX.Mvc">
       <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="DSMetodNetX">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.dll</HintPath>
+    <Reference Include="DSEntityNetX.Web">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Web.dll</HintPath>
     </Reference>
-    <Reference Include="DSMetodNetX.Mvc">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Mvc.dll</HintPath>
+    <Reference Include="DSMetodNetX.Aplicacion">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Aplicacion.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.AspNetCore">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.AspNetCore.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Comun">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Comun.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Entidades">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Entidades.dll</HintPath>
     </Reference>
     <Reference Include="DSMetodNetX.Mvc.RazorCom">
       <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Mvc.RazorCom.dll</HintPath>
@@ -79,6 +86,12 @@
     </Reference>
     <Reference Include="DSMetodNetX.Mvc.TagHelpers">
       <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Mvc.TagHelpers.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Negocio">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Negocio.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Web">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Web.dll</HintPath>
     </Reference>
     <Reference Include="Sisegui2020.Aplicacion">
       <HintPath>..\..\2 Librerias\DreamSoftware\Metod\Sisegui2020.Aplicacion.dll</HintPath>

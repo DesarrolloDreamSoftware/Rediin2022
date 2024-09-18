@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -47,59 +48,59 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad SapCondicionPago.
         /// </summary>
-        public ESapCondicionPagoPag SapCondicionPagoPag(ESapCondicionPagoFiltro sapCondicionPagoFiltro)
+        public async Task<ESapCondicionPagoPag> SapCondicionPagoPag(ESapCondicionPagoFiltro sapCondicionPagoFiltro)
         {
-            return NSapCondicionesPago.SapCondicionPagoPag(sapCondicionPagoFiltro);
+            return await NSapCondicionesPago.SapCondicionPagoPag(sapCondicionPagoFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad SapCondicionPago.
         /// </summary>
         [HttpGet("{sapCondicionPagoId}")]
-        public ESapCondicionPago SapCondicionPagoXId(String sapCondicionPagoId)
+        public async Task<ESapCondicionPago> SapCondicionPagoXId(String sapCondicionPagoId)
         {
-            return NSapCondicionesPago.SapCondicionPagoXId(sapCondicionPagoId);
+            return await NSapCondicionesPago.SapCondicionPagoXId(sapCondicionPagoId);
         }
         /// <summary>
         /// Consulta para combos de la entidad SapCondicionPago.
         /// </summary>
-        public List<MEElemento> SapCondicionPagoCmb()
+        public async Task<List<MEElemento>> SapCondicionPagoCmb()
         {
-            return NSapCondicionesPago.SapCondicionPagoCmb();
+            return await NSapCondicionesPago.SapCondicionPagoCmb();
         }
         /// <summary>
         /// Permite insertar la entidad SapCondicionPago.
         /// </summary>
-        public Boolean SapCondicionPagoInserta(ESapCondicionPago sapCondicionPago)
+        public async Task<Boolean> SapCondicionPagoInserta(ESapCondicionPago sapCondicionPago)
         {
-            return NSapCondicionesPago.SapCondicionPagoInserta(sapCondicionPago);
+            return await NSapCondicionesPago.SapCondicionPagoInserta(sapCondicionPago);
         }
         /// <summary>
         /// Permite actualizar la entidad SapCondicionPago.
         /// </summary>
-        public Boolean SapCondicionPagoActualiza(ESapCondicionPago sapCondicionPago)
+        public async Task<Boolean> SapCondicionPagoActualiza(ESapCondicionPago sapCondicionPago)
         {
-            return NSapCondicionesPago.SapCondicionPagoActualiza(sapCondicionPago);
+            return await NSapCondicionesPago.SapCondicionPagoActualiza(sapCondicionPago);
         }
         /// <summary>
         /// Permite eliminar la entidad SapCondicionPago.
         /// </summary>
-        public Boolean SapCondicionPagoElimina(ESapCondicionPago sapCondicionPago)
+        public async Task<Boolean> SapCondicionPagoElimina(ESapCondicionPago sapCondicionPago)
         {
-            return NSapCondicionesPago.SapCondicionPagoElimina(sapCondicionPago);
+            return await NSapCondicionesPago.SapCondicionPagoElimina(sapCondicionPago);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapCondicionPagoExporta(ESapCondicionPagoFiltro sapCondicionPagoFiltro)
+        public async Task<String> SapCondicionPagoExporta(ESapCondicionPagoFiltro sapCondicionPagoFiltro)
         {
-            return NSapCondicionesPago.SapCondicionPagoExporta(sapCondicionPagoFiltro);
+            return await NSapCondicionesPago.SapCondicionPagoExporta(sapCondicionPagoFiltro);
         }
         /// <summary>
         /// Reglas de negocio de la entidad SapCondicionPago.
         /// </summary>
-        public List<MEReglaNeg> SapCondicionPagoReglas()
+        public async Task<List<MEReglaNeg>> SapCondicionPagoReglas()
         {
-            return NSapCondicionesPago.SapCondicionPagoReglas();
+            return await NSapCondicionesPago.SapCondicionPagoReglas();
         }
         #endregion
 

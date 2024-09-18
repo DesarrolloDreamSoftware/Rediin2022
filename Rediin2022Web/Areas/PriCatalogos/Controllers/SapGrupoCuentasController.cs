@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapGrupoCuentas EVSapGrupoCuentas
+        private EVSapGrupoCuentas EV
         {
-            get
-            {
-                if (base.MSesion<EVSapGrupoCuentas>() == null)
-                    base.MSesion(new EVSapGrupoCuentas());
-
-                return base.MSesionAuto<EVSapGrupoCuentas>();
-            }
+            get { return base.MEVCtrl<EVSapGrupoCuentas>(); }
         }
         #endregion
 
@@ -63,14 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapGrupoCuentaInicia()
+        public async Task<IActionResult> SapGrupoCuentaInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapGrupoCuentas.SapGrupoCuentaColOrden))
-                EVSapGrupoCuentas.SapGrupoCuentaColOrden = nameof(ESapGrupoCuenta.SapGrupoCuentaId);
-
-            if (EVSapGrupoCuentas.SapGrupoCuentaReglas == null)
-                EVSapGrupoCuentas.SapGrupoCuentaReglas = NSapGrupoCuentas.SapGrupoCuentaReglas();
+            await Servicios.Gen.InicializaSF(EV.SapGrupoCuenta, nameof(ESapGrupoCuenta.SapGrupoCuentaId),
+                async () => await NSapGrupoCuentas.SapGrupoCuentaReglas());
 
             return RedirectToAction(nameof(SapGrupoCuentaCon));
         }
@@ -78,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapGrupoCuentaInicia))]
-        public IActionResult SapGrupoCuentaCon()
+        public async Task<IActionResult> SapGrupoCuentaCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapGrupoCuentas.SapGrupoCuentaFiltro,
-                                     EVSapGrupoCuentas.SapGrupoCuentaPag,
-                                     EVSapGrupoCuentas.SapGrupoCuentaColOrden,
-                                     nameof(ESapGrupoCuenta));
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapGrupoCuenta);
+            EV.SapGrupoCuenta.Pag = await NSapGrupoCuentas.SapGrupoCuentaPag(EV.SapGrupoCuenta.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapGrupoCuenta);
 
-            EVSapGrupoCuentas.SapGrupoCuentaPag = NSapGrupoCuentas.SapGrupoCuentaPag(EVSapGrupoCuentas.SapGrupoCuentaFiltro);
-            base.MActualizaTamPag(EVSapGrupoCuentas.SapGrupoCuentaPag?.DatPag);
+            ViewBag.Mensajes = NSapGrupoCuentas.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = NSapGrupoCuentas.Mensajes.Copy();
-            ViewBag.Reglas = EVSapGrupoCuentas.SapGrupoCuentaReglas;
-            ViewBag.DatPag = EVSapGrupoCuentas.SapGrupoCuentaPag?.DatPag;
-            ViewBag.Orden = EVSapGrupoCuentas.SapGrupoCuentaColOrden;
-            ViewBag.Filtro = EVSapGrupoCuentas.SapGrupoCuentaFiltro;
-            ViewBag.Indice = EVSapGrupoCuentas.SapGrupoCuentaIndice;
-
-            return View(nameof(SapGrupoCuentaCon), EVSapGrupoCuentas.SapGrupoCuentaPag?.Pagina);
+            return View(nameof(SapGrupoCuentaCon), EV.SapGrupoCuenta.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapGrupoCuentaXId(Int32 indice)
+        public async Task<IActionResult> SapGrupoCuentaXId(Int32 indice)
         {
-            EVSapGrupoCuentas.Accion = MAccionesGen.Consulta;
-            EVSapGrupoCuentas.SapGrupoCuentaIndice = indice;
-            return SapGrupoCuentaCaptura(EVSapGrupoCuentas.SapGrupoCuentaPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapGrupoCuenta.Indice = indice;
+            return await SapGrupoCuentaCaptura(EV.SapGrupoCuenta.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapGrupoCuentaInserta))]
-        public IActionResult SapGrupoCuentaInsertaIni()
+        public async Task<IActionResult> SapGrupoCuentaInsertaIni()
         {
-            EVSapGrupoCuentas.Accion = MAccionesGen.Inserta;
-            return SapGrupoCuentaInsertaCap(new ESapGrupoCuenta()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapGrupoCuentaInsertaCap(new ESapGrupoCuenta()
             {
                 Activo = true
             });
@@ -123,58 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapGrupoCuentaInserta))]
-        public IActionResult SapGrupoCuentaInsertaCap(ESapGrupoCuenta sapGrupoCuenta)
+        public async Task<IActionResult> SapGrupoCuentaInsertaCap(ESapGrupoCuenta sapGrupoCuenta)
         {
-            return SapGrupoCuentaCaptura(sapGrupoCuenta);
+            return await SapGrupoCuentaCaptura(sapGrupoCuenta);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapGrupoCuentaInserta(ESapGrupoCuenta sapGrupoCuenta)
+        public async Task<IActionResult> SapGrupoCuentaInserta(ESapGrupoCuenta sapGrupoCuenta)
         {
-            if (NSapGrupoCuentas.SapGrupoCuentaInserta(sapGrupoCuenta))
+            if (await NSapGrupoCuentas.SapGrupoCuentaInserta(sapGrupoCuenta))
                 return RedirectToAction(nameof(SapGrupoCuentaCon));
 
-            return SapGrupoCuentaInsertaCap(sapGrupoCuenta);
+            return await SapGrupoCuentaInsertaCap(sapGrupoCuenta);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapGrupoCuentaActualiza))]
-        public IActionResult SapGrupoCuentaActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapGrupoCuentaActualizaIni(Int32 indice)
         {
-            EVSapGrupoCuentas.Accion = MAccionesGen.Actualiza;
-            EVSapGrupoCuentas.SapGrupoCuentaIndice = indice;
-            EVSapGrupoCuentas.SapGrupoCuentaSel = EVSapGrupoCuentas.SapGrupoCuentaPag.Pagina[indice];
-            return SapGrupoCuentaActualizaCap(EVSapGrupoCuentas.SapGrupoCuentaSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapGrupoCuenta.Indice = indice;
+            EV.SapGrupoCuenta.Sel = EV.SapGrupoCuenta.Pag.Pagina[indice];
+            return await SapGrupoCuentaActualizaCap(EV.SapGrupoCuenta.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapGrupoCuentaActualiza))]
-        public IActionResult SapGrupoCuentaActualizaCap(ESapGrupoCuenta sapGrupoCuenta)
+        public async Task<IActionResult> SapGrupoCuentaActualizaCap(ESapGrupoCuenta sapGrupoCuenta)
         {
-            return SapGrupoCuentaCaptura(sapGrupoCuenta);
+            return await SapGrupoCuentaCaptura(sapGrupoCuenta);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapGrupoCuentaActualiza(ESapGrupoCuenta sapGrupoCuenta)
+        public async Task<IActionResult> SapGrupoCuentaActualiza(ESapGrupoCuenta sapGrupoCuenta)
         {
-            if (NSapGrupoCuentas.SapGrupoCuentaActualiza(sapGrupoCuenta))
+            if (await NSapGrupoCuentas.SapGrupoCuentaActualiza(sapGrupoCuenta))
                 return RedirectToAction(nameof(SapGrupoCuentaCon));
 
-            return SapGrupoCuentaActualizaCap(sapGrupoCuenta);
+            return await SapGrupoCuentaActualizaCap(sapGrupoCuenta);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapGrupoCuentaElimina(Int32 indice)
+        public async Task<IActionResult> SapGrupoCuentaElimina(Int32 indice)
         {
-            NSapGrupoCuentas.SapGrupoCuentaElimina(EVSapGrupoCuentas.SapGrupoCuentaPag.Pagina[indice]);
+            await NSapGrupoCuentas.SapGrupoCuentaElimina(EV.SapGrupoCuenta.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapGrupoCuentaCon));
         }
         /// <summary>
@@ -182,18 +165,18 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapGrupoCuentaExporta()
         {
-            EVSapGrupoCuentas.SapGrupoCuentaFiltro.ColumnaOrden = EVSapGrupoCuentas.SapGrupoCuentaColOrden;
-            EVSapGrupoCuentas.SapGrupoCuentaFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapGrupoCuenta.Filtro.ColumnaOrden = EV.SapGrupoCuenta.ColOrden;
+            EV.SapGrupoCuenta.Filtro.Columnas = new Dictionary<String, String>()
                                    {
                                        { nameof(ESapGrupoCuenta.Activo), String.Empty },
                                        { nameof(ESapGrupoCuenta.SapGrupoCuentaId), String.Empty },
                                        { nameof(ESapGrupoCuenta.SapGrupoCuentaNombre), String.Empty }
                                    };
 
-            MEDatosArchivo vDA = NSapGrupoCuentas.SapGrupoCuentaExporta(EVSapGrupoCuentas.SapGrupoCuentaFiltro);
-            EVSapGrupoCuentas.SapGrupoCuentaFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NSapGrupoCuentas.SapGrupoCuentaExporta(EV.SapGrupoCuenta.Filtro);
+            EV.SapGrupoCuenta.Filtro.Columnas = null;
             if (NSapGrupoCuentas.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapGrupoCuentas.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
             return RedirectToAction(nameof(SapGrupoCuentaCon));
         }
@@ -203,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapGrupoCuentaCaptura(ESapGrupoCuenta sapGrupoCuenta)
+        private async Task<IActionResult> SapGrupoCuentaCaptura(ESapGrupoCuenta sapGrupoCuenta)
         {
             ViewBag.Mensajes = NSapGrupoCuentas.Mensajes.Copy();
-            ViewBag.Accion = EVSapGrupoCuentas.Accion;
-            ViewBag.Reglas = EVSapGrupoCuentas.SapGrupoCuentaReglas;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapGrupoCuentaCaptura), sapGrupoCuenta);
+            return await Task.FromResult(ViewCap(nameof(SapGrupoCuentaCaptura), sapGrupoCuenta));
         }
         #endregion
 
@@ -220,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoCuentaInicia))]
         public IActionResult SapGrupoCuentaPaginacion(MEDatosPaginador datPag)
         {
-            EVSapGrupoCuentas.SapGrupoCuentaPag.DatPag = datPag;
+            EV.SapGrupoCuenta.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapGrupoCuentaCon));
         }
         /// <summary>
@@ -229,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoCuentaInicia))]
         public IActionResult SapGrupoCuentaOrdena(String orden)
         {
-            EVSapGrupoCuentas.SapGrupoCuentaColOrden = orden;
+            EV.SapGrupoCuenta.ColOrden = orden;
             return RedirectToAction(nameof(SapGrupoCuentaCon));
         }
         /// <summary>
@@ -238,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoCuentaInicia))]
         public IActionResult SapGrupoCuentaFiltra(ESapGrupoCuentaFiltro filtro)
         {
-            EVSapGrupoCuentas.SapGrupoCuentaFiltro = filtro;
+            EV.SapGrupoCuenta.Filtro = filtro;
             return RedirectToAction(nameof(SapGrupoCuentaCon));
         }
         /// <summary>
@@ -247,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapGrupoCuentaInicia))]
         public IActionResult SapGrupoCuentaLimpiaFiltros()
         {
-            EVSapGrupoCuentas.SapGrupoCuentaFiltro = new ESapGrupoCuentaFiltro();
+            EV.SapGrupoCuenta.Filtro = new ESapGrupoCuentaFiltro();
             return RedirectToAction(nameof(SapGrupoCuentaCon));
         }
         #endregion

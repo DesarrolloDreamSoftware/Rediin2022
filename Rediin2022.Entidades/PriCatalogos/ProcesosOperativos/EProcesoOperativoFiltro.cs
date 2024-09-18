@@ -1,4 +1,4 @@
-using DSEntityNetX.DataAccess;
+
 using DSMetodNetX.Entidades;
 using System;
 using System.Collections.Generic;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 namespace Rediin2022.Entidades.PriCatalogos
 {
     [Serializable]
+    [MDAParamSesion(MMetaDatos.establecimientoIdSesion)]
     public class EProcesoOperativoFiltro : MEFiltro
     {
         #region Propiedades

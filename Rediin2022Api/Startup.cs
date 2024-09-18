@@ -18,6 +18,8 @@ using Rediin2022.Negocio.PriOperacion;
 using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Negocio.PriClientes;
 using Sisegui2020.Entidades.PriSeguridad;
+using System.Data.Common;
+using Rediin2022.Entidades.Idioma;
 
 namespace Rediin2022Api
 {
@@ -33,8 +35,21 @@ namespace Rediin2022Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string vProveedor = Configuration["CCP"];
+            DbProviderFactory vBDFactory = null;
+            if (vProveedor == "sql")
+                vBDFactory = System.Data.SqlClient.SqlClientFactory.Instance;
+            else if (vProveedor == "postgresql")
+                //vBDFactory = new MPostgreProviderFactory(Npgsql.NpgsqlFactory.Instance);
+                throw new Exception($"Fabrica [{vProveedor}] no existe para esta API.");
+            else
+                throw new Exception($"Fabrica [{vProveedor}] no existe para esta API.");
+
             //Configuracion personalizada
-            MStartUpApi.ConfiguraServicios(services, Configuration);
+            MStartUpApi.ConfiguraServicios(services, 
+                                           Configuration, 
+                                           MensajesXId.ResourceManager,
+                                           vBDFactory);
 
             services.AddSwaggerGen();
 

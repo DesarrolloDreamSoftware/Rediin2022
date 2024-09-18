@@ -1,13 +1,8 @@
-﻿using DSEntityNetX.Common.Casting;
-using DSEntityNetX.DataAccess;
+﻿using DSEntityNetX.Entities.Connection;
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
-using Rediin2022.Entidades.PriOperacion;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rediin2022.Entidades.PriOperacion;
 
@@ -126,9 +121,14 @@ public static class UtilExpediente
     }
     public static ERelacionProcOper ObtenRelacion(List<ERelacionProcOper> relaciones, String propiedad)
     {
-        //JRD PENDIENTE 17/9/2024
-        return null;
         //return relaciones.FirstOrDefault(e => e.Propiedad == propiedad, new ERelacionProcOper());
+        foreach(ERelacionProcOper rel in relaciones)
+        {
+            if (rel.Propiedad == propiedad)
+                return rel;
+        }
+
+        return new ERelacionProcOper();
     }
 }
 

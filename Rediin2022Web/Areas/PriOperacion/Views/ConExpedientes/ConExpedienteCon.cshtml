@@ -1,20 +1,22 @@
-﻿@using Rediin2022.Entidades.PriCatalogos
+@using Rediin2022.Entidades.PriCatalogos
 @model List<EConExpediente>
 
 @{
 	ViewData["Title"] = "Consulta";
+    EVConExpedientes EV = ViewBag.EV;
 	List<EProcesoOperativoCol> vProcOperColumnas = ViewBag.ProcOperColumnas;
 	Boolean vExiste = false;
 }
-<div mpanel="Display" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas">
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.ConExpediente.Reglas">
 	<div msub-panel="ConTitulo">
 		@MensajesXId._ConExpedienteTitCon
 	</div>
 	<div msub-panel="ConFiltro">
-		<partial name="_ConExpedienteFiltra" model="(EConExpedienteFiltro)ViewBag.Filtro" view-data="ViewData" />
+		<partial name="_ConExpedienteFiltra" model="@EV.ConExpediente.Filtro" view-data="ViewData" />
 	</div>
 	<div msub-panel="ConDatos">
-		<table melemento="ConTabla" xsort-action="@nameof(ConExpedientesController.ConExpedienteOrdena)" xsort-current="@ViewBag.orden">
+		<table melemento="ConTabla" xsort-action="@nameof(ConExpedientesController.ConExpedienteOrdena)" 
+            xsort-current="@EV.ConExpediente.ColOrden">
 			<thead melemento="ConTablaEnc">
 				<tr>
 					<th></th>
@@ -56,7 +58,7 @@
 					for (int i = 0; i < Model.Count(); i++)
 					{
 						String vDivAcciones = "divPanelAcciones" + i.ToString();
-						<tr class="@(ViewBag.Indice == i ? "conTablaLinSel" : null)">
+						<tr class="@(EV.ConExpediente.Indice == i ? "conTablaLinSel" : null)">
 							<td nowrap>
 								<a maccion="IniciaActualiza" asp-action="@nameof(ConExpedientesController.ConExpedienteActualizaIni)" asp-route-indice="@i"
 				 xvisible="@Model[i].PermiteActualiza"></a>
@@ -165,7 +167,7 @@
 		</table>
 	</div>
 	<div msub-panel="ConPaginador">
-		<div mdata-pager="@ViewBag.DatPag" xdp-action="@nameof(ConExpedientesController.ConExpedientePaginacion)"></div>
+		<div mdata-pager="@EV.ConExpediente.Pag?.DatPag" xdp-action="@nameof(ConExpedientesController.ConExpedientePaginacion)"></div>
 	</div>
 	<div msub-panel="ConAccionesGen">
 		<a maccion="IniciaInserta" asp-action="@nameof(ConExpedientesController.ConExpedienteInsertaIni)" asp-route-indice="-1"></a>
@@ -178,7 +180,7 @@
 	EConExpedienteCambioEstatus vConExpedienteCambioEstatus = ViewBag.ConExpedienteCambioEstatus;
 	<div id="mdlAcciones" mmodal="true">
 		<form asp-action="_ConExpedienteCambioEstatus">
-			<div mpanel="Edit" mpnl-mensajes="@ViewBag.CAESMensajes">
+			<div mpanel="Edit" xpnl-messages="@ViewBag.CAESMensajes">
 				<div msub-panel="CapTitulo">
 					@MensajesXId._ConExpedienteCambioEstatusTitCap
 				</div>

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -36,59 +37,59 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta paginada de la entidad ProcesoOperativo.
         /// </summary>
         [HttpPost]
-        public EProcesoOperativoPag ProcesoOperativoPag(EProcesoOperativoFiltro procesoOperativoFiltro)
+        public async Task<EProcesoOperativoPag> ProcesoOperativoPag(EProcesoOperativoFiltro procesoOperativoFiltro)
         {
-            return NProcesosOperativos.ProcesoOperativoPag(procesoOperativoFiltro);
+            return await NProcesosOperativos.ProcesoOperativoPag(procesoOperativoFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativo.
         /// </summary>
         [HttpGet("{procesoOperativoId}")]
-        public EProcesoOperativo ProcesoOperativoXId(Int64 procesoOperativoId,
-                                                     EProcesoOperativoFiltro procesoOperativoFiltro)
+        public async Task<EProcesoOperativo> ProcesoOperativoXId(Int64 procesoOperativoId,
+                                                                 EProcesoOperativoFiltro procesoOperativoFiltro)
         {
-            return NProcesosOperativos.ProcesoOperativoXId(procesoOperativoId,
-                                                           procesoOperativoFiltro);
+            return await NProcesosOperativos.ProcesoOperativoXId(procesoOperativoId,
+                                                                 procesoOperativoFiltro);
         }
         /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativo.
         /// </summary>
         [HttpGet]
-        public List<MEElemento> ProcesoOperativoCmb()
+        public async Task<List<MEElemento>> ProcesoOperativoCmb()
         {
-            return NProcesosOperativos.ProcesoOperativoCmb();
+            return await NProcesosOperativos.ProcesoOperativoCmb();
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativo.
         /// </summary>
         [HttpPost]
-        public Int64 ProcesoOperativoInserta(EProcesoOperativo procesoOperativo)
+        public async Task<Int64> ProcesoOperativoInserta(EProcesoOperativo procesoOperativo)
         {
-            return NProcesosOperativos.ProcesoOperativoInserta(procesoOperativo);
+            return await NProcesosOperativos.ProcesoOperativoInserta(procesoOperativo);
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativo.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoActualiza(EProcesoOperativo procesoOperativo)
+        public async Task<Boolean> ProcesoOperativoActualiza(EProcesoOperativo procesoOperativo)
         {
-            return NProcesosOperativos.ProcesoOperativoActualiza(procesoOperativo);
+            return await NProcesosOperativos.ProcesoOperativoActualiza(procesoOperativo);
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativo.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoElimina(EProcesoOperativo procesoOperativo)
+        public async Task<Boolean> ProcesoOperativoElimina(EProcesoOperativo procesoOperativo)
         {
-            return NProcesosOperativos.ProcesoOperativoElimina(procesoOperativo);
+            return await NProcesosOperativos.ProcesoOperativoElimina(procesoOperativo);
         }
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativo.
         /// </summary>
         [HttpGet]
-        public List<MEReglaNeg> ProcesoOperativoReglas()
+        public async Task<List<MEReglaNeg>> ProcesoOperativoReglas()
         {
-            return NProcesosOperativos.ProcesoOperativoReglas();
+            return await NProcesosOperativos.ProcesoOperativoReglas();
         }
         #endregion
 
@@ -97,67 +98,67 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta paginada de la entidad ProcesoOperativoCol.
         /// </summary>
         [HttpPost]
-        public EProcesoOperativoColPag ProcesoOperativoColPag(EProcesoOperativoColFiltro procesoOperativoColFiltro)
+        public async Task<EProcesoOperativoColPag> ProcesoOperativoColPag(EProcesoOperativoColFiltro procesoOperativoColFiltro)
         {
-            return NProcesosOperativos.ProcesoOperativoColPag(procesoOperativoColFiltro);
+            return await NProcesosOperativos.ProcesoOperativoColPag(procesoOperativoColFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativoCol.
         /// </summary>
         [HttpGet("{procesoOperativoId}/{columnaId}")]
-        public EProcesoOperativoCol ProcesoOperativoColXId(Int64 procesoOperativoId,
-                                                           Int64 columnaId)
+        public async Task<EProcesoOperativoCol> ProcesoOperativoColXId(Int64 procesoOperativoId,
+                                                                       Int64 columnaId)
         {
-            return NProcesosOperativos.ProcesoOperativoColXId(procesoOperativoId,
-                                                              columnaId);
+            return await NProcesosOperativos.ProcesoOperativoColXId(procesoOperativoId,
+                                                                    columnaId);
         }
         /// <summary>
         /// Consulta adicional de la entidad ProcesoOperativoCol.
         /// </summary>
         [HttpGet("{procesoOperativoId}")]
-        public List<EProcesoOperativoCol> ProcesoOperativoColCT(Int64 procesoOperativoId)
+        public async Task<List<EProcesoOperativoCol>> ProcesoOperativoColCT(Int64 procesoOperativoId)
         {
-            return NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoId);
+            return await NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoId);
         }
         /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativoCol.
         /// </summary>
         [HttpGet("{procesoOperativoId}")]
-        public List<MEElemento> ProcesoOperativoColCmb(Int64 procesoOperativoId)
+        public async Task<List<MEElemento>> ProcesoOperativoColCmb(Int64 procesoOperativoId)
         {
-            return NProcesosOperativos.ProcesoOperativoColCmb(procesoOperativoId);
+            return await NProcesosOperativos.ProcesoOperativoColCmb(procesoOperativoId);
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoCol.
         /// </summary>
         [HttpPost]
-        public Int64 ProcesoOperativoColInserta(EProcesoOperativoCol procesoOperativoCol)
+        public async Task<Int64> ProcesoOperativoColInserta(EProcesoOperativoCol procesoOperativoCol)
         {
-            return NProcesosOperativos.ProcesoOperativoColInserta(procesoOperativoCol);
+            return await NProcesosOperativos.ProcesoOperativoColInserta(procesoOperativoCol);
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoCol.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoColActualiza(EProcesoOperativoCol procesoOperativoCol)
+        public async Task<Boolean> ProcesoOperativoColActualiza(EProcesoOperativoCol procesoOperativoCol)
         {
-            return NProcesosOperativos.ProcesoOperativoColActualiza(procesoOperativoCol);
+            return await NProcesosOperativos.ProcesoOperativoColActualiza(procesoOperativoCol);
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoCol.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoColElimina(EProcesoOperativoCol procesoOperativoCol)
+        public async Task<Boolean> ProcesoOperativoColElimina(EProcesoOperativoCol procesoOperativoCol)
         {
-            return NProcesosOperativos.ProcesoOperativoColElimina(procesoOperativoCol);
+            return await NProcesosOperativos.ProcesoOperativoColElimina(procesoOperativoCol);
         }
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativoCol.
         /// </summary>
         [HttpGet]
-        public List<MEReglaNeg> ProcesoOperativoColReglas()
+        public async Task<List<MEReglaNeg>> ProcesoOperativoColReglas()
         {
-            return NProcesosOperativos.ProcesoOperativoColReglas();
+            return await NProcesosOperativos.ProcesoOperativoColReglas();
         }
         #endregion
 
@@ -166,57 +167,57 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta paginada de la entidad ProcesoOperativoObjeto.
         /// </summary>
         [HttpPost]
-        public EProcesoOperativoObjetoPag ProcesoOperativoObjetoPag(EProcesoOperativoObjetoFiltro procesoOperativoObjetoFiltro)
+        public async Task<EProcesoOperativoObjetoPag> ProcesoOperativoObjetoPag(EProcesoOperativoObjetoFiltro procesoOperativoObjetoFiltro)
         {
-            return NProcesosOperativos.ProcesoOperativoObjetoPag(procesoOperativoObjetoFiltro);
+            return await NProcesosOperativos.ProcesoOperativoObjetoPag(procesoOperativoObjetoFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativoObjeto.
         /// </summary>
         [HttpGet("{procesoOperativoObjetoId}")]
-        public EProcesoOperativoObjeto ProcesoOperativoObjetoXId(Int64 procesoOperativoObjetoId)
+        public async Task<EProcesoOperativoObjeto> ProcesoOperativoObjetoXId(Int64 procesoOperativoObjetoId)
         {
-            return NProcesosOperativos.ProcesoOperativoObjetoXId(procesoOperativoObjetoId);
+            return await NProcesosOperativos.ProcesoOperativoObjetoXId(procesoOperativoObjetoId);
         }
         /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativoObjeto.
         /// </summary>
         [HttpGet("{procesoOperativoId}")]
-        public List<MEElemento> ProcesoOperativoObjetoCmb(Int64 procesoOperativoId)
+        public async Task<List<MEElemento>> ProcesoOperativoObjetoCmb(Int64 procesoOperativoId)
         {
-            return NProcesosOperativos.ProcesoOperativoObjetoCmb(procesoOperativoId);
+            return await NProcesosOperativos.ProcesoOperativoObjetoCmb(procesoOperativoId);
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoObjeto.
         /// </summary>
         [HttpPost]
-        public Int64 ProcesoOperativoObjetoInserta(EProcesoOperativoObjeto procesoOperativoObjeto)
+        public async Task<Int64> ProcesoOperativoObjetoInserta(EProcesoOperativoObjeto procesoOperativoObjeto)
         {
-            return NProcesosOperativos.ProcesoOperativoObjetoInserta(procesoOperativoObjeto);
+            return await NProcesosOperativos.ProcesoOperativoObjetoInserta(procesoOperativoObjeto);
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoObjeto.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoObjetoActualiza(EProcesoOperativoObjeto procesoOperativoObjeto)
+        public async Task<Boolean> ProcesoOperativoObjetoActualiza(EProcesoOperativoObjeto procesoOperativoObjeto)
         {
-            return NProcesosOperativos.ProcesoOperativoObjetoActualiza(procesoOperativoObjeto);
+            return await NProcesosOperativos.ProcesoOperativoObjetoActualiza(procesoOperativoObjeto);
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoObjeto.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoObjetoElimina(EProcesoOperativoObjeto procesoOperativoObjeto)
+        public async Task<Boolean> ProcesoOperativoObjetoElimina(EProcesoOperativoObjeto procesoOperativoObjeto)
         {
-            return NProcesosOperativos.ProcesoOperativoObjetoElimina(procesoOperativoObjeto);
+            return await NProcesosOperativos.ProcesoOperativoObjetoElimina(procesoOperativoObjeto);
         }
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativoObjeto.
         /// </summary>
         [HttpGet]
-        public List<MEReglaNeg> ProcesoOperativoObjetoReglas()
+        public async Task<List<MEReglaNeg>> ProcesoOperativoObjetoReglas()
         {
-            return NProcesosOperativos.ProcesoOperativoObjetoReglas();
+            return await NProcesosOperativos.ProcesoOperativoObjetoReglas();
         }
         #endregion
 
@@ -225,57 +226,57 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta paginada de la entidad ProcesoOperativoEst.
         /// </summary>
         [HttpPost]
-        public EProcesoOperativoEstPag ProcesoOperativoEstPag(EProcesoOperativoEstFiltro procesoOperativoEstFiltro)
+        public async Task<EProcesoOperativoEstPag> ProcesoOperativoEstPag(EProcesoOperativoEstFiltro procesoOperativoEstFiltro)
         {
-            return NProcesosOperativos.ProcesoOperativoEstPag(procesoOperativoEstFiltro);
+            return await NProcesosOperativos.ProcesoOperativoEstPag(procesoOperativoEstFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativoEst.
         /// </summary>
         [HttpGet("{procesoOperativoEstId}")]
-        public EProcesoOperativoEst ProcesoOperativoEstXId(Int64 procesoOperativoEstId)
+        public async Task<EProcesoOperativoEst> ProcesoOperativoEstXId(Int64 procesoOperativoEstId)
         {
-            return NProcesosOperativos.ProcesoOperativoEstXId(procesoOperativoEstId);
+            return await NProcesosOperativos.ProcesoOperativoEstXId(procesoOperativoEstId);
         }
         /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativoEst.
         /// </summary>
         [HttpGet("{procesoOperativoId}")]
-        public List<MEElemento> ProcesoOperativoEstCmb(Int64 procesoOperativoId)
+        public async Task<List<MEElemento>> ProcesoOperativoEstCmb(Int64 procesoOperativoId)
         {
-            return NProcesosOperativos.ProcesoOperativoEstCmb(procesoOperativoId);
+            return await NProcesosOperativos.ProcesoOperativoEstCmb(procesoOperativoId);
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoEst.
         /// </summary>
         [HttpPost]
-        public Int64 ProcesoOperativoEstInserta(EProcesoOperativoEst procesoOperativoEst)
+        public async Task<Int64> ProcesoOperativoEstInserta(EProcesoOperativoEst procesoOperativoEst)
         {
-            return NProcesosOperativos.ProcesoOperativoEstInserta(procesoOperativoEst);
+            return await NProcesosOperativos.ProcesoOperativoEstInserta(procesoOperativoEst);
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoEst.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoEstActualiza(EProcesoOperativoEst procesoOperativoEst)
+        public async Task<Boolean> ProcesoOperativoEstActualiza(EProcesoOperativoEst procesoOperativoEst)
         {
-            return NProcesosOperativos.ProcesoOperativoEstActualiza(procesoOperativoEst);
+            return await NProcesosOperativos.ProcesoOperativoEstActualiza(procesoOperativoEst);
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoEst.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoEstElimina(EProcesoOperativoEst procesoOperativoEst)
+        public async Task<Boolean> ProcesoOperativoEstElimina(EProcesoOperativoEst procesoOperativoEst)
         {
-            return NProcesosOperativos.ProcesoOperativoEstElimina(procesoOperativoEst);
+            return await NProcesosOperativos.ProcesoOperativoEstElimina(procesoOperativoEst);
         }
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativoEst.
         /// </summary>
         [HttpGet]
-        public List<MEReglaNeg> ProcesoOperativoEstReglas()
+        public async Task<List<MEReglaNeg>> ProcesoOperativoEstReglas()
         {
-            return NProcesosOperativos.ProcesoOperativoEstReglas();
+            return await NProcesosOperativos.ProcesoOperativoEstReglas();
         }
         #endregion
 
@@ -284,57 +285,57 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta paginada de la entidad ProcesoOperativoEstSec.
         /// </summary>
         [HttpPost]
-        public EProcesoOperativoEstSecPag ProcesoOperativoEstSecPag(EProcesoOperativoEstSecFiltro procesoOperativoEstSecFiltro)
+        public async Task<EProcesoOperativoEstSecPag> ProcesoOperativoEstSecPag(EProcesoOperativoEstSecFiltro procesoOperativoEstSecFiltro)
         {
-            return NProcesosOperativos.ProcesoOperativoEstSecPag(procesoOperativoEstSecFiltro);
+            return await NProcesosOperativos.ProcesoOperativoEstSecPag(procesoOperativoEstSecFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad ProcesoOperativoEstSec.
         /// </summary>
         [HttpGet("{procesoOperativoEstSecId}")]
-        public EProcesoOperativoEstSec ProcesoOperativoEstSecXId(Int64 procesoOperativoEstSecId)
+        public async Task<EProcesoOperativoEstSec> ProcesoOperativoEstSecXId(Int64 procesoOperativoEstSecId)
         {
-            return NProcesosOperativos.ProcesoOperativoEstSecXId(procesoOperativoEstSecId);
+            return await NProcesosOperativos.ProcesoOperativoEstSecXId(procesoOperativoEstSecId);
         }
         /// <summary>
         /// Consulta adicional de la entidad ProcesoOperativoEstSec.
         /// </summary>
         [HttpGet("{procesoOperativoEstId}")]
-        public List<EProcesoOperativoEstSec> ProcesoOperativoEstSecCTXIdPadre(Int64 procesoOperativoEstId)
+        public async Task<List<EProcesoOperativoEstSec>> ProcesoOperativoEstSecCTXIdPadre(Int64 procesoOperativoEstId)
         {
-            return NProcesosOperativos.ProcesoOperativoEstSecCTXIdPadre(procesoOperativoEstId);
+            return await NProcesosOperativos.ProcesoOperativoEstSecCTXIdPadre(procesoOperativoEstId);
         }
         /// <summary>
         /// Permite insertar la entidad ProcesoOperativoEstSec.
         /// </summary>
         [HttpPost]
-        public Int64 ProcesoOperativoEstSecInserta(EProcesoOperativoEstSec procesoOperativoEstSec)
+        public async Task<Int64> ProcesoOperativoEstSecInserta(EProcesoOperativoEstSec procesoOperativoEstSec)
         {
-            return NProcesosOperativos.ProcesoOperativoEstSecInserta(procesoOperativoEstSec);
+            return await NProcesosOperativos.ProcesoOperativoEstSecInserta(procesoOperativoEstSec);
         }
         /// <summary>
         /// Permite actualizar la entidad ProcesoOperativoEstSec.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoEstSecActualiza(EProcesoOperativoEstSec procesoOperativoEstSec)
+        public async Task<Boolean> ProcesoOperativoEstSecActualiza(EProcesoOperativoEstSec procesoOperativoEstSec)
         {
-            return NProcesosOperativos.ProcesoOperativoEstSecActualiza(procesoOperativoEstSec);
+            return await NProcesosOperativos.ProcesoOperativoEstSecActualiza(procesoOperativoEstSec);
         }
         /// <summary>
         /// Permite eliminar la entidad ProcesoOperativoEstSec.
         /// </summary>
         [HttpPost]
-        public Boolean ProcesoOperativoEstSecElimina(EProcesoOperativoEstSec procesoOperativoEstSec)
+        public async Task<Boolean> ProcesoOperativoEstSecElimina(EProcesoOperativoEstSec procesoOperativoEstSec)
         {
-            return NProcesosOperativos.ProcesoOperativoEstSecElimina(procesoOperativoEstSec);
+            return await NProcesosOperativos.ProcesoOperativoEstSecElimina(procesoOperativoEstSec);
         }
         /// <summary>
         /// Reglas de negocio de la entidad ProcesoOperativoEstSec.
         /// </summary>
         [HttpGet]
-        public List<MEReglaNeg> ProcesoOperativoEstSecReglas()
+        public async Task<List<MEReglaNeg>> ProcesoOperativoEstSecReglas()
         {
-            return NProcesosOperativos.ProcesoOperativoEstSecReglas();
+            return await NProcesosOperativos.ProcesoOperativoEstSecReglas();
         }
         #endregion
 

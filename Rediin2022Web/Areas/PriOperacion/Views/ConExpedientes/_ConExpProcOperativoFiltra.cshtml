@@ -1,7 +1,10 @@
-﻿@model EConExpProcOperativoFiltro
+@model EConExpProcOperativoFiltro
+@{
+    EVConExpedientes EV = ViewBag.EV;
+}
 
 <form asp-action="_FiltraConExpProcOperativo">
-    <div mpanel="Base" xpnl-rules="ViewBag.Reglas">
+    <div mpanel="Base">
         <div melemento="CapLin">
             <div melemento="FilCol" melem-cols="4">
             </div>

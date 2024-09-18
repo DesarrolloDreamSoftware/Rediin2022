@@ -1,0 +1,74 @@
+@using DSEntityNetX.Mvc.TagHelpers
+@using Rediin2022.Entidades.PriCatalogos
+@model EConExpediente
+
+@{
+	ViewData["Title"] = "Captura";
+    EVConExpedientes EV = ViewBag.EV;
+
+	List<EProcesoOperativoCol> vProcOperColumnas = ViewBag.ProcOperColumnas;
+	List<EProcesoOperativoCol> vColumnasTemp = new List<EProcesoOperativoCol>();
+	List<List<EProcesoOperativoCol>> vColumnasXTab = new List<List<EProcesoOperativoCol>>();
+	List<String> vTabs = new List<String>();
+	foreach (EProcesoOperativoCol vColumna in vProcOperColumnas)
+	{
+		if (!String.IsNullOrWhiteSpace(vColumna.CapTab))
+		{
+			vTabs.Add(vColumna.CapTab);
+			if (vColumnasTemp.Count > 0)
+				vColumnasXTab.Add(vColumnasTemp);
+
+			vColumnasTemp = new List<EProcesoOperativoCol>();
+		}
+		vColumnasTemp.Add(vColumna);
+	}
+	if(vColumnasTemp.Count > 0)
+		vColumnasXTab.Add(vColumnasTemp);
+
+	if (vTabs.Count > 0 && vColumnasXTab.Count > vTabs.Count)
+		vTabs.Insert(0, "General");
+
+	String vTab = String.Empty;
+}
+
+<form asp-action="_ConExpedienteCaptura">
+	@*<div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="@EV.ConExpediente.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">*@
+	<div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
+		<div msub-panel="CapTitulo">
+			@MensajesXId._ConExpedienteTitCap
+		</div>
+		<div msub-panel="CapDatos">
+			@if (vColumnasXTab.Count > 1)
+			{
+				<mtabulador id="TabCapCtrCte">
+					@for (int i = 0; i < vColumnasXTab.Count; i++)
+					{
+						vTab = "Tab" + i.ToString();
+						ViewBag.ProcOperColumnasXTab = vColumnasXTab[i];
+						ViewBag.PrimCap = i == 0;
+						<mtab id="@vTab" label="@vTabs[i]">
+							<partial name="_ConExpedienteCap" model="@Model" view-data="ViewData"></partial>
+						</mtab>
+					}
+				</mtabulador>
+			}
+			else if (vColumnasXTab.Count > 0)
+			{
+				ViewBag.ProcOperColumnasXTab = vColumnasXTab[0];
+				ViewBag.PrimCap = true;
+				<partial name="_ConExpedienteCap" model="@Model" view-data="ViewData"></partial>
+			}
+		</div>
+		<div msub-panel="CapAccionesGen">
+			<button maccion="Guarda"
+					asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInserta) : nameof(ConExpedientesController.ConExpedienteActualiza))"
+					xvalidate="@nameof(EConExpediente)"></button>
+			&nbsp;
+			<a maccion="Regresa" asp-action="@nameof(ConExpedientesController.ConExpedienteCon)"></a>
+			&nbsp;
+			<div mauditoriacb="@Model"></div>
+		</div>
+	</div>
+</form>

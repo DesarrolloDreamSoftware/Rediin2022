@@ -1,0 +1,48 @@
+@model EProcesoOperativoEstSec
+
+@{
+    ViewData["Title"] = "Captura";
+    EVProcesosOperativos EV = ViewBag.EV;
+}
+
+<form asp-action="_ProcesoOperativoEstSecCaptura">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="@EV.ProcesoOperativoEstSec.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._ProcesoOperativoEstSecTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="12">
+                    <input mval="Model" xval-for="ProcesoOperativoEstSecId" xval-enabled="false"/>
+                </div>
+                <div melemento="CapCol" melem-cols="12">
+                </div>
+                <div melemento="CapCol" melem-cols="12">
+                </div>
+                <div melemento="CapCol" melem-cols="12">
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="12">
+                    <select mval="Model" xval-for="ProcesoOperativoEstIdSig" xval-items="ViewBag.ProcesosOperativosEst"></select>
+                </div>
+                <div melemento="CapCol" melem-cols="12">
+                </div>
+                <div melemento="CapCol" melem-cols="12">
+                </div>
+                <div melemento="CapCol" melem-cols="12">
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <button maccion="Guarda"
+                    asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoEstSecInserta) : nameof(ProcesosOperativosController.ProcesoOperativoEstSecActualiza))"
+                    xvalidate="@nameof(EProcesoOperativoEstSec)"></button>
+            &nbsp;
+            <a maccion="Regresa" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoEstSecCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

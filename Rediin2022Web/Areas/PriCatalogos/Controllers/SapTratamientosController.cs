@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapTratamientos EVSapTratamientos
+        private EVSapTratamientos EV
         {
-            get
-            {
-                if (base.MSesion<EVSapTratamientos>() == null)
-                    base.MSesion(new EVSapTratamientos());
-
-                return base.MSesionAuto<EVSapTratamientos>();
-            }
+            get { return base.MEVCtrl<EVSapTratamientos>(); }
         }
         #endregion
 
@@ -63,14 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapTratamientoInicia()
+        public async Task<IActionResult> SapTratamientoInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapTratamientos.SapTratamientoColOrden))
-                EVSapTratamientos.SapTratamientoColOrden = nameof(ESapTratamiento.SapTratamientoId);
-
-            if (EVSapTratamientos.SapTratamientoReglas == null)
-                EVSapTratamientos.SapTratamientoReglas = NSapTratamientos.SapTratamientoReglas();
+            await Servicios.Gen.InicializaSF(EV.SapTratamiento, nameof(ESapTratamiento.SapTratamientoId),
+                async () => await NSapTratamientos.SapTratamientoReglas());
 
             return RedirectToAction(nameof(SapTratamientoCon));
         }
@@ -78,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapTratamientoInicia))]
-        public IActionResult SapTratamientoCon()
+        public async Task<IActionResult> SapTratamientoCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapTratamientos.SapTratamientoFiltro,
-                                     EVSapTratamientos.SapTratamientoPag,
-                                     EVSapTratamientos.SapTratamientoColOrden,
-                                     nameof(ESapTratamiento));
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapTratamiento);
+            EV.SapTratamiento.Pag = await NSapTratamientos.SapTratamientoPag(EV.SapTratamiento.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapTratamiento);
 
-            EVSapTratamientos.SapTratamientoPag = NSapTratamientos.SapTratamientoPag(EVSapTratamientos.SapTratamientoFiltro);
-            base.MActualizaTamPag(EVSapTratamientos.SapTratamientoPag?.DatPag);
+            ViewBag.Mensajes = NSapTratamientos.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = NSapTratamientos.Mensajes.Copy();
-            ViewBag.Reglas = EVSapTratamientos.SapTratamientoReglas;
-            ViewBag.DatPag = EVSapTratamientos.SapTratamientoPag?.DatPag;
-            ViewBag.Orden = EVSapTratamientos.SapTratamientoColOrden;
-            ViewBag.Filtro = EVSapTratamientos.SapTratamientoFiltro;
-            ViewBag.Indice = EVSapTratamientos.SapTratamientoIndice;
-
-            return View(nameof(SapTratamientoCon), EVSapTratamientos.SapTratamientoPag?.Pagina);
+            return View(nameof(SapTratamientoCon), EV.SapTratamiento.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapTratamientoXId(Int32 indice)
+        public async Task<IActionResult> SapTratamientoXId(Int32 indice)
         {
-            EVSapTratamientos.Accion = MAccionesGen.Consulta;
-            EVSapTratamientos.SapTratamientoIndice = indice;
-            return SapTratamientoCaptura(EVSapTratamientos.SapTratamientoPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapTratamiento.Indice = indice;
+            return await SapTratamientoCaptura(EV.SapTratamiento.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapTratamientoInserta))]
-        public IActionResult SapTratamientoInsertaIni()
+        public async Task<IActionResult> SapTratamientoInsertaIni()
         {
-            EVSapTratamientos.Accion = MAccionesGen.Inserta;
-            return SapTratamientoInsertaCap(new ESapTratamiento()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapTratamientoInsertaCap(new ESapTratamiento()
             {
                 Activo = true
             });
@@ -123,58 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapTratamientoInserta))]
-        public IActionResult SapTratamientoInsertaCap(ESapTratamiento sapTratamiento)
+        public async Task<IActionResult> SapTratamientoInsertaCap(ESapTratamiento sapTratamiento)
         {
-            return SapTratamientoCaptura(sapTratamiento);
+            return await SapTratamientoCaptura(sapTratamiento);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapTratamientoInserta(ESapTratamiento sapTratamiento)
+        public async Task<IActionResult> SapTratamientoInserta(ESapTratamiento sapTratamiento)
         {
-            if (NSapTratamientos.SapTratamientoInserta(sapTratamiento))
+            if (await NSapTratamientos.SapTratamientoInserta(sapTratamiento))
                 return RedirectToAction(nameof(SapTratamientoCon));
 
-            return SapTratamientoInsertaCap(sapTratamiento);
+            return await SapTratamientoInsertaCap(sapTratamiento);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapTratamientoActualiza))]
-        public IActionResult SapTratamientoActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapTratamientoActualizaIni(Int32 indice)
         {
-            EVSapTratamientos.Accion = MAccionesGen.Actualiza;
-            EVSapTratamientos.SapTratamientoIndice = indice;
-            EVSapTratamientos.SapTratamientoSel = EVSapTratamientos.SapTratamientoPag.Pagina[indice];
-            return SapTratamientoActualizaCap(EVSapTratamientos.SapTratamientoSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapTratamiento.Indice = indice;
+            EV.SapTratamiento.Sel = EV.SapTratamiento.Pag.Pagina[indice];
+            return await SapTratamientoActualizaCap(EV.SapTratamiento.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapTratamientoActualiza))]
-        public IActionResult SapTratamientoActualizaCap(ESapTratamiento sapTratamiento)
+        public async Task<IActionResult> SapTratamientoActualizaCap(ESapTratamiento sapTratamiento)
         {
-            return SapTratamientoCaptura(sapTratamiento);
+            return await SapTratamientoCaptura(sapTratamiento);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapTratamientoActualiza(ESapTratamiento sapTratamiento)
+        public async Task<IActionResult> SapTratamientoActualiza(ESapTratamiento sapTratamiento)
         {
-            if (NSapTratamientos.SapTratamientoActualiza(sapTratamiento))
+            if (await NSapTratamientos.SapTratamientoActualiza(sapTratamiento))
                 return RedirectToAction(nameof(SapTratamientoCon));
 
-            return SapTratamientoActualizaCap(sapTratamiento);
+            return await SapTratamientoActualizaCap(sapTratamiento);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapTratamientoElimina(Int32 indice)
+        public async Task<IActionResult> SapTratamientoElimina(Int32 indice)
         {
-            NSapTratamientos.SapTratamientoElimina(EVSapTratamientos.SapTratamientoPag.Pagina[indice]);
+            await NSapTratamientos.SapTratamientoElimina(EV.SapTratamiento.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapTratamientoCon));
         }
         /// <summary>
@@ -182,18 +165,18 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapTratamientoExporta()
         {
-            EVSapTratamientos.SapTratamientoFiltro.ColumnaOrden = EVSapTratamientos.SapTratamientoColOrden;
-            EVSapTratamientos.SapTratamientoFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapTratamiento.Filtro.ColumnaOrden = EV.SapTratamiento.ColOrden;
+            EV.SapTratamiento.Filtro.Columnas = new Dictionary<String, String>()
                                    {
                                        { nameof(ESapTratamiento.Activo), String.Empty },
                                        { nameof(ESapTratamiento.SapTratamientoId), String.Empty },
                                        { nameof(ESapTratamiento.SapTratamientoNombre), String.Empty }
                                    };
 
-            MEDatosArchivo vDA = NSapTratamientos.SapTratamientoExporta(EVSapTratamientos.SapTratamientoFiltro);
-            EVSapTratamientos.SapTratamientoFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NSapTratamientos.SapTratamientoExporta(EV.SapTratamiento.Filtro);
+            EV.SapTratamiento.Filtro.Columnas = null;
             if (NSapTratamientos.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapTratamientos.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
             return RedirectToAction(nameof(SapTratamientoCon));
         }
@@ -203,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapTratamientoCaptura(ESapTratamiento sapTratamiento)
+        private async Task<IActionResult> SapTratamientoCaptura(ESapTratamiento sapTratamiento)
         {
             ViewBag.Mensajes = NSapTratamientos.Mensajes.Copy();
-            ViewBag.Accion = EVSapTratamientos.Accion;
-            ViewBag.Reglas = EVSapTratamientos.SapTratamientoReglas;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapTratamientoCaptura), sapTratamiento);
+            return await Task.FromResult(ViewCap(nameof(SapTratamientoCaptura), sapTratamiento));
         }
         #endregion
 
@@ -220,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapTratamientoInicia))]
         public IActionResult SapTratamientoPaginacion(MEDatosPaginador datPag)
         {
-            EVSapTratamientos.SapTratamientoPag.DatPag = datPag;
+            EV.SapTratamiento.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapTratamientoCon));
         }
         /// <summary>
@@ -229,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapTratamientoInicia))]
         public IActionResult SapTratamientoOrdena(String orden)
         {
-            EVSapTratamientos.SapTratamientoColOrden = orden;
+            EV.SapTratamiento.ColOrden = orden;
             return RedirectToAction(nameof(SapTratamientoCon));
         }
         /// <summary>
@@ -238,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapTratamientoInicia))]
         public IActionResult SapTratamientoFiltra(ESapTratamientoFiltro filtro)
         {
-            EVSapTratamientos.SapTratamientoFiltro = filtro;
+            EV.SapTratamiento.Filtro = filtro;
             return RedirectToAction(nameof(SapTratamientoCon));
         }
         /// <summary>
@@ -247,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapTratamientoInicia))]
         public IActionResult SapTratamientoLimpiaFiltros()
         {
-            EVSapTratamientos.SapTratamientoFiltro = new ESapTratamientoFiltro();
+            EV.SapTratamiento.Filtro = new ESapTratamientoFiltro();
             return RedirectToAction(nameof(SapTratamientoCon));
         }
         #endregion

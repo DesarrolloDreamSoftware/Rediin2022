@@ -1,4 +1,4 @@
-using DSEntityNetX.DataAccess;
+
 using DSMetodNetX.Entidades;
 using System;
 
@@ -8,13 +8,14 @@ namespace Rediin2022.Entidades.PriCatalogos
     /// Entidad.
     /// </summary>
     [Serializable]
+    [MDAErrorDuplicado(-1, nameof(SapGrupoTesoreriaNombre))]
     public class ESapGrupoTesoreria: MEntidad
     {
         #region Propiedades
         //Columnas principales
-        [XMain] public String SapGrupoTesoreriaId { get; set; } = String.Empty;
-        [XMain] public String SapGrupoTesoreriaNombre { get; set; } = String.Empty;
-        [XMain] public Boolean Activo { get; set; } = false;
+        [MDAMain] public String SapGrupoTesoreriaId { get; set; } = String.Empty;
+        [MDAMain] public String SapGrupoTesoreriaNombre { get; set; } = String.Empty;
+        [MDAMain] public Boolean Activo { get; set; } = false;
         #endregion
     }
 }

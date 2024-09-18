@@ -1,0 +1,47 @@
+@model EProcesoOperativoEst
+
+@{
+    ViewData["Title"] = "Captura";
+    EVProcesosOperativos EV = ViewBag.EV;
+}
+
+<form asp-action="_ProcesoOperativoEstCaptura">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="@EV.ProcesoOperativoEst.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._ProcesoOperativoEstTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="ProcesoOperativoEstId" xval-enabled="false"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Activo"/>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="12">
+                    <input mval="Model" xval-for="EstatusNombre"/>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Orden"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="PermiteModificar"/>
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <button maccion="Guarda"
+                    asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoEstInserta) : nameof(ProcesosOperativosController.ProcesoOperativoEstActualiza))"
+                    xvalidate="@nameof(EProcesoOperativoEst)"></button>
+            &nbsp;
+            <a maccion="Regresa" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoEstCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,18 @@
+﻿@model ESapBancoFiltro
+
+<form asp-action="_FiltraSapBanco">
+    <div mpanel="Base" xpnl-rules="ViewBag.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilSapBancoNombre"/>
+            </div>
+            <div melemento="FilCol" melem-cols="4">
+                <select mval-filter="Model" xval-for="FilActivo"></select>
+            </div>
+            <div melemento="FilColBtn" melem-cols="4">
+                <button maccion="Filtra" asp-action="@nameof(SapBancosController.SapBancoFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(SapBancosController.SapBancoLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>

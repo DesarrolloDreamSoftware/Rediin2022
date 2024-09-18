@@ -1,4 +1,5 @@
 ﻿using DSMetodNetX.Aplicacion;
+using DSMetodNetX.Entidades.Config;
 using System;
 using System.Collections.Generic;
 using System.Text;

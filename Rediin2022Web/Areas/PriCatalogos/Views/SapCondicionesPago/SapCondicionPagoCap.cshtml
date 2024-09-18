@@ -1,18 +1,20 @@
-﻿@model ESapCondicionPago
+@model ESapCondicionPago
 
 @{
     ViewData["Title"] = "Captura";
+    EVSapCondicionesPago EV = ViewBag.EV;
 }
 
 <form asp-action="_SapCondicionPagoCaptura">
-    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+    <div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.SapCondicionPago.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
         <div msub-panel="CapTitulo">
             @MensajesXId._SapCondicionPagoTitCap
         </div>
         <div msub-panel="CapDatos">
             <div melemento="CapLin">
                 <div melemento="CapCol" melem-cols="6">
-                    <input mval="Model" xval-for="SapCondicionPagoId" mval-accion="@ViewBag.Accion"/>
+                    <input mval="Model" xval-for="SapCondicionPagoId" mval-accion="@EV.Accion"/>
                 </div>
                 <div melemento="CapCol" melem-cols="6">
                     <input mval="Model" xval-for="Activo"/>
@@ -26,7 +28,7 @@
         </div>
         <div msub-panel="CapAccionesGen">
             <button maccion="Guarda"
-                    asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(SapCondicionesPagoController.SapCondicionPagoInserta) : nameof(SapCondicionesPagoController.SapCondicionPagoActualiza))"
+                    asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(SapCondicionesPagoController.SapCondicionPagoInserta) : nameof(SapCondicionesPagoController.SapCondicionPagoActualiza))"
                     xvalidate="@nameof(ESapCondicionPago)"></button>
             &nbsp;
             <a maccion="Regresa" asp-action="@nameof(SapCondicionesPagoController.SapCondicionPagoCon)"></a>

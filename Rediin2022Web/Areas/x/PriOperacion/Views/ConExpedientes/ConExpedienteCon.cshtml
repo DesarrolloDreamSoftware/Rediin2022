@@ -1,0 +1,202 @@
+﻿@using Rediin2022.Entidades.PriCatalogos
+@model List<EConExpediente>
+
+@{
+	ViewData["Title"] = "Consulta";
+	List<EProcesoOperativoCol> vProcOperColumnas = ViewBag.ProcOperColumnas;
+	Boolean vExiste = false;
+}
+<div mpanel="Display" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas">
+	<div msub-panel="ConTitulo">
+		@MensajesXId._ConExpedienteTitCon
+	</div>
+	<div msub-panel="ConFiltro">
+		<partial name="_ConExpedienteFiltra" model="(EConExpedienteFiltro)ViewBag.Filtro" view-data="ViewData" />
+	</div>
+	<div msub-panel="ConDatos">
+		<table melemento="ConTabla" xsort-action="@nameof(ConExpedientesController.ConExpedienteOrdena)" xsort-current="@ViewBag.orden">
+			<thead melemento="ConTablaEnc">
+				<tr>
+					<th></th>
+					<th>
+						<span mhead-for="@nameof(EConExpediente.ExpedienteId)" xhead-sort="true"></span>
+					</th>
+					@if ((Boolean)ViewBag.ControlEstatus)
+					{
+						<th>
+							<span mhead-for="@nameof(EConExpediente.EstatusNombre)" xhead-sort="true"></span>
+						</th>
+					}
+					@foreach (EProcesoOperativoCol vCol in vProcOperColumnas)
+					{
+						if (vCol.Tipo == TiposColumna.Texto)
+						{
+							<th style="text-align:left">
+								<span mhead-for="@vCol.ColumnaId" xhead-label="@vCol.Etiqueta" xhead-sort="@vCol.ConOrdenar"></span>
+							</th>
+						}
+						else if (vCol.Tipo == TiposColumna.Entero || vCol.Tipo == TiposColumna.Importe)
+						{
+							<th style="text-align:right">
+								<span mhead-for="@vCol.ColumnaId" xhead-label="@vCol.Etiqueta" xhead-sort="@vCol.ConOrdenar"></span>
+							</th>
+						}
+						else
+						{
+							<th style="text-align:center">
+								<span mhead-for="@vCol.ColumnaId" xhead-label="@vCol.Etiqueta" xhead-sort="@vCol.ConOrdenar"></span>
+							</th>
+						}
+					}
+				</tr>
+			</thead>
+			<tbody>
+				@if (Model != null)
+				{
+					for (int i = 0; i < Model.Count(); i++)
+					{
+						String vDivAcciones = "divPanelAcciones" + i.ToString();
+						<tr class="@(ViewBag.Indice == i ? "conTablaLinSel" : null)">
+							<td nowrap>
+								<a maccion="IniciaActualiza" asp-action="@nameof(ConExpedientesController.ConExpedienteActualizaIni)" asp-route-indice="@i"
+				 xvisible="@Model[i].PermiteActualiza"></a>
+								<a maccion="PorRegistro" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoInicia)" asp-route-indice="@i">@MensajesXId._ConExpedienteObjetoInicia</a>
+								@if (Model[i].EstatusValidosSig != null && Model[i].EstatusValidosSig.Count > 0)
+								{
+									foreach (EEstatusValidoSig vEst in Model[i].EstatusValidosSig)
+									{
+										<a maccion="PorRegistroRiesgo" asp-action="@nameof(ConExpedientesController.ConExpedienteCambioEstatusIni)" asp-route-indice="@i" asp-route-procesoOperativoEstIdSig="@vEst.ProcesoOperativoEstIdSig" title="Cambia al estatus indicado">@vEst.EstatusNombre</a>
+									}
+								}
+								<div msub-panel="ConAccionesXReg" id="@vDivAcciones">
+									<a maccion="ConsultaXIdList" asp-action="@nameof(ConExpedientesController.ConExpedienteXId)" asp-route-indice="@i"></a>
+									<a maccion="PorRegistroList" asp-action="@nameof(ConExpedientesController.ExpedienteEstatuInicia)" asp-route-indice="@i"
+				  xvisible="@Model[i].PermiteIrAExpedienteEstatu">@MensajesXId._ExpedienteEstatuInicia</a>
+									<a maccion="EliminaList" asp-action="@nameof(ConExpedientesController.ConExpedienteElimina)" asp-route-indice="@i"></a>
+								</div>
+							</td>
+							<td>
+								<span mcell-for="@Model[i].ExpedienteId"></span>
+							</td>
+							@if ((Boolean)ViewBag.ControlEstatus)
+							{
+								<td>
+									<span mcell-for="@Model[i].EstatusNombre"></span>
+								</td>
+							}
+							@foreach (EProcesoOperativoCol vCol in vProcOperColumnas)
+							{
+								vExiste = false;
+								foreach (EConExpValores vVal in Model[i].Valores)
+								{
+									if (!(vVal.ColumnaId == vCol.ColumnaId))
+										continue;
+
+									vExiste = true;
+									@if (vCol.Tipo == TiposColumna.Texto)
+									{
+										<td style="text-align:left">
+											@if (vCol.ConLongitud > 0)
+											{
+												<span>@XString.XFirst(vVal.ValorTexto, vCol.ConLongitud)</span>
+											}
+											else
+											{
+												<span>@vVal.ValorTexto</span>
+											}
+										</td>
+									}
+									else if (vCol.Tipo == TiposColumna.Boleano)
+									{
+										Boolean vChecado = (vVal.ValorTexto ?? String.Empty) == "1";
+										<td style="text-align:center">
+											<input disabled="disabled" type="checkbox" value="true" checked="@vChecado" />
+										</td>
+									}
+									else if (vCol.Tipo == TiposColumna.Entero)
+									{
+										<td style="text-align:right">
+											<span>@String.Format("{0:0}", vVal.ValorNumerico)</span>
+										</td>
+									}
+									else if (vCol.Tipo == TiposColumna.Importe)
+									{
+										<td style="text-align:right">
+											@if (vCol.Decimales > 0)
+											{
+												<span>@String.Format("{0:#,##0." + XString.Complement("0", vCol.Decimales) + "}", vVal.ValorNumerico)</span>
+											}
+											else
+											{
+												<span>@String.Format("{0:#,##0}", vVal.ValorNumerico)</span>
+											}
+										</td>
+									}
+									else if (vCol.Tipo == TiposColumna.Fecha)
+									{
+										<td style="text-align:center">
+											<span>@String.Format("{0:dd/MM/yyyy}", vVal.ValorFecha)</span>
+										</td>
+									}
+									else if (vCol.Tipo == TiposColumna.FechaYHora)
+									{
+										<td style="text-align:center">
+											<span>@String.Format("{0:dd/MM/yyyy HH:mm}", vVal.ValorFecha)</span>
+										</td>
+									}
+									else if (vCol.Tipo == TiposColumna.Hora)
+									{
+										<td style="text-align:center">
+											<span>@String.Format("{0:HH:mm}", vVal.ValorFecha)</span>
+										</td>
+									}
+									break;
+								}
+
+								if (!vExiste)
+								{
+									<td></td>
+								}
+							}
+						</tr>
+					}
+				}
+			</tbody>
+		</table>
+	</div>
+	<div msub-panel="ConPaginador">
+		<div mdata-pager="@ViewBag.DatPag" xdp-action="@nameof(ConExpedientesController.ConExpedientePaginacion)"></div>
+	</div>
+	<div msub-panel="ConAccionesGen">
+		<a maccion="IniciaInserta" asp-action="@nameof(ConExpedientesController.ConExpedienteInsertaIni)" asp-route-indice="-1"></a>
+		&nbsp;
+		<a maccion="Regresa" asp-action="@nameof(ConExpedientesController.ConExpProcOperativoInicia)" asp-route-indice="-1"></a>
+	</div>
+</div>
+@if (ViewBag.CambioEstatus ?? false == true)
+{
+	EConExpedienteCambioEstatus vConExpedienteCambioEstatus = ViewBag.ConExpedienteCambioEstatus;
+	<div id="mdlAcciones" mmodal="true">
+		<form asp-action="_ConExpedienteCambioEstatus">
+			<div mpanel="Edit" mpnl-mensajes="@ViewBag.CAESMensajes">
+				<div msub-panel="CapTitulo">
+					@MensajesXId._ConExpedienteCambioEstatusTitCap
+				</div>
+				<div msub-panel="CapDatos">
+					<div melemento="CapLin">
+						<div melemento="CapCol" melem-cols="12">
+							<input type="hidden" name="@nameof(vConExpedienteCambioEstatus.ProcesoOperativoEstId)" value="@vConExpedienteCambioEstatus.ProcesoOperativoEstId" />
+							<textarea mval="Model" style="height:200px" xval-for="@vConExpedienteCambioEstatus.Comentarios" xval-min="2" xval-max="2000" xval-req="true" xval-group="CambioEstatus"></textarea>
+						</div>
+					</div>
+				</div>
+				<div msub-panel="CapAccionesGen">
+					<button maccion="Guarda" asp-action="@nameof(ConExpedientesController.ConExpedienteCambioEstatus)"
+						xvalidate="CambioEstatus"></button>
+					&nbsp;
+					<button type="button" maccion="Regresa" onclick="xfModal('mdlAcciones', false)"></button>
+				</div>
+			</div>
+		</form>
+	</div>
+}

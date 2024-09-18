@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVSapCondicionesPago EVSapCondicionesPago
+        private EVSapCondicionesPago EV
         {
-            get
-            {
-                if (base.MSesion<EVSapCondicionesPago>() == null)
-                    base.MSesion(new EVSapCondicionesPago());
-
-                return base.MSesionAuto<EVSapCondicionesPago>();
-            }
+            get { return base.MEVCtrl<EVSapCondicionesPago>(); }
         }
         #endregion
 
@@ -63,17 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult SapCondicionPagoInicia()
+        public async Task<IActionResult> SapCondicionPagoInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVSapCondicionesPago.SapCondicionPagoColOrden))
-                EVSapCondicionesPago.SapCondicionPagoColOrden = nameof(ESapCondicionPago.SapCondicionPagoId);
-
-            if (EVSapCondicionesPago.SapCondicionPagoReglas == null)
-            {
-                EVSapCondicionesPago.SapCondicionPagoReglas = NSapCondicionesPago.SapCondicionPagoReglas();
-                base.MMensajesTemp = NSapCondicionesPago.Mensajes.ToString();
-            }
+            await Servicios.Gen.InicializaSF(EV.SapCondicionPago, nameof(ESapCondicionPago.SapCondicionPagoId),
+                async () => await NSapCondicionesPago.SapCondicionPagoReglas());
 
             return RedirectToAction(nameof(SapCondicionPagoCon));
         }
@@ -81,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(SapCondicionPagoInicia))]
-        public IActionResult SapCondicionPagoCon()
+        public async Task<IActionResult> SapCondicionPagoCon()
         {
-            base.MCargaFiltroPagYOrd(EVSapCondicionesPago.SapCondicionPagoFiltro,
-                                     EVSapCondicionesPago.SapCondicionPagoPag,
-                                     EVSapCondicionesPago.SapCondicionPagoColOrden,
-                                     nameof(ESapCondicionPago));
+            await Servicios.Pag.CargaPagOrdYFil(EV.SapCondicionPago);
+            EV.SapCondicionPago.Pag = await NSapCondicionesPago.SapCondicionPagoPag(EV.SapCondicionPago.Filtro);
+            await Servicios.Pag.ActTamPag(EV.SapCondicionPago);
 
-            EVSapCondicionesPago.SapCondicionPagoPag = NSapCondicionesPago.SapCondicionPagoPag(EVSapCondicionesPago.SapCondicionPagoFiltro);
-            base.MActualizaTamPag(EVSapCondicionesPago.SapCondicionPagoPag?.DatPag);
+            ViewBag.Mensajes = NSapCondicionesPago.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = base.MObtenMensajes(NSapCondicionesPago.Mensajes);
-            ViewBag.Reglas = EVSapCondicionesPago.SapCondicionPagoReglas;
-            ViewBag.DatPag = EVSapCondicionesPago.SapCondicionPagoPag?.DatPag;
-            ViewBag.Orden = EVSapCondicionesPago.SapCondicionPagoColOrden;
-            ViewBag.Filtro = EVSapCondicionesPago.SapCondicionPagoFiltro;
-            ViewBag.Indice = EVSapCondicionesPago.SapCondicionPagoIndice;
-
-            return View(nameof(SapCondicionPagoCon), EVSapCondicionesPago.SapCondicionPagoPag?.Pagina);
+            return View(nameof(SapCondicionPagoCon), EV.SapCondicionPago.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult SapCondicionPagoXId(Int32 indice)
+        public async Task<IActionResult> SapCondicionPagoXId(Int32 indice)
         {
-            EVSapCondicionesPago.Accion = MAccionesGen.Consulta;
-            EVSapCondicionesPago.SapCondicionPagoIndice = indice;
-            return SapCondicionPagoCaptura(EVSapCondicionesPago.SapCondicionPagoPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.SapCondicionPago.Indice = indice;
+            return await SapCondicionPagoCaptura(EV.SapCondicionPago.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(SapCondicionPagoInserta))]
-        public IActionResult SapCondicionPagoInsertaIni()
+        public async Task<IActionResult> SapCondicionPagoInsertaIni()
         {
-            EVSapCondicionesPago.Accion = MAccionesGen.Inserta;
-            return SapCondicionPagoInsertaCap(new ESapCondicionPago()
+            EV.Accion = MAccionesGen.Inserta;
+            return await SapCondicionPagoInsertaCap(new ESapCondicionPago()
             {
                 Activo = true
             });
@@ -126,59 +106,58 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapCondicionPagoInserta))]
-        public IActionResult SapCondicionPagoInsertaCap(ESapCondicionPago sapCondicionPago)
+        public async Task<IActionResult> SapCondicionPagoInsertaCap(ESapCondicionPago sapCondicionPago)
         {
-            return SapCondicionPagoCaptura(sapCondicionPago);
+            return await SapCondicionPagoCaptura(sapCondicionPago);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapCondicionPagoInserta(ESapCondicionPago sapCondicionPago)
+        public async Task<IActionResult> SapCondicionPagoInserta(ESapCondicionPago sapCondicionPago)
         {
-            if (NSapCondicionesPago.SapCondicionPagoInserta(sapCondicionPago))
+            if (await NSapCondicionesPago.SapCondicionPagoInserta(sapCondicionPago))
                 return RedirectToAction(nameof(SapCondicionPagoCon));
 
-            return SapCondicionPagoInsertaCap(sapCondicionPago);
+            return await SapCondicionPagoInsertaCap(sapCondicionPago);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(SapCondicionPagoActualiza))]
-        public IActionResult SapCondicionPagoActualizaIni(Int32 indice)
+        public async Task<IActionResult> SapCondicionPagoActualizaIni(Int32 indice)
         {
-            EVSapCondicionesPago.Accion = MAccionesGen.Actualiza;
-            EVSapCondicionesPago.SapCondicionPagoIndice = indice;
-            EVSapCondicionesPago.SapCondicionPagoSel = EVSapCondicionesPago.SapCondicionPagoPag.Pagina[indice];
-            return SapCondicionPagoActualizaCap(EVSapCondicionesPago.SapCondicionPagoSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.SapCondicionPago.Indice = indice;
+            EV.SapCondicionPago.Sel = EV.SapCondicionPago.Pag.Pagina[indice];
+            return await SapCondicionPagoActualizaCap(EV.SapCondicionPago.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(SapCondicionPagoActualiza))]
-        public IActionResult SapCondicionPagoActualizaCap(ESapCondicionPago sapCondicionPago)
+        public async Task<IActionResult> SapCondicionPagoActualizaCap(ESapCondicionPago sapCondicionPago)
         {
-            return SapCondicionPagoCaptura(sapCondicionPago);
+            return await SapCondicionPagoCaptura(sapCondicionPago);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult SapCondicionPagoActualiza(ESapCondicionPago sapCondicionPago)
+        public async Task<IActionResult> SapCondicionPagoActualiza(ESapCondicionPago sapCondicionPago)
         {
-            if (NSapCondicionesPago.SapCondicionPagoActualiza(sapCondicionPago))
+            if (await NSapCondicionesPago.SapCondicionPagoActualiza(sapCondicionPago))
                 return RedirectToAction(nameof(SapCondicionPagoCon));
 
-            return SapCondicionPagoActualizaCap(sapCondicionPago);
+            return await SapCondicionPagoActualizaCap(sapCondicionPago);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult SapCondicionPagoElimina(Int32 indice)
+        public async Task<IActionResult> SapCondicionPagoElimina(Int32 indice)
         {
-            NSapCondicionesPago.SapCondicionPagoElimina(EVSapCondicionesPago.SapCondicionPagoPag.Pagina[indice]);
-            base.MMensajesTemp = NSapCondicionesPago.Mensajes.ToString();
+            await NSapCondicionesPago.SapCondicionPagoElimina(EV.SapCondicionPago.Pag.Pagina[indice]);
             return RedirectToAction(nameof(SapCondicionPagoCon));
         }
         /// <summary>
@@ -186,20 +165,19 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> SapCondicionPagoExporta()
         {
-            EVSapCondicionesPago.SapCondicionPagoFiltro.ColumnaOrden = EVSapCondicionesPago.SapCondicionPagoColOrden;
-            EVSapCondicionesPago.SapCondicionPagoFiltro.Columnas = new Dictionary<String, String>()
+            EV.SapCondicionPago.Filtro.ColumnaOrden = EV.SapCondicionPago.ColOrden;
+            EV.SapCondicionPago.Filtro.Columnas = new Dictionary<String, String>()
                                         {
                                             { nameof(ESapCondicionPago.Activo), String.Empty },
                                             { nameof(ESapCondicionPago.SapCondicionPagoId), String.Empty },
                                             { nameof(ESapCondicionPago.SapCondicionPagoNombre), String.Empty }
                                         };
 
-            MEDatosArchivo vDA = NSapCondicionesPago.SapCondicionPagoExporta(EVSapCondicionesPago.SapCondicionPagoFiltro);
-            EVSapCondicionesPago.SapCondicionPagoFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NSapCondicionesPago.SapCondicionPagoExporta(EV.SapCondicionPago.Filtro);
+            EV.SapCondicionPago.Filtro.Columnas = null;
             if (NSapCondicionesPago.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NSapCondicionesPago.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
-            base.MMensajesTemp = NSapCondicionesPago.Mensajes.ToString();
             return RedirectToAction(nameof(SapCondicionPagoCon));
         }
         #endregion
@@ -208,13 +186,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult SapCondicionPagoCaptura(ESapCondicionPago sapCondicionPago)
+        private async Task<IActionResult> SapCondicionPagoCaptura(ESapCondicionPago sapCondicionPago)
         {
-            ViewBag.Mensajes = base.MObtenMensajes(NSapCondicionesPago.Mensajes);
-            ViewBag.Accion = EVSapCondicionesPago.Accion;
-            ViewBag.Reglas = EVSapCondicionesPago.SapCondicionPagoReglas;
+            ViewBag.Mensajes = NSapCondicionesPago.Mensajes;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(SapCondicionPagoCaptura), sapCondicionPago);
+            return await Task.FromResult(ViewCap(nameof(SapCondicionPagoCaptura), sapCondicionPago));
         }
         #endregion
 
@@ -225,7 +202,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapCondicionPagoInicia))]
         public IActionResult SapCondicionPagoPaginacion(MEDatosPaginador datPag)
         {
-            EVSapCondicionesPago.SapCondicionPagoPag.DatPag = datPag;
+            EV.SapCondicionPago.Pag.DatPag = datPag;
             return RedirectToAction(nameof(SapCondicionPagoCon));
         }
         /// <summary>
@@ -234,7 +211,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapCondicionPagoInicia))]
         public IActionResult SapCondicionPagoOrdena(String orden)
         {
-            EVSapCondicionesPago.SapCondicionPagoColOrden = orden;
+            EV.SapCondicionPago.ColOrden = orden;
             return RedirectToAction(nameof(SapCondicionPagoCon));
         }
         /// <summary>
@@ -243,7 +220,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapCondicionPagoInicia))]
         public IActionResult SapCondicionPagoFiltra(ESapCondicionPagoFiltro filtro)
         {
-            EVSapCondicionesPago.SapCondicionPagoFiltro = filtro;
+            EV.SapCondicionPago.Filtro = filtro;
             return RedirectToAction(nameof(SapCondicionPagoCon));
         }
         /// <summary>
@@ -252,7 +229,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(SapCondicionPagoInicia))]
         public IActionResult SapCondicionPagoLimpiaFiltros()
         {
-            EVSapCondicionesPago.SapCondicionPagoFiltro = new ESapCondicionPagoFiltro();
+            EV.SapCondicionPago.Filtro = new ESapCondicionPagoFiltro();
             return RedirectToAction(nameof(SapCondicionPagoCon));
         }
         #endregion

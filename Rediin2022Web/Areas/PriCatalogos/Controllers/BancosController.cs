@@ -45,15 +45,9 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Entidad de variables.
         /// </summary>
-        private EVBancos EVBancos
+        private EVBancos EV
         {
-            get
-            {
-                if (base.MSesion<EVBancos>() == null)
-                    base.MSesion(new EVBancos());
-
-                return base.MSesionAuto<EVBancos>();
-            }
+            get { return base.MEVCtrl<EVBancos>(); }
         }
         #endregion
 
@@ -63,17 +57,11 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Inicia sub funcion.
         /// </summary>
-        public IActionResult BancoInicia()
+        public async Task<IActionResult> BancoInicia()
         {
             //Configuracion de inicio
-            if (String.IsNullOrWhiteSpace(EVBancos.BancoColOrden))
-                EVBancos.BancoColOrden = "-" + nameof(EBanco.BancoId);
-
-            if (EVBancos.BancoReglas == null)
-            {
-                EVBancos.BancoReglas = NBancos.BancoReglas();
-                base.MMensajesTemp = NBancos.Mensajes.ToString();
-            }
+            await Servicios.Gen.InicializaSF(EV.Banco, "-" + nameof(EBanco.BancoId),
+                async () => await NBancos.BancoReglas());
 
             return RedirectToAction(nameof(BancoCon));
         }
@@ -81,42 +69,34 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// Consulta.
         /// </summary>
         [MValidaSeg(nameof(BancoInicia))]
-        public IActionResult BancoCon()
+        public async Task<IActionResult> BancoCon()
         {
-            base.MCargaFiltroPagYOrd(EVBancos.BancoFiltro,
-                                     EVBancos.BancoPag,
-                                     EVBancos.BancoColOrden,
-                                     nameof(EBanco));
+            await Servicios.Pag.CargaPagOrdYFil(EV.Banco);
+            EV.Banco.Pag = await NBancos.BancoPag(EV.Banco.Filtro);
+            await Servicios.Pag.ActTamPag(EV.Banco);
 
-            EVBancos.BancoPag = NBancos.BancoPag(EVBancos.BancoFiltro);
-            base.MActualizaTamPag(EVBancos.BancoPag?.DatPag);
+            ViewBag.Mensajes = NBancos.Mensajes;
+            ViewBag.EV = EV;
 
-            ViewBag.Mensajes = base.MObtenMensajes(NBancos.Mensajes);
-            ViewBag.Reglas = EVBancos.BancoReglas;
-            ViewBag.DatPag = EVBancos.BancoPag?.DatPag;
-            ViewBag.Orden = EVBancos.BancoColOrden;
-            ViewBag.Filtro = EVBancos.BancoFiltro;
-            ViewBag.Indice = EVBancos.BancoIndice;
-
-            return View(nameof(BancoCon), EVBancos.BancoPag?.Pagina);
+            return View(nameof(BancoCon), EV.Banco.Pag?.Pagina);
         }
         /// <summary>
         /// Consulta por id.
         /// </summary>
-        public IActionResult BancoXId(Int32 indice)
+        public async Task<IActionResult> BancoXId(Int32 indice)
         {
-            EVBancos.Accion = MAccionesGen.Consulta;
-            EVBancos.BancoIndice = indice;
-            return BancoCaptura(EVBancos.BancoPag.Pagina[indice]);
+            EV.Accion = MAccionesGen.Consulta;
+            EV.Banco.Indice = indice;
+            return await BancoCaptura(EV.Banco.Pag.Pagina[indice]);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [MValidaSeg(nameof(BancoInserta))]
-        public IActionResult BancoInsertaIni()
+        public async Task<IActionResult> BancoInsertaIni()
         {
-            EVBancos.Accion = MAccionesGen.Inserta;
-            return BancoInsertaCap(new EBanco()
+            EV.Accion = MAccionesGen.Inserta;
+            return await BancoInsertaCap(new EBanco()
             {
                 Activo = true
             });
@@ -126,60 +106,59 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(BancoInserta))]
-        public IActionResult BancoInsertaCap(EBanco banco)
+        public async Task<IActionResult> BancoInsertaCap(EBanco banco)
         {
-            return BancoCaptura(banco);
+            return await BancoCaptura(banco);
         }
         /// <summary>
         /// Inserta.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult BancoInserta(EBanco banco)
+        public async Task<IActionResult> BancoInserta(EBanco banco)
         {
-            NBancos.BancoInserta(banco);
+            await NBancos.BancoInserta(banco);
             if (NBancos.Mensajes.Ok)
                 return RedirectToAction(nameof(BancoCon));
 
-            return BancoInsertaCap(banco);
+            return await BancoInsertaCap(banco);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [MValidaSeg(nameof(BancoActualiza))]
-        public IActionResult BancoActualizaIni(Int32 indice)
+        public async Task<IActionResult> BancoActualizaIni(Int32 indice)
         {
-            EVBancos.Accion = MAccionesGen.Actualiza;
-            EVBancos.BancoIndice = indice;
-            EVBancos.BancoSel = EVBancos.BancoPag.Pagina[indice];
-            return BancoActualizaCap(EVBancos.BancoSel);
+            EV.Accion = MAccionesGen.Actualiza;
+            EV.Banco.Indice = indice;
+            EV.Banco.Sel = EV.Banco.Pag.Pagina[indice];
+            return await BancoActualizaCap(EV.Banco.Sel);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
         [MValidaSeg(nameof(BancoActualiza))]
-        public IActionResult BancoActualizaCap(EBanco banco)
+        public async Task<IActionResult> BancoActualizaCap(EBanco banco)
         {
-            return BancoCaptura(banco);
+            return await BancoCaptura(banco);
         }
         /// <summary>
         /// Actualiza.
         /// </summary>
         [ValidateAntiForgeryToken]
-        public IActionResult BancoActualiza(EBanco banco)
+        public async Task<IActionResult> BancoActualiza(EBanco banco)
         {
-            if (NBancos.BancoActualiza(banco))
+            if (await NBancos.BancoActualiza(banco))
                 return RedirectToAction(nameof(BancoCon));
 
-            return BancoActualizaCap(banco);
+            return await BancoActualizaCap(banco);
         }
         /// <summary>
         /// Elimina.
         /// </summary>
-        public IActionResult BancoElimina(Int32 indice)
+        public async Task<IActionResult> BancoElimina(Int32 indice)
         {
-            NBancos.BancoElimina(EVBancos.BancoPag.Pagina[indice]);
-            base.MMensajesTemp = NBancos.Mensajes.ToString();
+            await NBancos.BancoElimina(EV.Banco.Pag.Pagina[indice]);
             return RedirectToAction(nameof(BancoCon));
         }
         /// <summary>
@@ -187,20 +166,19 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// </summary>
         public async Task<IActionResult> BancoExporta()
         {
-            EVBancos.BancoFiltro.ColumnaOrden = EVBancos.BancoColOrden;
-            EVBancos.BancoFiltro.Columnas = new Dictionary<String, String>()
+            EV.Banco.Filtro.ColumnaOrden = EV.Banco.ColOrden;
+            EV.Banco.Filtro.Columnas = new Dictionary<String, String>()
                  {
                      { nameof(EBanco.Activo), String.Empty },
                      { nameof(EBanco.BancoId), String.Empty },
                      { nameof(EBanco.BancoNombre), String.Empty }
                  };
 
-            MEDatosArchivo vDA = NBancos.BancoExporta(EVBancos.BancoFiltro);
-            EVBancos.BancoFiltro.Columnas = null;
+            String vRutaYNombreArchivo = await NBancos.BancoExporta(EV.Banco.Filtro);
+            EV.Banco.Filtro.Columnas = null;
             if (NBancos.Mensajes.Ok)
-                return await base.MEnviaArchivoACliente(NBancos.Mensajes, vDA);
+                return await MUtilMvc.DescargaArchivo(await Servicios.Archivos.DescargaArchivoTemp(vRutaYNombreArchivo));
 
-            base.MMensajesTemp = NBancos.Mensajes.ToString();
             return RedirectToAction(nameof(BancoCon));
         }
         #endregion
@@ -209,13 +187,12 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Captura.
         /// </summary>
-        private IActionResult BancoCaptura(EBanco banco)
+        private async Task<IActionResult> BancoCaptura(EBanco banco)
         {
-            ViewBag.Mensajes = base.MObtenMensajes(NBancos.Mensajes);
-            ViewBag.Accion = EVBancos.Accion;
-            ViewBag.Reglas = EVBancos.BancoReglas;
+            ViewBag.Mensajes = NBancos.Mensajes;
+            ViewBag.EV = EV;
 
-            return ViewCap(nameof(BancoCaptura), banco);
+            return await Task.FromResult(ViewCap(nameof(BancoCaptura), banco));
         }
         #endregion
 
@@ -226,7 +203,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(BancoInicia))]
         public IActionResult BancoPaginacion(MEDatosPaginador datPag)
         {
-            EVBancos.BancoPag.DatPag = datPag;
+            EV.Banco.Pag.DatPag = datPag;
             return RedirectToAction(nameof(BancoCon));
         }
         /// <summary>
@@ -235,7 +212,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(BancoInicia))]
         public IActionResult BancoOrdena(String orden)
         {
-            EVBancos.BancoColOrden = orden;
+            EV.Banco.ColOrden = orden;
             return RedirectToAction(nameof(BancoCon));
         }
         /// <summary>
@@ -244,7 +221,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(BancoInicia))]
         public IActionResult BancoFiltra(EBancoFiltro filtro)
         {
-            EVBancos.BancoFiltro = filtro;
+            EV.Banco.Filtro = filtro;
             return RedirectToAction(nameof(BancoCon));
         }
         /// <summary>
@@ -253,7 +230,7 @@ namespace Rediin2022Web.Areas.PriCatalogos.Controllers
         [MValidaSeg(nameof(BancoInicia))]
         public IActionResult BancoLimpiaFiltros()
         {
-            EVBancos.BancoFiltro = new EBancoFiltro();
+            EV.Banco.Filtro = new EBancoFiltro();
             return RedirectToAction(nameof(BancoCon));
         }
         #endregion

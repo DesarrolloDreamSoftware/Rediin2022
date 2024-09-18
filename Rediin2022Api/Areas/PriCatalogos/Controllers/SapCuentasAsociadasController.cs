@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -47,59 +48,59 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// <summary>
         /// Consulta paginada de la entidad SapCuentaAsociada.
         /// </summary>
-        public ESapCuentaAsociadaPag SapCuentaAsociadaPag(ESapCuentaAsociadaFiltro sapCuentaAsociadaFiltro)
+        public async Task<ESapCuentaAsociadaPag> SapCuentaAsociadaPag(ESapCuentaAsociadaFiltro sapCuentaAsociadaFiltro)
         {
-            return NSapCuentasAsociadas.SapCuentaAsociadaPag(sapCuentaAsociadaFiltro);
+            return await NSapCuentasAsociadas.SapCuentaAsociadaPag(sapCuentaAsociadaFiltro);
         }
         /// <summary>
         /// Consulta por id de la entidad SapCuentaAsociada.
         /// </summary>
         [HttpGet("{sapCuentaAsociadaId}")]
-        public ESapCuentaAsociada SapCuentaAsociadaXId(String sapCuentaAsociadaId)
+        public async Task<ESapCuentaAsociada> SapCuentaAsociadaXId(String sapCuentaAsociadaId)
         {
-            return NSapCuentasAsociadas.SapCuentaAsociadaXId(sapCuentaAsociadaId);
+            return await NSapCuentasAsociadas.SapCuentaAsociadaXId(sapCuentaAsociadaId);
         }
         /// <summary>
         /// Consulta para combos de la entidad SapCuentaAsociada.
         /// </summary>
-        public List<MEElemento> SapCuentaAsociadaCmb()
+        public async Task<List<MEElemento>> SapCuentaAsociadaCmb()
         {
-            return NSapCuentasAsociadas.SapCuentaAsociadaCmb();
+            return await NSapCuentasAsociadas.SapCuentaAsociadaCmb();
         }
         /// <summary>
         /// Permite insertar la entidad SapCuentaAsociada.
         /// </summary>
-        public Boolean SapCuentaAsociadaInserta(ESapCuentaAsociada sapCuentaAsociada)
+        public async Task<Boolean> SapCuentaAsociadaInserta(ESapCuentaAsociada sapCuentaAsociada)
         {
-            return NSapCuentasAsociadas.SapCuentaAsociadaInserta(sapCuentaAsociada);
+            return await NSapCuentasAsociadas.SapCuentaAsociadaInserta(sapCuentaAsociada);
         }
         /// <summary>
         /// Permite actualizar la entidad SapCuentaAsociada.
         /// </summary>
-        public Boolean SapCuentaAsociadaActualiza(ESapCuentaAsociada sapCuentaAsociada)
+        public async Task<Boolean> SapCuentaAsociadaActualiza(ESapCuentaAsociada sapCuentaAsociada)
         {
-            return NSapCuentasAsociadas.SapCuentaAsociadaActualiza(sapCuentaAsociada);
+            return await NSapCuentasAsociadas.SapCuentaAsociadaActualiza(sapCuentaAsociada);
         }
         /// <summary>
         /// Permite eliminar la entidad SapCuentaAsociada.
         /// </summary>
-        public Boolean SapCuentaAsociadaElimina(ESapCuentaAsociada sapCuentaAsociada)
+        public async Task<Boolean> SapCuentaAsociadaElimina(ESapCuentaAsociada sapCuentaAsociada)
         {
-            return NSapCuentasAsociadas.SapCuentaAsociadaElimina(sapCuentaAsociada);
+            return await NSapCuentasAsociadas.SapCuentaAsociadaElimina(sapCuentaAsociada);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapCuentaAsociadaExporta(ESapCuentaAsociadaFiltro sapCuentaAsociadaFiltro)
+        public async Task<string> SapCuentaAsociadaExporta(ESapCuentaAsociadaFiltro sapCuentaAsociadaFiltro)
         {
-            return NSapCuentasAsociadas.SapCuentaAsociadaExporta(sapCuentaAsociadaFiltro);
+            return await NSapCuentasAsociadas.SapCuentaAsociadaExporta(sapCuentaAsociadaFiltro);
         }
         /// <summary>
         /// Reglas de negocio de la entidad SapCuentaAsociada.
         /// </summary>
-        public List<MEReglaNeg> SapCuentaAsociadaReglas()
+        public async Task<List<MEReglaNeg>> SapCuentaAsociadaReglas()
         {
-            return NSapCuentasAsociadas.SapCuentaAsociadaReglas();
+            return await NSapCuentasAsociadas.SapCuentaAsociadaReglas();
         }
         #endregion
 

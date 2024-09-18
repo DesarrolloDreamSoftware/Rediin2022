@@ -1,12 +1,14 @@
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.AccesoDatos.PriCatalogos
 {
@@ -16,6 +18,13 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
     [Serializable]
     public class RSapTratamientos : MRepositorio
     {
+        #region Variables
+        /// <summary>
+        /// Conexión.
+        /// </summary>
+        private IMConexionEntidad _conexion;
+        #endregion
+
         #region Constructores
         /// <summary>
         /// Repositorio.
@@ -23,6 +32,7 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         public RSapTratamientos(IMConexionEntidad conexion)
             : base(conexion)
         {
+            _conexion = conexion;
         }
         #endregion
 
@@ -32,81 +42,84 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
         /// <summary>
         /// Consulta paginada de la entidad SapTratamiento.
         /// </summary>
-        public ESapTratamientoPag SapTratamientoPag(ESapTratamientoFiltro sapTratamientoFiltro)
+        public async Task<ESapTratamientoPag> SapTratamientoPag(ESapTratamientoFiltro sapTratamientoFiltro)
         {
-            return base.EntidadPag<ESapTratamientoPag>(sapTratamientoFiltro,
-                sapTratamientoPag =>
-                {
-                    _conexion.AddParamFilterTL(sapTratamientoFiltro);
-                    _conexion.LoadEntity<ESapTratamientoPag>("NCSapTratamientosCP", sapTratamientoPag);
-                },
-                sapTratamientoPag =>
-                {
-                    _conexion.AddParamFilterPag(sapTratamientoFiltro);
-                    sapTratamientoPag.Pagina = _conexion.LoadEntities<ESapTratamiento>("NCSapTratamientosCP");
-                });
+            return await _conexion.EntidadPagAsync<ESapTratamiento,
+                                                    ESapTratamientoPag,
+                                                    ESapTratamientoFiltro>(sapTratamientoFiltro, "NCSapTratamientosCP");
+
+            //return base.EntidadPagAsync<ESapTratamientoPag>(sapTratamientoFiltro,
+            //               sapTratamientoPag =>
+            //    {
+            //        _conexion.AddParamFilterTL(sapTratamientoFiltro);
+            //        _conexion.LoadEntity<ESapTratamientoPag>("NCSapTratamientosCP", sapTratamientoPag);
+            //    },
+            //    sapTratamientoPag =>
+            //    {
+            //        _conexion.AddParamFilterPag(sapTratamientoFiltro);
+            //        sapTratamientoPag.Pagina = _conexion.LoadEntities<ESapTratamiento>("NCSapTratamientosCP");
+            //    });
         }
         /// <summary>
         /// Consulta por id de la entidad SapTratamiento.
         /// </summary>
-        public ESapTratamiento SapTratamientoXId(String sapTratamientoId)
+        public async Task<ESapTratamiento> SapTratamientoXId(String sapTratamientoId)
         {
-            _conexion.AddParamIn(nameof(sapTratamientoId), sapTratamientoId);
-            return _conexion.LoadEntity<ESapTratamiento>("NCSapTratamientosCI");
+            _conexion.AddParamIn(sapTratamientoId);
+            return await _conexion.LoadEntityAsync<ESapTratamiento>("NCSapTratamientosCI");
         }
         /// <summary>
         /// Consulta para combos de la entidad SapTratamiento.
         /// </summary>
-        public List<MEElemento> SapTratamientoCmb()
+        public async Task<List<MEElemento>> SapTratamientoCmb()
         {
-            return _conexion.LoadCmb<MEElemento>("NCSapTratamientosCCmb");
+            return await _conexion.EntidadCmbAsync("NCSapTratamientosCCmb");
         }
         /// <summary>
         /// Permite insertar la entidad SapTratamiento.
         /// </summary>
-        protected Boolean SapTratamientoInserta(ESapTratamiento sapTratamiento)
+        protected async Task<Boolean> SapTratamientoInserta(ESapTratamiento sapTratamiento)
         {
-            _conexion.AddParamEntity(sapTratamiento, MAccionesBd.Inserta);
-            _conexion.ExecuteScalarVal("NCSapTratamientosIAE",
-                                       MensajesXId.SapTratamientoNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapTratamiento, MAccionesBd.Inserta, "NCSapTratamientosIAE");
+            //return sapTratamiento.SapTratamientoId;
+
+            //_conexion.AddParamEntity(sapTratamiento, MAccionesBd.Inserta);
+            //await _conexion.ExecuteScalarValAsync("NCSapTratamientosIAE",
+            //                           MensajesXId.SapTratamientoNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite actualizar la entidad SapTratamiento.
         /// </summary>
-        protected Boolean SapTratamientoActualiza(ESapTratamiento sapTratamiento)
+        protected async Task<Boolean> SapTratamientoActualiza(ESapTratamiento sapTratamiento)
         {
-            _conexion.AddParamEntity(sapTratamiento, MAccionesBd.Actualiza);
-            _conexion.ExecuteScalarVal("NCSapTratamientosIAE",
-                                       MensajesXId.SapTratamientoNombre);
-            return _mensajes.Ok;
+            return await _conexion.EntityUpdateAsync(sapTratamiento, MAccionesBd.Actualiza, "NCSapTratamientosIAE");
+
+            //_conexion.AddParamEntity(sapTratamiento, MAccionesBd.Actualiza);
+            //await _conexion.ExecuteScalarValAsync("NCSapTratamientosIAE",
+            //                           MensajesXId.SapTratamientoNombre);
+            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad SapTratamiento.
         /// </summary>
-        protected Boolean SapTratamientoElimina(ESapTratamiento sapTratamiento)
+        protected async Task<Boolean> SapTratamientoElimina(ESapTratamiento sapTratamiento)
         {
-            _conexion.AddParamEntity(sapTratamiento, MAccionesBd.Elimina);
-            return _conexion.ExecuteNonQueryRet("NCSapTratamientosIAE");
+            return await _conexion.EntityUpdateAsync(sapTratamiento, MAccionesBd.Elimina, "NCSapTratamientosIAE");
+
+            //_conexion.AddParamEntity(sapTratamiento, MAccionesBd.Elimina);
+            //return await _conexion.ExecuteNonQueryRetAsync("NCSapTratamientosIAE");
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        protected MEDatosArchivo SapTratamientoExporta(ESapTratamientoFiltro sapTratamientoFiltro,
-                                                       MArchivoExcel archivoExcel)
+        protected async Task<string> SapTratamientoExporta(ESapTratamientoFiltro sapTratamientoFiltro,
+                                                           MArchivoExcel archivoExcel)
         {
-            sapTratamientoFiltro.DatPag.StartLine = 1;
-            sapTratamientoFiltro.DatPag.PageSize = Int32.MaxValue;
-            _conexion.AddParamFilterPag(sapTratamientoFiltro);
-
-            String vArchivo = archivoExcel.Export(_conexion.GetCurrentCmd("NCSapTratamientosCP"),
+            _conexion.AddParamFilterExp(sapTratamientoFiltro);
+            return await archivoExcel.ExportAsync(_conexion.GetCurrentCmd("NCSapTratamientosCP"),
                                                   "SapTratamiento.xlsb",
                                                   sapTratamientoFiltro.Columnas);
-            return new MEDatosArchivo()
-            {
-                PathOrg = vArchivo,
-                PathDes = vArchivo
-            };
         }
         #endregion
 

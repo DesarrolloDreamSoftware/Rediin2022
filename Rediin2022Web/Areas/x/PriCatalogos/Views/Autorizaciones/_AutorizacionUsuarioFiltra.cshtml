@@ -1,0 +1,18 @@
+﻿@model EAutorizacionUsuarioFiltro
+
+<form asp-action="_FiltraAutorizacionUsuario">
+    <div mpanel="Base" xpnl-rules="ViewBag.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilProcesoOperativoEstId"/>
+            </div>
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilNombre"/>
+            </div>
+            <div melemento="FilColBtn" melem-cols="4">
+                <button maccion="Filtra" asp-action="@nameof(AutorizacionesController.AutorizacionUsuarioFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(AutorizacionesController.AutorizacionUsuarioLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>

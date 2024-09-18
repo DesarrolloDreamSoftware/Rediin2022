@@ -2,14 +2,16 @@ using DSEntityNetX.Business;
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using DSMetodNetX.Negocio;
 using Rediin2022.AccesoDatos.PriCatalogos;
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.Negocio.PriCatalogos
 {
@@ -47,68 +49,68 @@ namespace Rediin2022.Negocio.PriCatalogos
         /// <summary>
         /// Esta funcion valida e inserta un registro en la base de datos.
         /// </summary>
-        public new Boolean SapCuentaAsociadaInserta(ESapCuentaAsociada sapCuentaAsociada)
+        public new async Task<Boolean> SapCuentaAsociadaInserta(ESapCuentaAsociada sapCuentaAsociada)
         {
             //Validacion
             if (!SapCuentaAsociadaValida(sapCuentaAsociada))
                 return false;
 
             //Persistencia
-            return base.SapCuentaAsociadaInserta(sapCuentaAsociada);
+            return await base.SapCuentaAsociadaInserta(sapCuentaAsociada);
         }
         /// <summary>
         /// Valida y actualiza un registro en la base de datos.
         /// </summary>
-        public new Boolean SapCuentaAsociadaActualiza(ESapCuentaAsociada sapCuentaAsociada)
+        public new async Task<Boolean> SapCuentaAsociadaActualiza(ESapCuentaAsociada sapCuentaAsociada)
         {
             //Validacion
             if (!SapCuentaAsociadaValida(sapCuentaAsociada))
                 return false;
 
             //Persistencia
-            return base.SapCuentaAsociadaActualiza(sapCuentaAsociada);
+            return await base.SapCuentaAsociadaActualiza(sapCuentaAsociada);
         }
         /// <summary>
         /// Elimina un registro de la base de datos.
         /// </summary>
         /// <returns></returns>
-        public new Boolean SapCuentaAsociadaElimina(ESapCuentaAsociada sapCuentaAsociada)
+        public new async Task<Boolean> SapCuentaAsociadaElimina(ESapCuentaAsociada sapCuentaAsociada)
         {
             //Validacion
             SapCuentaAsociadaReglasNeg().ValidateProperty(sapCuentaAsociada, e => e.SapCuentaAsociadaId);
-            if (!_mensajes.Ok)
+            if (!Mensajes.Ok)
                 return false;
 
             //Persistencia
-            return base.SapCuentaAsociadaElimina(sapCuentaAsociada);
+            return await base.SapCuentaAsociadaElimina(sapCuentaAsociada);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapCuentaAsociadaExporta(ESapCuentaAsociadaFiltro sapCuentaAsociadaFiltro)
+        public async Task<string> SapCuentaAsociadaExporta(ESapCuentaAsociadaFiltro sapCuentaAsociadaFiltro)
         {
-            return base.SapCuentaAsociadaExporta(sapCuentaAsociadaFiltro,
-                                                 _archivoExcel);
+            return await base.SapCuentaAsociadaExporta(sapCuentaAsociadaFiltro,
+                                                       _archivoExcel);
         }
         /// <summary>
         /// Reglas de negocio.
         /// </summary>
-        public List<MEReglaNeg> SapCuentaAsociadaReglas()
+        public async Task<List<MEReglaNeg>> SapCuentaAsociadaReglas()
         {
-            return SapCuentaAsociadaReglasNeg().Rules;
+            return await Task.Run(() => SapCuentaAsociadaReglasNeg().Rules);
         }
         /// <summary>
         /// Validacion para inserta y actualiza.
         /// </summary>
         private Boolean SapCuentaAsociadaValida(ESapCuentaAsociada sapCuentaAsociada)
         {
-            _mensajes.Initialize();
+            Mensajes.Initialize();
             if (!SapCuentaAsociadaReglasNeg().Validate(sapCuentaAsociada))
                 return false;
 
             //Validaciones adicionales
 
-            return _mensajes.Ok;
+            return Mensajes.Ok;
         }
         /// <summary>
         /// Crea las reglas de negocio.
@@ -118,7 +120,7 @@ namespace Rediin2022.Negocio.PriCatalogos
             if (_sapCuentaAsociadaReglas != null)
                 return _sapCuentaAsociadaReglas;
 
-            _sapCuentaAsociadaReglas = Validaciones.CreaReglasNeg<ESapCuentaAsociada>(_mensajes);
+            _sapCuentaAsociadaReglas = Validaciones.CreaReglasNeg<ESapCuentaAsociada>(Mensajes);
             _sapCuentaAsociadaReglas.AddSL(e => e.SapCuentaAsociadaId, 2, 50);
             _sapCuentaAsociadaReglas.AddSL(e => e.SapCuentaAsociadaNombre, 2, 120);
             _sapCuentaAsociadaReglas.AddSL(e => e.Activo);

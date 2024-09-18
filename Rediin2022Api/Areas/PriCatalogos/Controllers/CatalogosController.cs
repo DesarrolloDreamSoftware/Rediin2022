@@ -1,4 +1,4 @@
-﻿//using DSMetodMvcNetX.Mvc;
+//using DSMetodMvcNetX.Mvc;
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Negocio;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +10,7 @@ using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
 using DSMetodNetX.Api.Seguridad;
+using System.Threading.Tasks;
 
 namespace Rediin2022Api.Areas.PriCatalogos.Controllers
 {
@@ -36,9 +37,9 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
         /// Consulta de combo para la tabla NCProcesosOperativosEst.
         /// </summary>
         [HttpGet("{procesoOperativoId}")]
-        public List<MEElemento> ProcesoOperativoEstCmb(Int64 procesoOperativoId)
+        public async Task<List<MEElemento>> ProcesoOperativoEstCmb(Int64 procesoOperativoId)
         {
-            return NCatalogos.ProcesoOperativoEstCmb(procesoOperativoId);
+            return await NCatalogos.ProcesoOperativoEstCmb(procesoOperativoId);
         }
         #endregion
     }

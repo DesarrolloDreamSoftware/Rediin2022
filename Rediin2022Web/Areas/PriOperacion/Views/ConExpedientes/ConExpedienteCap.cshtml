@@ -1,10 +1,10 @@
-﻿@using DSEntityNetX.Common.Language
 @using DSEntityNetX.Mvc.TagHelpers
 @using Rediin2022.Entidades.PriCatalogos
 @model EConExpediente
 
 @{
 	ViewData["Title"] = "Captura";
+    EVConExpedientes EV = ViewBag.EV;
 
 	List<EProcesoOperativoCol> vProcOperColumnas = ViewBag.ProcOperColumnas;
 	List<EProcesoOperativoCol> vColumnasTemp = new List<EProcesoOperativoCol>();
@@ -32,8 +32,10 @@
 }
 
 <form asp-action="_ConExpedienteCaptura">
-	@*<div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">*@
-	<div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+	@*<div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.ConExpediente.Reglas" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">*@
+	<div mpanel="Edit" xpnl-messages="@ViewBag.Mensajes" 
+        xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
 		<div msub-panel="CapTitulo">
 			@MensajesXId._ConExpedienteTitCap
 		</div>
@@ -61,7 +63,7 @@
 		</div>
 		<div msub-panel="CapAccionesGen">
 			<button maccion="Guarda"
-					asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInserta) : nameof(ConExpedientesController.ConExpedienteActualiza))"
+					asp-action="@(EV.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInserta) : nameof(ConExpedientesController.ConExpedienteActualiza))"
 					xvalidate="@nameof(EConExpediente)"></button>
 			&nbsp;
 			<a maccion="Regresa" asp-action="@nameof(ConExpedientesController.ConExpedienteCon)"></a>

@@ -2,14 +2,16 @@ using DSEntityNetX.Business;
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.DataAccess;
 using DSMetodNetX.AccesoDatos;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-using DSMetodNetX.Idioma;
+
 using DSMetodNetX.Negocio;
 using Rediin2022.AccesoDatos.PriCatalogos;
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rediin2022.Negocio.PriCatalogos
 {
@@ -47,68 +49,68 @@ namespace Rediin2022.Negocio.PriCatalogos
         /// <summary>
         /// Esta funcion valida e inserta un registro en la base de datos.
         /// </summary>
-        public new Boolean SapSociedadInserta(ESapSociedad sapSociedad)
+        public new async Task<Boolean> SapSociedadInserta(ESapSociedad sapSociedad)
         {
             //Validacion
             if (!SapSociedadValida(sapSociedad))
                 return false;
 
             //Persistencia
-            return base.SapSociedadInserta(sapSociedad);
+            return await base.SapSociedadInserta(sapSociedad);
         }
         /// <summary>
         /// Valida y actualiza un registro en la base de datos.
         /// </summary>
-        public new Boolean SapSociedadActualiza(ESapSociedad sapSociedad)
+        public new async Task<Boolean> SapSociedadActualiza(ESapSociedad sapSociedad)
         {
             //Validacion
             if (!SapSociedadValida(sapSociedad))
                 return false;
 
             //Persistencia
-            return base.SapSociedadActualiza(sapSociedad);
+            return await base.SapSociedadActualiza(sapSociedad);
         }
         /// <summary>
         /// Elimina un registro de la base de datos.
         /// </summary>
         /// <returns></returns>
-        public new Boolean SapSociedadElimina(ESapSociedad sapSociedad)
+        public new async Task<Boolean> SapSociedadElimina(ESapSociedad sapSociedad)
         {
             //Validacion
             SapSociedadReglasNeg().ValidateProperty(sapSociedad, e => e.SapSociedadId);
-            if (!_mensajes.Ok)
+            if (!Mensajes.Ok)
                 return false;
 
             //Persistencia
-            return base.SapSociedadElimina(sapSociedad);
+            return await base.SapSociedadElimina(sapSociedad);
         }
         /// <summary>
         /// Exporta datos a Excel.
         /// </summary>
-        public MEDatosArchivo SapSociedadExporta(ESapSociedadFiltro sapSociedadFiltro)
+        public async Task<string> SapSociedadExporta(ESapSociedadFiltro sapSociedadFiltro)
         {
-            return base.SapSociedadExporta(sapSociedadFiltro,
-                                           _archivoExcel);
+            return await base.SapSociedadExporta(sapSociedadFiltro,
+                                                 _archivoExcel);
         }
         /// <summary>
         /// Reglas de negocio.
         /// </summary>
-        public List<MEReglaNeg> SapSociedadReglas()
+        public async Task<List<MEReglaNeg>> SapSociedadReglas()
         {
-            return SapSociedadReglasNeg().Rules;
+            return await Task.Run(() => SapSociedadReglasNeg().Rules);
         }
         /// <summary>
         /// Validacion para inserta y actualiza.
         /// </summary>
         private Boolean SapSociedadValida(ESapSociedad sapSociedad)
         {
-            _mensajes.Initialize();
+            Mensajes.Initialize();
             if (!SapSociedadReglasNeg().Validate(sapSociedad))
                 return false;
 
             //Validaciones adicionales
 
-            return _mensajes.Ok;
+            return Mensajes.Ok;
         }
         /// <summary>
         /// Crea las reglas de negocio.
@@ -118,7 +120,7 @@ namespace Rediin2022.Negocio.PriCatalogos
             if (_sapSociedadReglas != null)
                 return _sapSociedadReglas;
 
-            _sapSociedadReglas = Validaciones.CreaReglasNeg<ESapSociedad>(_mensajes);
+            _sapSociedadReglas = Validaciones.CreaReglasNeg<ESapSociedad>(Mensajes);
             _sapSociedadReglas.AddSL(e => e.SapSociedadId, 2, 50);
             _sapSociedadReglas.AddSL(e => e.SapSociedadNombre, 2, 120);
             _sapSociedadReglas.AddSL(e => e.Activo);

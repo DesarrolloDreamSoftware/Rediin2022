@@ -6,15 +6,33 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="x\**" />
+    <EmbeddedResource Remove="x\**" />
+    <None Remove="x\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Rediin2022.Entidades\Rediin2022.Entidades.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DSEntityNetX">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.dll</HintPath>
+    <Reference Include="DSEntityNetX.Application">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Application.dll</HintPath>
     </Reference>
-    <Reference Include="DSMetodNetX">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.dll</HintPath>
+    <Reference Include="DSEntityNetX.Common">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Entities">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Aplicacion">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Aplicacion.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Comun">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Comun.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Entidades">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Entidades.dll</HintPath>
     </Reference>
     <Reference Include="Sisegui2020.Entidades">
       <HintPath>..\..\2 Librerias\DreamSoftware\Metod\Sisegui2020.Entidades.dll</HintPath>

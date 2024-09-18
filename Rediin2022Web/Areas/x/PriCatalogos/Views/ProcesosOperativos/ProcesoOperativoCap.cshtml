@@ -1,0 +1,52 @@
+﻿@model EProcesoOperativo
+
+@{
+    ViewData["Title"] = "Captura";
+}
+
+<form asp-action="_ProcesoOperativoCaptura">
+    <div mpanel="Edit" mpnl-mensajes="@ViewBag.Mensajes" xpnl-rules="ViewBag.Reglas" xpnl-readonly="@ViewBag.Accion == MAccionesGen.Consulta">
+        <div msub-panel="CapTitulo">
+            @MensajesXId._ProcesoOperativoTitCap
+        </div>
+        <div msub-panel="CapDatos">
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="ProcesoOperativoId" xval-enabled="false"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Activo"/>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="12">
+                    <input mval="Model" xval-for="ProcesoOperativoNombre"/>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="Orden"/>
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                    <select mval="Model" xval-for="EsquemaObjetos"></select>
+                </div>
+            </div>
+            <div melemento="CapLin">
+                <div melemento="CapCol" melem-cols="6">
+                    <input mval="Model" xval-for="ControlEstatus" />
+                </div>
+                <div melemento="CapCol" melem-cols="6">
+                </div>
+            </div>
+        </div>
+        <div msub-panel="CapAccionesGen">
+            <button maccion="Guarda"
+                    asp-action="@(ViewBag.Accion == MAccionesGen.Inserta ? nameof(ProcesosOperativosController.ProcesoOperativoInserta) : nameof(ProcesosOperativosController.ProcesoOperativoActualiza))"
+                    xvalidate="@nameof(EProcesoOperativo)"></button>
+            &nbsp;
+            <a maccion="Regresa" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoCon)"></a>
+            &nbsp;
+            <div mauditoriacb="@Model"></div>
+        </div>
+    </div>
+</form>

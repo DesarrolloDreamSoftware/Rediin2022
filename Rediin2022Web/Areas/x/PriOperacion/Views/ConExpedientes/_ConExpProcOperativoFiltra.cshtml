@@ -1,0 +1,17 @@
+﻿@model EConExpProcOperativoFiltro
+
+<form asp-action="_FiltraConExpProcOperativo">
+    <div mpanel="Base" xpnl-rules="ViewBag.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="4">
+            </div>
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilProcesoOperativoNombre"/>
+            </div>
+            <div melemento="FilColBtn" melem-cols="4">
+                <button maccion="Filtra" asp-action="@nameof(ConExpedientesController.ConExpProcOperativoFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(ConExpedientesController.ConExpProcOperativoLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>
