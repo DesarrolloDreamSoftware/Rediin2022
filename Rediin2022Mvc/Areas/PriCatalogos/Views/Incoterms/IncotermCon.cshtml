@@ -1,0 +1,72 @@
+﻿@model List<EIncoterm>
+@{
+    ViewData["Title"] = "Consulta";
+    EVIncoterms EV = ViewBag.EV;
+}
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.Incoterm.Reglas" >
+    <div msub-panel="ConTitulo">
+        @MensajesXId._IncotermTitCon
+    </div>
+    <div msub-panel="ConFiltro">
+        <partial name="_IncotermFiltra" model="@EV.Incoterm.Filtro" view-data="ViewData" />
+    </div>
+    <div msub-panel="ConDatos">
+        <table melemento="ConTabla" xsort-action="@nameof(IncotermsController.IncotermOrdena)"
+               xsort-current="@EV.Incoterm.ColOrden">
+            <thead melemento="ConTablaEnc">
+                <tr>
+                    <th></th>
+                    <th>
+                        <span mhead-for="@nameof(EIncoterm.Activo)" xhead-sort="true"></span>
+                    </th>
+                    <th>
+                        <span mhead-for="@nameof(EIncoterm.IncotermId)" xhead-sort="true"></span>
+                    </th>
+                    <th>
+                        <span mhead-for="@nameof(EIncoterm.IncotermClave)" xhead-sort="true"></span>
+                    </th>
+                    <th>
+                        <span mhead-for="@nameof(EIncoterm.IncotermNombre)" xhead-sort="true"></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    for (int i = 0; i < Model.Count(); i++)
+                    {
+                        String vDivAcciones = "divPanelAcciones" + i.ToString();
+                        <tr mrsel="@(EV.Incoterm.Indice == i)">
+                            <td nowrap>
+                                <a maccion="IniciaActualiza" asp-action="@nameof(IncotermsController.IncotermActualizaIni)" asp-route-indice="@i"></a>
+                                <div msub-panel="ConAccionesXReg" id="@vDivAcciones">
+                                    <a maccion="ConsultaXIdList" asp-action="@nameof(IncotermsController.IncotermXId)" asp-route-indice="@i"></a>
+                                    <a maccion="EliminaList" asp-action="@nameof(IncotermsController.IncotermElimina)" asp-route-indice="@i"></a>
+                                </div>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].Activo"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].IncotermId"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].IncotermClave"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].IncotermNombre"></span>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div msub-panel="ConPaginador">
+        <div mdata-pager="@EV.Incoterm.Pag?.DatPag" xdp-action="@nameof(IncotermsController.IncotermPaginacion)"></div>
+    </div>
+    <div msub-panel="ConAccionesGen">
+        <a maccion="IniciaInserta" asp-action="@nameof(IncotermsController.IncotermInsertaIni)" asp-route-indice="-1"></a>
+        &nbsp;
+    </div>
+</div>

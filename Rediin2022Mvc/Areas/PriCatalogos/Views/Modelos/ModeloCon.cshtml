@@ -1,0 +1,75 @@
+﻿@model List<EModelo>
+@{
+    ViewData["Title"] = "Consulta";
+    EVModelos EV = ViewBag.EV;
+}
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.Modelo.Reglas" >
+    <div msub-panel="ConTitulo">
+        @MensajesXId._ModeloTitCon
+    </div>
+    <div msub-panel="ConFiltro">
+        <partial name="_ModeloFiltra" model="@EV.Modelo.Filtro" view-data="ViewData" />
+    </div>
+    <div msub-panel="ConDatos">
+        <table melemento="ConTabla" xsort-action="@nameof(ModelosController.ModeloOrdena)"
+               xsort-current="@EV.Modelo.ColOrden">
+            <thead melemento="ConTablaEnc">
+                <tr>
+                    <th></th>
+                    <th>
+                        <span mhead-for="@nameof(EModelo.Activo)" xhead-sort="true"></span>
+                    </th>
+                    <th>
+                        <span mhead-for="@nameof(EModelo.ModeloId)" xhead-sort="true"></span>
+                    </th>
+                    <th>
+                        <span mhead-for="@nameof(EModelo.ModeloNombre)" xhead-sort="true"></span>
+                    </th>
+                    <th>
+                        <span mhead-for="@nameof(EModelo.TipoCapturaId)" xhead-sort="true" xhead-tt-id="encTipoCapturaId"></span>
+                        <div id="ttTipoCapturaId" mtt="encTipoCapturaId">
+                            <div mttcont="@nameof(EModelo.TipoCapturaId)"></div>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    for (int i = 0; i < Model.Count(); i++)
+                    {
+                        String vDivAcciones = "divPanelAcciones" + i.ToString();
+                        <tr mrsel="@(EV.Modelo.Indice == i)">
+                            <td nowrap>
+                                <a maccion="IniciaActualiza" asp-action="@nameof(ModelosController.ModeloActualizaIni)" asp-route-indice="@i"></a>
+                                <div msub-panel="ConAccionesXReg" id="@vDivAcciones">
+                                    <a maccion="ConsultaXIdList" asp-action="@nameof(ModelosController.ModeloXId)" asp-route-indice="@i"></a>
+                                    <a maccion="EliminaList" asp-action="@nameof(ModelosController.ModeloElimina)" asp-route-indice="@i"></a>
+                                </div>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].Activo"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].ModeloId"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].ModeloNombre"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].TipoCapturaId"></span>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div msub-panel="ConPaginador">
+        <div mdata-pager="@EV.Modelo.Pag?.DatPag" xdp-action="@nameof(ModelosController.ModeloPaginacion)"></div>
+    </div>
+    <div msub-panel="ConAccionesGen">
+        <a maccion="IniciaInserta" asp-action="@nameof(ModelosController.ModeloInsertaIni)" asp-route-indice="-1"></a>
+        &nbsp;
+    </div>
+</div>

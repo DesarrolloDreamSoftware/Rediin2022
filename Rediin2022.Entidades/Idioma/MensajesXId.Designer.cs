@@ -1329,5 +1329,165 @@ namespace Rediin2022.Entidades.Idioma {
                 return ResourceManager.GetString("SapBancoNombre", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Modelos.
+        /// </summary>
+        public static string _ModeloTitCon {
+            get {
+                return ResourceManager.GetString("_ModeloTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Modelo.
+        /// </summary>
+        public static string _ModeloTitCap {
+            get {
+                return ResourceManager.GetString("_ModeloTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cve modelo.
+        /// </summary>
+        public static string ModeloId {
+            get {
+                return ResourceManager.GetString("ModeloId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Modelo.
+        /// </summary>
+        public static string ModeloNombre {
+            get {
+                return ResourceManager.GetString("ModeloNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Tipo de captura.
+        /// </summary>
+        public static string TipoCapturaId {
+            get {
+                return ResourceManager.GetString("TipoCapturaId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Tipo de captura.
+        /// </summary>
+        public static string TipoCaptura {
+            get {
+                return ResourceManager.GetString("TipoCaptura", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Enumerador vac&#237;o.
+        /// </summary>
+        public static string TipoCaptura_Ninguno {
+            get {
+                return ResourceManager.GetString("TipoCaptura_Ninguno", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Person F&#237;sica.
+        /// </summary>
+        public static string TipoCaptura_PersonaFisica {
+            get {
+                return ResourceManager.GetString("TipoCaptura_PersonaFisica", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Persona Moral.
+        /// </summary>
+        public static string TipoCaptura_PersonaMoral {
+            get {
+                return ResourceManager.GetString("TipoCaptura_PersonaMoral", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Persona Extranjera.
+        /// </summary>
+        public static string TipoCaptura_PersonaExtranjera {
+            get {
+                return ResourceManager.GetString("TipoCaptura_PersonaExtranjera", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Incoterms.
+        /// </summary>
+        public static string _IncotermTitCon {
+            get {
+                return ResourceManager.GetString("_IncotermTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Incoterm.
+        /// </summary>
+        public static string _IncotermTitCap {
+            get {
+                return ResourceManager.GetString("_IncotermTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Id Incoterm.
+        /// </summary>
+        public static string IncotermId {
+            get {
+                return ResourceManager.GetString("IncotermId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Clave Incoterm.
+        /// </summary>
+        public static string IncotermClave {
+            get {
+                return ResourceManager.GetString("IncotermClave", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Incoterm.
+        /// </summary>
+        public static string IncotermNombre {
+            get {
+                return ResourceManager.GetString("IncotermNombre", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a R&#233;gimenes fiscales.
+        /// </summary>
+        public static string _RegimenFiscalTitCon {
+            get {
+                return ResourceManager.GetString("_RegimenFiscalTitCon", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a R&#233;gimen fiscal.
+        /// </summary>
+        public static string _RegimenFiscalTitCap {
+            get {
+                return ResourceManager.GetString("_RegimenFiscalTitCap", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Id R&#233;gimen.
+        /// </summary>
+        public static string RegimenFiscaId {
+            get {
+                return ResourceManager.GetString("RegimenFiscaId", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a Clave R&#233;gimen.
+        /// </summary>
+        public static string RegimenFiscalClave {
+            get {
+                return ResourceManager.GetString("RegimenFiscalClave", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Busca una cadena traducida similar a R&#233;gimen fiscal.
+        /// </summary>
+        public static string RegimenFiscalNombre {
+            get {
+                return ResourceManager.GetString("RegimenFiscalNombre", resourceCulture);
+            }
+        }
     }
 }
