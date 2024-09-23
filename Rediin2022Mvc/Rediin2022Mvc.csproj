@@ -48,6 +48,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rediin2022.Aplicacion\Rediin2022.Aplicacion.csproj" />
+    <ProjectReference Include="..\Rediin2022.Comun\Rediin2022.Comun.csproj" />
   </ItemGroup>
 
   <ItemGroup>

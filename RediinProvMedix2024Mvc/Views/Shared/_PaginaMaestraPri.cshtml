@@ -1,0 +1,54 @@
+﻿@using RediinProvMedix2022Mvc.Areas.PubSeguridad.Controllers;
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - @TempData["NombreSistema"]</title>
+
+	@*<link rel="stylesheet" href="~/css/HospitalAbc.css" asp-append-version="true" />*@
+	@*<link rel="stylesheet" href="~/lib/bootstrap-toggle-master/css/bootstrap-toggle.min.css" asp-append-version="true" />*@
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+
+	@* Estilos Metodologia *@
+	<link rel="stylesheet" href="~/css/EstiloCliente.css" asp-append-version="true" />
+	@*<link rel="stylesheet" type="text/css" href="~/lib/DateTimePicker/jquery.datetimepicker.min.css" />*@
+	<link rel="stylesheet" type="text/css" href="@DSEntityNetX.Mvc.TagHelpers.XUrlResources.styleMvc" asp-append-version="true" />
+
+</head>
+<body>
+
+	<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js" asp-append-version="true"></script>
+	<script src="@DSEntityNetX.Mvc.TagHelpers.XUrlResources.scriptMvc" asp-append-version="true"></script>
+
+	<div class="container-fluid body-content">
+		<div class="row">
+			<div class="col-sm-12 col-md-12 col-lg-12">
+				<nav class="navbar navbar-expand-sm bg-light fixed-top" style="color:#f2f2f2">
+					<div class="container-fluid">
+						<ul class="navbar-nav" href="#">
+							<img src="~/Imagenes/RediinLogo.png" style="width:200px;" />
+						</ul>
+						<ul class="navbar-nav">
+							<li class="nav-item colorTextoNegro">
+								<h6 style="font-weight:bold">@ViewBag.EstablecimientoNombre</h6>
+								<h6 class="textoAlineadoDer" >
+									<span style="font-weight:bold">
+										@ViewBag.EstablecimientoRfc
+									</span>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<a style="cursor:pointer;color:blue" asp-area="PubSeguridad" asp-controller="Autentificacion" asp-action="@nameof(AutentificacionController.SalirSistema)">[Salir]</a>
+								</h6>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</div>
+		<div style="height:90px"></div>
+		@RenderBody()
+	</div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rediin2022.Aplicacion\Rediin2022.Aplicacion.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DSEntityNetX.Application">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Application.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Business">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Business.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Common">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Entities">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Mvc">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Web">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Aplicacion">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Aplicacion.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.AspNetCore">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.AspNetCore.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Comun">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Comun.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Entidades">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Entidades.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Mvc">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Mvc.TagHelpers">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Mvc.TagHelpers.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Negocio">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Negocio.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Web">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="Sisegui2020.Aplicacion">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\Sisegui2020.Aplicacion.dll</HintPath>
+    </Reference>
+    <Reference Include="Sisegui2020.Entidades">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\Sisegui2020.Entidades.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

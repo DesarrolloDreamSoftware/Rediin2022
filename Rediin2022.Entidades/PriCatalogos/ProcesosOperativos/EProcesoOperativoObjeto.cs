@@ -17,6 +17,7 @@ namespace Rediin2022.Entidades.PriCatalogos
         [MDAMain] public Int16 Orden { get; set; } = 0;
         [MDAMain] public Boolean Obligatorio { get; set; } = false;
         [MDAMain] public Int16 DiasVencimiento { get; set; } = 0;
+        [MDAMain(true)] public TipoCaptura TipoCapturaId { get; set; } = TipoCaptura.Ninguno;
         [MDAMain] public Boolean Activo { get; set; } = false;
         #endregion
     }

@@ -60,13 +60,23 @@ namespace Rediin2022Mvc
             services.AddScoped<INSapTratamientos, NRSapTratamientos>();
             services.AddScoped<INSapViasPago, NRSapViasPago>();
             services.AddScoped<INSapBancos, NRSapBancos>();
-        services.AddScoped<INModelos, NRModelos>();
-        services.AddScoped<INIncoterms, NRIncoterms>();
-        services.AddScoped<INRegimenesFiscales, NRRegimenesFiscales>();
+            services.AddScoped<INModelos, NRModelos>();
+            services.AddScoped<INIncoterms, NRIncoterms>();
+            services.AddScoped<INRegimenesFiscales, NRRegimenesFiscales>();
             //Operacion
             services.AddScoped<INConExpedientes, NRConExpedientes>();
             //Clientes
             services.AddScoped<INExpedientes, NRExpedientes>();
+            services.AddScoped<INExpedientesProveedor, NRExpedientesProveedor>();
+
+            //Proveedor especifico
+            if (Configuration["Proveedor"] == "MontePio")
+                services.AddScoped<ISENConExpedienteProv, SENConExpedienteMontePio>();
+			else if (Configuration["Proveedor"] == "Medix")
+				services.AddScoped<ISENConExpedienteProv, SENConExpedienteMedix>();
+			else
+                services.AddScoped<ISENConExpedienteProv>(delegate (IServiceProvider p) { return null; });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

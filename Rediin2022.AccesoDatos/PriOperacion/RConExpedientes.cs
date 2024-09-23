@@ -2,8 +2,7 @@ using DSEntityNetX.Entities.Connection;
 using DSMetodNetX.AccesoDatos;
 using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
-
-using Rediin2022.Entidades.Idioma;
+using Rediin2022.Comun.PriOperacion;
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriOperacion;
 using System;
@@ -343,9 +342,9 @@ namespace Rediin2022.AccesoDatos.PriOperacion
                     MEElemento vElemento = vElementosDic[vExpediente];
 
                     if (dr.GetInt64(nameof(EConExpValores.ColumnaId)) == procesoOperativoCol.CapCmbIdColumnaId)
-                        vElemento.Id = UtilExpediente.ObtenValorXTipoStr(vTipo, dr);
+                        vElemento.Id = UtilExpedientesAD.ObtenValorXTipoStr(vTipo, dr);
                     else if (dr.GetInt64(nameof(EConExpValores.ColumnaId)) == procesoOperativoCol.CapCmbTextoColumnaId)
-                        vElemento.Text = UtilExpediente.ObtenValorXTipoStr(vTipo, dr);
+                        vElemento.Text = UtilExpedientesAD.ObtenValorXTipoStr(vTipo, dr);
 
                     return true;
                 });

@@ -6,7 +6,7 @@
 	ViewData["Title"] = "Captura";
     EVConExpedientes EV = ViewBag.EV;
 
-	List<EProcesoOperativoCol> vProcOperColumnas = ViewBag.ProcOperColumnas;
+	List<EProcesoOperativoCol> vProcOperColumnas = EV.ProcOperColumnasCap;
 	List<EProcesoOperativoCol> vColumnasTemp = new List<EProcesoOperativoCol>();
 	List<List<EProcesoOperativoCol>> vColumnasXTab = new List<List<EProcesoOperativoCol>>();
 	List<String> vTabs = new List<String>();

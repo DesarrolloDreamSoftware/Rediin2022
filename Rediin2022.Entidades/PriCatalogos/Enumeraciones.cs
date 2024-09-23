@@ -31,3 +31,38 @@ public enum TipoCaptura
     [Description("Persona Extranjera")]
     PersonaExtranjera
 }
+public enum Combos
+{
+    Ninguno,
+    Paises,
+    Estados,
+    Municipios,
+    Colonias,
+    Bancos,
+    [Description("SAP Sociedades")]
+    SAPSociedades,
+    [Description("SAP Sociedades GL")]
+    SAPSociedadesGL,
+    [Description("Sap Grupo de Cuentas")]
+    SapGrupoCuentas,
+    [Description("Sap Organizaciones Compra")]
+    SapOrganizacionesCompra,
+    [Description("Sap Tratamientos")]
+    SapTratamientos,
+    [Description("Sap Cuentas Asociadas")]
+    SapCuentasAsociadas,
+    [Description("Sap Grupos Tesoreria")]
+    SapGruposTesoreria,
+    [Description("Sap Banco")]
+    SapBanco,
+    [Description("Sap CondicionPago")]
+    SapCondicionPago,
+    [Description("Sap ViaPago")]
+    SapViaPago,
+    [Description("Sap GrupoTolerancia")]
+    SapGrupoTolerancia,
+    Incoterms,
+    [Description("Regimenes fiscales")]
+    RegimenesFiscales,
+    Modelos
+}

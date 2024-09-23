@@ -37,6 +37,12 @@
                     <th>
                         <span mhead-for="@nameof(EProcesoOperativoObjeto.Cantidad)" xhead-sort="true"></span>
                     </th>
+                    <th>
+                        <span mhead-for="@nameof(EProcesoOperativoObjeto.TipoCapturaId)" xhead-sort="true" xhead-tt-id="encTipoCapturaId"></span>
+                        <div id="ttTipoCapturaId" mtt="encTipoCapturaId">
+                            <div mttcont="@nameof(EProcesoOperativoObjeto.TipoCapturaId)"></div>
+                        </div>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -73,6 +79,9 @@
                             </td>
                             <td>
                                 <span mcell-for="@Model[i].Cantidad"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].TipoCapturaId"></span>
                             </td>
                         </tr>
                     }

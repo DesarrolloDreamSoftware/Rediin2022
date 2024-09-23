@@ -1,44 +1,24 @@
 using DSEntityNetX.Common.Casting;
-using DSEntityNetX.Common.File;
-using DSEntityNetX.Common.Pagination;
-using DSEntityNetX.Common.Security;
-using DSEntityNetX.Mvc;
-using DSMetodNetX.Aplicacion;
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Entidades.Correo;
 using DSMetodNetX.Mvc;
 using DSMetodNetX.Mvc.Seguridad;
 using GroupDocs.Viewer.Options;
-using MailKit.Security;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using MimeKit;
-using Rediin2022.Aplicacion.PriCatalogos;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Rediin2022.Aplicacion.PriOperacion;
-using Rediin2022.Entidades.Idioma;
+using Rediin2022.Comun.PriOperacion;
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Entidades.PriOperacion;
-using Sisegui2020.Aplicacion.PriSeguridad;
-using Sisegui2020.Entidades.Idioma;
 using Sisegui2020.Entidades.PriCatalogos;
 using Sisegui2020.Entidades.PriSeguridad;
 using System;
-using System.Buffers;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Mail;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
@@ -49,9 +29,8 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
         #region Constructores
         public ConExpedientesController(INConExpedientes nConExpedientes,
                                         INProcesosOperativos nProcesosOperativos,
-                                        INUsuarios nUsuarios,
-                                        INExpedientes nExpedientes,
-                                        //Para proveedores
+                                        ISENConExpedienteProv senConExpedienteProv,
+                                        //Para catalogos
                                         INPaises nPaises,
                                         INBancos nBancos,
                                         INSapSociedades nSapSociedades,
@@ -64,14 +43,16 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                                         INSapBancos nSapBancos,
                                         INSapCondicionesPago nSapCondicionesPago,
                                         INSapViasPago nSapViasPago,
-                                        INSapGruposTolerancia nSapGruposTolerancia)
+                                        INSapGruposTolerancia nSapGruposTolerancia,
+                                        INIncoterms nIncoterms,
+                                        INRegimenesFiscales nRegimenesFiscales,
+                                        INModelos nModelos)
         {
             NConExpedientes = nConExpedientes;
             NProcesosOperativos = nProcesosOperativos;
-            NUsuarios = nUsuarios;
-            NExpedientes = nExpedientes;
+            SENConExpedienteProv = senConExpedienteProv;
 
-            //Para proveedores
+            //Para catalogos
             NPaises = nPaises;
             NBancos = nBancos;
             NSapSociedades = nSapSociedades;
@@ -85,28 +66,39 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             NSapCondicionesPago = nSapCondicionesPago;
             NSapViasPago = nSapViasPago;
             NSapGruposTolerancia = nSapGruposTolerancia;
+            NIncoterms = nIncoterms;
+            NRegimenesFiscales = nRegimenesFiscales;
+            NModelos = nModelos;
+        }
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (SENConExpedienteProv != null)
+                SENConExpedienteProv.EV = EV;
+            base.OnActionExecuting(context);
         }
         #endregion
 
         #region Propiedades
         private INConExpedientes NConExpedientes { get; set; }
         private INProcesosOperativos NProcesosOperativos { get; set; }
-        private INUsuarios NUsuarios { get; set; }
-        private INExpedientes NExpedientes { get; set; }
-        private INPaises NPaises { get; set; } //Proveedores
-        private INBancos NBancos { get; set; } //Proveedores
+        private ISENConExpedienteProv SENConExpedienteProv { get; set; }
 
-        private INSapSociedades NSapSociedades { get; set; } //Proveedores
-        private INSapSociedadesGL NSapSociedadesGL { get; set; } //Proveedores
-        private INSapGrupoCuentas NSapGrupoCuentas { get; set; } //Proveedores
-        private INSapOrganizacionesCompra NSapOrganizacionesCompra { get; set; } //Proveedores
-        private INSapTratamientos NSapTratamientos { get; set; } //Proveedores
-        private INSapCuentasAsociadas NSapCuentasAsociadas { get; set; } //Proveedores
-        private INSapGruposTesoreria NSapGruposTesoreria { get; set; } //Proveedores
-        private INSapBancos NSapBancos { get; set; } //Proveedores
-        private INSapCondicionesPago NSapCondicionesPago { get; set; } //Proveedores
-        private INSapViasPago NSapViasPago { get; set; } //Proveedores
-        private INSapGruposTolerancia NSapGruposTolerancia { get; set; } //Proveedores
+        private INPaises NPaises { get; set; } //Catalogos
+        private INBancos NBancos { get; set; } //Catalogos
+        private INSapSociedades NSapSociedades { get; set; }
+        private INSapSociedadesGL NSapSociedadesGL { get; set; } //Catalogos
+        private INSapGrupoCuentas NSapGrupoCuentas { get; set; } //Catalogos
+        private INSapOrganizacionesCompra NSapOrganizacionesCompra { get; set; } //Catalogos
+        private INSapTratamientos NSapTratamientos { get; set; } //Catalogos
+        private INSapCuentasAsociadas NSapCuentasAsociadas { get; set; } //Catalogos
+        private INSapGruposTesoreria NSapGruposTesoreria { get; set; } //Catalogos
+        private INSapBancos NSapBancos { get; set; } //Catalogos
+        private INSapCondicionesPago NSapCondicionesPago { get; set; } //Catalogos
+        private INSapViasPago NSapViasPago { get; set; } //Catalogos
+        private INSapGruposTolerancia NSapGruposTolerancia { get; set; } //Catalogos
+        private INIncoterms NIncoterms { get; set; } //Catalogos
+        private INRegimenesFiscales NRegimenesFiscales { get; set; } //Catalogos
+        private INModelos NModelos { get; set; } //Catalogos
         private EVConExpedientes EV
         {
             get { return base.MEVCtrl<EVConExpedientes>(); }
@@ -181,6 +173,30 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
 
             Servicios.Gen.InicializaSFInd(EV.ConExpProcOperativo, indice);
 
+            //Cargamos el listado de combos para seleccionar segun la columna
+            Dictionary<Combos, List<MEElemento>> vCombos = new()
+            {
+                { Combos.Paises, await NPaises.PaisCmb() },
+                { Combos.Estados, null },
+                { Combos.Municipios, null },
+                { Combos.Colonias, null },
+                { Combos.Bancos, await NBancos.BancoCmb() },
+                { Combos.SAPSociedades, await NSapSociedades.SapSociedadCmb() },
+                { Combos.SAPSociedadesGL, await NSapSociedadesGL.SapSociedadGLCmb() },
+                { Combos.SapGrupoCuentas, await NSapGrupoCuentas.SapGrupoCuentaCmb() },
+                { Combos.SapOrganizacionesCompra, await NSapOrganizacionesCompra.SapOrganizacionCompraCmb() },
+                { Combos.SapTratamientos, await NSapTratamientos.SapTratamientoCmb() },
+                { Combos.SapCuentasAsociadas, await NSapCuentasAsociadas.SapCuentaAsociadaCmb() },
+                { Combos.SapGruposTesoreria, await NSapGruposTesoreria.SapGrupoTesoreriaCmb() },
+                { Combos.SapBanco, await NSapBancos.SapBancoCmb() },
+                { Combos.SapCondicionPago, await NSapCondicionesPago.SapCondicionPagoCmb() },
+                { Combos.SapViaPago, await NSapViasPago.SapViaPagoCmb() },
+                { Combos.SapGrupoTolerancia, await NSapGruposTolerancia.SapGrupoToleranciaCmb() },
+                { Combos.Incoterms, await NIncoterms.IncotermCmb() },
+                { Combos.RegimenesFiscales, await NRegimenesFiscales.RegimenFiscalCmb() },
+                { Combos.Modelos, await NModelos.ModeloCmb() }
+            };
+
             //Entidades adicionales
             EV.ProcOperColumnasCon =
                 await NProcesosOperativos.ProcesoOperativoColCT(EV.ConExpProcOperativo.Sel.ProcesoOperativoId);
@@ -198,80 +214,39 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                 EV.ProcOperColumnasCap = new List<EProcesoOperativoCol>();
 
             //Cargamos la informacion de los combos
+            EV.ColumnaIdPais = null;
+            EV.ColumnaIdEstado = null;
+            EV.ColumnaIdMunicipio = null;
+            EV.ColumnaIdColonias = null;
+
             if (EV.ProcOperColumnasCap != null && EV.ProcOperColumnasCap.Count > 0)
             {
                 foreach (EProcesoOperativoCol vCol in EV.ProcOperColumnasCap)
                 {
-                    if (vCol.CapCmbProcesoOperativoId > 0)
+                    if (vCol.CapCmbProcesoOperativoId > 0) //JRD REVISAR PORQUE PARECE QUE ESTE CAMPO NO SE USA
                         vCol.ElementosCmb = await NConExpedientes.ConExpedienteCmb(vCol);
+                    else if (vCol.ComboId > 0 && vCombos.ContainsKey(vCol.ComboId))
+                    {
+                        vCol.ElementosCmb = vCombos[vCol.ComboId];
+
+                        if (vCol.ComboId == Combos.Paises)
+                            EV.ColumnaIdPais = vCol;
+                        else if (vCol.ComboId == Combos.Estados)
+                            EV.ColumnaIdEstado = vCol;
+                        else if (vCol.ComboId == Combos.Municipios)
+                            EV.ColumnaIdMunicipio = vCol;
+                        else if (vCol.ComboId == Combos.Colonias)
+                            EV.ColumnaIdColonias = vCol;
+                    }
                 }
             }
 
-            //No config Proveedor
-            EV.ParamProveedorProcesoOperativoId = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoId");
-            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
+            //Proveedor especifico
+            if (SENConExpedienteProv != null)
             {
-                var vRelaciones = await NExpedientes.RelacionProcesoOperativo(EV.ParamProveedorProcesoOperativoId);
-                EV.ParamEstIdCaptura = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdCaptura");
-                EV.ParamEstIdAutorizado = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdAutorizado");
-                EV.ParamUrlRediinProveedores = await Servicios.ParamSist.Param<String>("RediinProveedorUrl");
-
-
-                EV.ProveedorColumnaIdUsuario = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.UsuarioId)).ColumnaId;
-                if (EV.ProveedorColumnaIdUsuario <= 0)
-                {
-                    NConExpedientes.Mensajes.AddError($"No se configuro correctamente el usuarioId para un nuevo usuario.");
+                if (!(await SENConExpedienteProv.Inicia()))
                     return await ConExpProcOperativoCon();
-                }
-
-                EV.ParamPerfilIdNvoUsr = await Servicios.ParamSist.Param<Int64>("RediinProveedorPerfilIdNvoUsr");
-                if (EV.ParamPerfilIdNvoUsr <= 0)
-                {
-                    NConExpedientes.Mensajes.AddError($"No se configuro correctamente el perfil para un nuevo usuario.");
-                    return await ConExpProcOperativoCon();
-                }
-                EV.ParamProveedorColumnaIdNombre = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.NombreORazonSocial)).ColumnaId;
-                EV.ParamProveedorColumnaIdCorreo = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.ContactoCorreoElectronico)).ColumnaId;
-                if (!EV.ProcOperColumnasCon.Exists(e => e.ColumnaId == EV.ParamProveedorColumnaIdNombre))
-                {
-                    NConExpedientes.Mensajes.AddError($"No se configuro correctamente la columna de nombre para este proceso operativo de proveedores [{EV.ParamProveedorColumnaIdNombre}].");
-                    return await ConExpProcOperativoCon();
-                }
-                if (!EV.ProcOperColumnasCon.Exists(e => e.ColumnaId == EV.ParamProveedorColumnaIdCorreo))
-                {
-                    NConExpedientes.Mensajes.AddError($"No se configuro correctamente la columna de correo para este proceso operativo de proveedores [{EV.ParamProveedorColumnaIdCorreo}].");
-                    return await ConExpProcOperativoCon();
-                }
-
-                //Para catalogos
-                EV.ParamProveedorColumnaIdPais = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.PaisId)).ColumnaId;
-                EV.ParamProveedorColumnaIdEstado = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.EstadoId)).ColumnaId;
-                EV.ParamProveedorColumnaIdMunicipio = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.MunicipioId)).ColumnaId;
-                EV.ParamProveedorColumnaIdColonia = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.ColoniaId)).ColumnaId;
-                List<MEElemento> vBancos = await NBancos.BancoCmb();
-                EV.CombosProveedores = new Dictionary<Int64, List<MEElemento>>()
-                {
-                    { EV.ParamProveedorColumnaIdPais, await NPaises.PaisCmb() },
-                    { EV.ParamProveedorColumnaIdEstado, null},
-                    { EV.ParamProveedorColumnaIdMunicipio, null},
-                    { EV.ParamProveedorColumnaIdColonia, null},
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.BancoId)).ColumnaId, vBancos },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.BancoId2)).ColumnaId, vBancos },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.BancoId3)).ColumnaId, vBancos },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapSociedadId)).ColumnaId, await NSapSociedades.SapSociedadCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapSociedadGLId)).ColumnaId, await NSapSociedadesGL.SapSociedadGLCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoCuentaId)).ColumnaId, await NSapGrupoCuentas.SapGrupoCuentaCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapOrganizacionCompraId)).ColumnaId, await NSapOrganizacionesCompra.SapOrganizacionCompraCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapTratamientoId)).ColumnaId, await NSapTratamientos.SapTratamientoCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCuentaAsociadaId)).ColumnaId, await NSapCuentasAsociadas.SapCuentaAsociadaCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoTesoreriaId)).ColumnaId, await NSapGruposTesoreria.SapGrupoTesoreriaCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapBancoId)).ColumnaId, await NSapBancos.SapBancoCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCondicionPagoId)).ColumnaId, await NSapCondicionesPago.SapCondicionPagoCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapViaPagoId)).ColumnaId, await NSapViasPago.SapViaPagoCmb() },
-                    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoToleranciaId)).ColumnaId, await NSapGruposTolerancia.SapGrupoToleranciaCmb() },
-                };
             }
-            //No config Proveedor
 
             return RedirectToAction(nameof(ConExpedienteCon));
         }
@@ -338,7 +313,8 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             EConExpediente conExpediente = ObtenExpediente(conExp);
             conExpediente.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId; //Llave padre
             conExpediente.ControlEstatus = EV.ConExpProcOperativo.Sel.ControlEstatus;
-            AjustaComboCascadaPEMProv(conExpediente, PEMColumnaId);
+            AjustaComboCascadaPEM(conExpediente, PEMColumnaId);
+            //AjustaComboCascadaPEMProv(conExpediente, PEMColumnaId); //JRD QUITAR
             return await ConExpedienteInsertaCap(conExpediente);
         }
         [ValidateAntiForgeryToken]
@@ -349,51 +325,15 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             conExpediente.ControlEstatus = EV.ConExpProcOperativo.Sel.ControlEstatus;
             //conExpediente.ProcesoOperativoEstId = 0L;
 
-            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
-            {
-                String vNombre = ObtenValor(conExpediente, EV.ParamProveedorColumnaIdNombre).ToString();
-                String vCorreo = ObtenValor(conExpediente, EV.ParamProveedorColumnaIdCorreo).ToString();
-                if (String.IsNullOrWhiteSpace(vNombre))
-                    NExpedientes.Mensajes.AddError("El campo [Nombre o razón social] es obligatorio.");
-                if (String.IsNullOrWhiteSpace(vNombre))
-                    NExpedientes.Mensajes.AddError("El campo [Correo] es obligatorio.");
-                if (!NExpedientes.Mensajes.Ok)
-                    return await ConExpedienteInsertaCap(conExpediente);
-
-                conExpediente.ExpedienteId = await NConExpedientes.ConExpedienteInserta(conExpediente);
-                if (!NConExpedientes.Mensajes.Ok)
-                    return await ConExpedienteInsertaCap(conExpediente);
-
-                //JRD VERIFICAR
-                var vResultado = await CreaUsuario(conExpediente);
-                EClave vCve = vResultado.Item1;
-                EUsuario vUsuario = vResultado.Item2;
-
-                if (NExpedientes.Mensajes.Ok)
-                {
-                    foreach (var vValor in conExpediente.Valores)
-                    {
-                        if (vValor.ColumnaId == EV.ProveedorColumnaIdUsuario)
-                            EstableceValor(vValor, TiposColumna.Entero, vCve.UsuarioId.ToString());
-                    }
-                    await NConExpedientes.ConExpedienteActualiza(conExpediente);
-
-                    EnviaCorreo(vUsuario.CorreoElectronico,
-                                "Su usuario de Rediin Proveedores ha sido creado.",
-                                String.Format("Bienvenido a Rediin Proveedores.<br/><br/>Su usuario es {0}<br/>Su contraseña es {1}<br/><br/>La URL donde puede acceder a sus sistema es:<br/>{2}",
-                                        vUsuario.Usuario, vCve.ClaveVerif, EV.ParamUrlRediinProveedores));
-                }
-
-                return RedirectToAction(nameof(ConExpedienteCon));
-            }
+            if (SENConExpedienteProv != null)
+                await SENConExpedienteProv.Inserta(conExpediente); //Proveedor especifico
             else
-            {
                 await NConExpedientes.ConExpedienteInserta(conExpediente);
-                if (NConExpedientes.Mensajes.Ok)
-                    return RedirectToAction(nameof(ConExpedienteCon));
 
-                return await ConExpedienteInsertaCap(conExpediente);
-            }
+            if (NConExpedientes.Mensajes.Ok)
+                return RedirectToAction(nameof(ConExpedienteCon));
+
+            return await ConExpedienteInsertaCap(conExpediente);
         }
         [MValidaSeg(nameof(ConExpedienteActualiza))]
         public async Task<IActionResult> ConExpedienteActualizaIni(Int32 indice)
@@ -416,7 +356,8 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             EConExpediente conExpediente = ObtenExpediente(conExp);
             conExpediente.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId; //Llave padre
             conExpediente.ProcesoOperativoEstId = EV.ConExpediente.Sel.ProcesoOperativoEstId;
-            AjustaComboCascadaPEMProv(conExpediente, PEMColumnaId);
+            AjustaComboCascadaPEM(conExpediente, PEMColumnaId);
+            //JRD QUITAR AjustaComboCascadaPEMProv(conExpediente, PEMColumnaId);
             return await ConExpedienteActualizaCap(conExpediente);
         }
         [ValidateAntiForgeryToken]
@@ -449,8 +390,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             vConExpedienteCambioEstatus.Comentarios = String.Empty;
 
             //Adi
-            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId &&
-               procesoOperativoEstIdSig == EV.ParamEstIdCaptura)
+            if (SENConExpedienteProv != null && SENConExpedienteProv.ValidaEstatus(procesoOperativoEstIdSig))
                 return await ConExpedienteCambioEstatusCap(vConExpedienteCambioEstatus);
             else
                 return await ConExpedienteCambioEstatus(vConExpedienteCambioEstatus);
@@ -478,38 +418,21 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
         {
             conExpedienteCambioEstatus.ExpedienteId = EV.ConExpediente.Sel.ExpedienteId;
             //Eli conExpedienteCambioEstatus.ProcesoOperativoEstId = EV.ConExpediente.Sel.ProcesoOperativoEstId;
+
             if (await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus))
             {
                 //Adi
-                if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
-                {
-                    String vCorreo = ObtenValor(EV.ConExpediente.Sel, EV.ParamProveedorColumnaIdCorreo).ToString();
-                    String vProveedor = ObtenValor(EV.ConExpediente.Sel, EV.ParamProveedorColumnaIdNombre).ToString();
-                    if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.ParamEstIdCaptura)
-                    {
-                        EnviaCorreo(vCorreo,
-                                    "Seguimiento en Portal de Rediin Proveedores",
-                                    $"Estimado {vProveedor}:<br/><br/>Su alta como proveedor tiene las siguientes observaciones:<br/>{conExpedienteCambioEstatus.Comentarios}");
-                    }
-                    else if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.ParamEstIdAutorizado)
-                    {
-                        EnviaCorreo(vCorreo,
-                                    "Seguimiento en Portal de Rediin Proveedores",
-                                    $"Estimado {vProveedor}:<br/><br/>Su alta como proveedor ha sido satisfactoria.");
-                    }
-                }
+                if (SENConExpedienteProv != null)
+                    SENConExpedienteProv.CambioEstatus(conExpedienteCambioEstatus);
 
                 return RedirectToAction(nameof(ConExpedienteCon));
             }
 
             //Adi
-            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId &&
-               conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.ParamEstIdCaptura)
+            if (SENConExpedienteProv != null && SENConExpedienteProv.ValidaEstatus(conExpedienteCambioEstatus.ProcesoOperativoEstId))
                 return await ConExpedienteCambioEstatusCap(conExpedienteCambioEstatus);
             else
-            {
                 return RedirectToAction(nameof(ConExpedienteCon));
-            }
         }
         #endregion
 
@@ -519,80 +442,130 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             ViewBag.Mensajes = NConExpedientes.Mensajes;
             ViewBag.EV = EV;
 
-            //Adi
-            ViewBag.ProcOperColumnas = EV.ProcOperColumnasCap;
-            ViewBag.ParamProveedorProcesoOperativoId = EV.ParamProveedorProcesoOperativoId;
-
             conExpediente.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId;
-            if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
-            {
-                ViewBag.EVConExpedientes = EV;
-                EV.CombosProveedores[EV.ParamProveedorColumnaIdEstado] = null;
-                EV.CombosProveedores[EV.ParamProveedorColumnaIdMunicipio] = null;
-                EV.CombosProveedores[EV.ParamProveedorColumnaIdColonia] = null;
 
-                Int64 vPaisId = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdPais));
-                if (vPaisId > 0)
+            if (EV.ColumnaIdPais != null)
+            {
+                if (EV.ColumnaIdEstado != null)
+                    EV.ColumnaIdEstado.ElementosCmb = null;
+                if (EV.ColumnaIdMunicipio != null)
+                    EV.ColumnaIdMunicipio.ElementosCmb = null;
+                if (EV.ColumnaIdColonias != null)
+                    EV.ColumnaIdColonias.ElementosCmb = null;
+
+                Int64 vPaisId = XObject.ToInt64(ObtenValor(conExpediente, EV.ColumnaIdPais.ColumnaId));
+                if (vPaisId > 0 && EV.ColumnaIdEstado != null)
                 {
-                    EV.CombosProveedores[EV.ParamProveedorColumnaIdEstado] =
-                        await NPaises.EstadoCmb(vPaisId);
-                    Int64 vEstadoId = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdEstado));
-                    if (vEstadoId > 0)
+                    EV.ColumnaIdEstado.ElementosCmb = await NPaises.EstadoCmb(vPaisId);
+                    Int64 vEstadoId = XObject.ToInt64(ObtenValor(conExpediente, EV.ColumnaIdEstado.ColumnaId));
+                    if (vEstadoId > 0 && EV.ColumnaIdMunicipio != null)
                     {
-                        EV.CombosProveedores[EV.ParamProveedorColumnaIdMunicipio] =
-                            await NPaises.MunicipioCmb(vEstadoId);
-                        Int64 vMunicipio = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdMunicipio));
-                        if (vMunicipio > 0)
-                        {
-                            EV.CombosProveedores[EV.ParamProveedorColumnaIdColonia] =
-                                await NPaises.ColoniaCmb(vMunicipio);
-                        }
+                        EV.ColumnaIdMunicipio.ElementosCmb = await NPaises.MunicipioCmb(vEstadoId);
+                        Int64 vMunicipioId = XObject.ToInt64(ObtenValor(conExpediente, EV.ColumnaIdMunicipio.ColumnaId));
+                        if (vMunicipioId > 0 && EV.ColumnaIdColonias != null)
+                            EV.ColumnaIdColonias.ElementosCmb = await NPaises.ColoniaCmb(vMunicipioId);
                     }
                 }
             }
 
+
+            //if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
+            //{
+            //    EV.CombosProveedores[EV.ParamProveedorColumnaIdEstado] = null;
+            //    EV.CombosProveedores[EV.ParamProveedorColumnaIdMunicipio] = null;
+            //    EV.CombosProveedores[EV.ParamProveedorColumnaIdColonia] = null;
+
+            //    Int64 vPaisId = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdPais));
+            //    if (vPaisId > 0)
+            //    {
+            //        EV.CombosProveedores[EV.ParamProveedorColumnaIdEstado] =
+            //            await NPaises.EstadoCmb(vPaisId);
+            //        Int64 vEstadoId = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdEstado));
+            //        if (vEstadoId > 0)
+            //        {
+            //            EV.CombosProveedores[EV.ParamProveedorColumnaIdMunicipio] =
+            //                await NPaises.MunicipioCmb(vEstadoId);
+            //            Int64 vMunicipio = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdMunicipio));
+            //            if (vMunicipio > 0)
+            //            {
+            //                EV.CombosProveedores[EV.ParamProveedorColumnaIdColonia] =
+            //                    await NPaises.ColoniaCmb(vMunicipio);
+            //            }
+            //        }
+            //    }
+            //}
+
             return ViewCap(nameof(ConExpedienteCaptura), conExpediente);
         }
-        private void AjustaComboCascadaPEMProv(EConExpediente conExpediente, Int64 columnaId)
+        private void AjustaComboCascadaPEM(EConExpediente conExpediente, Int64 columnaId)
         {
-            if (columnaId == EV.ParamProveedorColumnaIdPais)
+            var vCol = EV.ProcOperColumnasCon.FirstOrDefault(x => x.ColumnaId == columnaId);
+            if (vCol == null)
+                return;
+
+            if (vCol.ComboId == Combos.Paises)
             {
                 foreach (var vVal in conExpediente.Valores)
                 {
-                    if (vVal.ColumnaId == EV.ParamProveedorColumnaIdEstado ||
-                       vVal.ColumnaId == EV.ParamProveedorColumnaIdMunicipio ||
-                       vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
-                        EstableceValor(vVal, TiposColumna.Entero, "0");
+                    if (vVal.ComboId == Combos.Estados ||
+                        vVal.ComboId == Combos.Municipios ||
+                        vVal.ComboId == Combos.Colonias)
+                        UtilExpediente.EstableceValor(vVal, TiposColumna.Entero, "0");
                 }
             }
-            else if (columnaId == EV.ParamProveedorColumnaIdEstado)
+            else if (vCol.ComboId == Combos.Estados)
             {
                 foreach (var vVal in conExpediente.Valores)
                 {
-                    if (vVal.ColumnaId == EV.ParamProveedorColumnaIdMunicipio ||
-                        vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
-                        EstableceValor(vVal, TiposColumna.Entero, "0");
+                    if (vVal.ComboId == Combos.Municipios ||
+                        vVal.ComboId == Combos.Colonias)
+                        UtilExpediente.EstableceValor(vVal, TiposColumna.Entero, "0");
                 }
             }
-            else if (columnaId == EV.ParamProveedorColumnaIdMunicipio)
+            else if (vCol.ComboId == Combos.Municipios)
             {
                 foreach (var vVal in conExpediente.Valores)
                 {
-                    if (vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
-                        EstableceValor(vVal, TiposColumna.Entero, "0");
+                    if (vVal.ComboId == Combos.Colonias)
+                        UtilExpediente.EstableceValor(vVal, TiposColumna.Entero, "0");
                 }
             }
         }
-        private void EstableceValor(EConExpValores valor, TiposColumna tipo, String cadena)
+        //private void AjustaComboCascadaPEMProv(EConExpediente conExpediente, Int64 columnaId)
+        //{
+        //    if (columnaId == EV.ParamProveedorColumnaIdPais)
+        //    {
+        //        foreach (var vVal in conExpediente.Valores)
+        //        {
+        //            if (vVal.ColumnaId == EV.ParamProveedorColumnaIdEstado ||
+        //               vVal.ColumnaId == EV.ParamProveedorColumnaIdMunicipio ||
+        //               vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
+        //                EstableceValor(vVal, TiposColumna.Entero, "0");
+        //        }
+        //    }
+        //    else if (columnaId == EV.ParamProveedorColumnaIdEstado)
+        //    {
+        //        foreach (var vVal in conExpediente.Valores)
+        //        {
+        //            if (vVal.ColumnaId == EV.ParamProveedorColumnaIdMunicipio ||
+        //                vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
+        //                EstableceValor(vVal, TiposColumna.Entero, "0");
+        //        }
+        //    }
+        //    else if (columnaId == EV.ParamProveedorColumnaIdMunicipio)
+        //    {
+        //        foreach (var vVal in conExpediente.Valores)
+        //        {
+        //            if (vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
+        //                EstableceValor(vVal, TiposColumna.Entero, "0");
+        //        }
+        //    }
+        //}
+        private Object ObtenValor(EConExpediente conExpediente, Int64 columnaId)
         {
-            if (tipo == TiposColumna.Entero || tipo == TiposColumna.Importe)
-                valor.ValorNumerico = XObject.ToDecimal(cadena);
-            else if (tipo == TiposColumna.Fecha || tipo == TiposColumna.FechaYHora || tipo == TiposColumna.Hora)
-                valor.ValorFecha = XObject.ToDateTime(cadena);
-            else if (tipo == TiposColumna.Boleano)
-                valor.ValorTexto = (cadena == "true" ? "1" : String.Empty);
-            else
-                valor.ValorTexto = cadena;
+            return UtilExpediente.ObtenValor(EV.ProcOperColumnasCon,
+                                             conExpediente,
+                                             columnaId);
         }
         public EConExpediente ObtenExpediente(IFormCollection conExp)
         {
@@ -606,82 +579,14 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                 vVal = new EConExpValores();
                 vVal.ExpedienteId = conExpediente.ExpedienteId;
                 vVal.ColumnaId = vCol.ColumnaId;
+                vVal.ComboId = vCol.ComboId;
                 if (conExp.ContainsKey(vCol.ColumnaId.ToString()))
-                    EstableceValor(vVal, vCol.Tipo, conExp[vCol.ColumnaId.ToString()]);
+                    UtilExpediente.EstableceValor(vVal, vCol.Tipo, conExp[vCol.ColumnaId.ToString()]);
                 conExpediente.Valores.Add(vVal);
             }
 
             return conExpediente;
         }
-        //No config Proveedor
-        private async Task<(EClave, EUsuario)> CreaUsuario(EConExpediente conExpediente)
-        {
-            EUsuario usuario = new();
-            String vProveedor = ObtenValor(conExpediente, EV.ParamProveedorColumnaIdNombre).ToString();
-            String[] vNombres = vProveedor.Split(" ");
-
-            usuario.CorreoElectronico = ObtenValor(conExpediente, EV.ParamProveedorColumnaIdCorreo).ToString();
-            usuario.EstablecimientoId = Servicios.EVDatosPortal.UsuarioSesion.EstablecimientoId;
-            usuario.PerfilId = EV.ParamPerfilIdNvoUsr;
-
-            if (vNombres.Length >= 3)
-            {
-                usuario.ApellidoMaterno = vNombres[vNombres.Length - 1];
-                usuario.ApellidoPaterno = vNombres[vNombres.Length - 2];
-                usuario.Nombre = String.Empty;
-                for (int i = 0; i < vNombres.Length - 2; i++)
-                    usuario.Nombre += (i > 0 ? " " : String.Empty) + vNombres[i];
-
-                usuario.Usuario = $"{usuario.Nombre[0]}{usuario.ApellidoPaterno}".ToLower();
-            }
-            else if (vNombres.Length >= 2)
-            {
-                usuario.ApellidoMaterno = "S/N.";
-                usuario.ApellidoPaterno = vNombres[vNombres.Length - 2];
-                usuario.Nombre = String.Empty;
-                for (int i = 0; i < vNombres.Length - 2; i++)
-                    usuario.Nombre += (i > 0 ? " " : String.Empty) + vNombres[i];
-
-                usuario.Usuario = $"{usuario.Nombre[0]}{usuario.ApellidoPaterno}".ToLower();
-            }
-            else
-            {
-                usuario.ApellidoPaterno = "S/N.";
-                usuario.ApellidoMaterno = "S/N.";
-                usuario.Usuario = $"{usuario.Nombre.Trim().Replace(" ", "")}".ToLower();
-            }
-
-            usuario.Usuario += (DateTime.Now.Year - 2000).ToString();
-            usuario.Usuario += DateTime.Now.DayOfYear.ToString();
-
-            try
-            {
-                return (await NUsuarios.UsuarioInsertaAuto(usuario), usuario);
-            }
-            catch (Exception e)
-            {
-                NUsuarios.Mensajes.AddError(e.Message);
-                return (null, null);
-            }
-        }
-        private async void EnviaCorreo(String correoDestino, String subject, String body)
-        {
-            //JRD REVISAR QUE ESTE BIEN
-            IMCorreo vCorreo = await Servicios.ServCorreo.ServCorreo("RediinProveedoresMail");
-            vCorreo.To.Add(vCorreo.CreateUser("Cliente", correoDestino));
-            vCorreo.Send(subject, body);
-
-            //var vCorreo = base.ServidorCorreo("RediinProveedoresMail");
-            //vCorreo.To.Add(vCorreo.NewUser("Cliente", correoDestino));
-            //vCorreo.Send(subject, body);
-        }
-        private Object ObtenValor(EConExpediente conExpediente, Int64 columnaId)
-        {
-            return UtilExpediente.ObtenValor(EV.ProcOperColumnasCon,
-                                             conExpediente,
-                                             columnaId);
-        }
-        //No config Proveedor
         #endregion
 
         #region Acciones de Paginacion Orden y Filtro

@@ -1,0 +1,177 @@
+﻿@using Microsoft.AspNetCore.Html;
+@using Rediin2022.Entidades.PriClientes
+
+@model EProveedorMontePio
+@{
+	String vEstiloBoton1 = "btn btn-sm btn-success botonMenuSel";
+	String vEstiloBoton2 = "btn btn-sm btn-primary botonMenu";
+	String vEstiloBoton = String.Empty;
+
+	String vDatFisVisible = "display:none";
+	String vContactoVisible = "display:none";
+	String vDatBanVisible = "display:none";
+	String vDocumVisible = "display:none";
+	String vAcConVisible = "display:none";
+	if (ViewBag.Pagina == 0)
+	{
+		vDatFisVisible = String.Empty;
+	}
+	else if (ViewBag.Pagina == 1)
+	{
+		vContactoVisible = String.Empty;
+	}
+	else if (ViewBag.Pagina == 2)
+	{
+		vDatBanVisible = String.Empty;
+	}
+	else if (ViewBag.Pagina == 3)
+	{
+		vDocumVisible = String.Empty;
+	}
+	else if (ViewBag.Pagina == 4)
+	{
+		vAcConVisible = String.Empty;
+	}
+}
+<div xpanel="Edit" xpnl-rules="@ViewBag.Reglas" xpnl-messages="@ViewBag.Mensajes" xpnl-messages-title="Mensajes"
+  xpnl-messages-class="panelCapMensajes"
+  xpnl-messages-title-class="panelCapMensajesTit" 
+  xpnl-messages-ok-class="panelCapMensajesOk" 
+  xpnl-messages-error-class="panelCapMensajesError">
+	<form asp-action="@nameof(ProveedoresController.ProveedorActualiza)">
+		<input type="hidden" value="@ViewBag.Pagina" name="Pagina" />
+		<input type="hidden" value="@Model.ProcesoOperativoId" name="@nameof(EProveedorMontePio.ProcesoOperativoId)" />
+		<input type="hidden" value="@Model.ExpedienteId" name="@nameof(EProveedorMontePio.ExpedienteId)" />
+		<input type="hidden" value="@Model.UsuarioId" name="@nameof(EProveedorMontePio.UsuarioId)" />
+		<input type="hidden" value="@Model.ProcesoOperativoEstId" name="@nameof(EProveedorMontePio.ProcesoOperativoEstId)" />
+		<input type="hidden" value="@Model.ProveedorId" name="@nameof(EProveedorMontePio.ProveedorId)" />
+		<input type="hidden" value="@Model.EstatusNombre" name="@nameof(EProveedorMontePio.EstatusNombre)" />
+		<input type="hidden" value="@Model.Comentarios" name="@nameof(EProveedorMontePio.Comentarios)" />
+		<input type="hidden" value="@Model.SapSociedadId" name="@nameof(EProveedorMontePio.SapSociedadId)" />
+		<input type="hidden" value="@Model.SapSociedadGLId" name="@nameof(EProveedorMontePio.SapSociedadGLId)" />
+		<input type="hidden" value="@Model.SapGrupoCuentaId" name="@nameof(EProveedorMontePio.SapGrupoCuentaId)" />
+		<input type="hidden" value="@Model.SapOrganizacionCompraId" name="@nameof(EProveedorMontePio.SapOrganizacionCompraId)" />
+		<input type="hidden" value="@Model.SapTratamientoId" name="@nameof(EProveedorMontePio.SapTratamientoId)" />
+		<input type="hidden" value="@Model.SapCuentaAsociadaId" name="@nameof(EProveedorMontePio.SapCuentaAsociadaId)" />
+		<input type="hidden" value="@Model.SapGrupoTesoreriaId" name="@nameof(EProveedorMontePio.SapGrupoTesoreriaId)" />
+		<input type="hidden" value="@Model.SapBancoId" name="@nameof(EProveedorMontePio.SapBancoId)" />
+		<input type="hidden" value="@Model.SapCondicionPagoId" name="@nameof(EProveedorMontePio.SapCondicionPagoId)" />
+		<input type="hidden" value="@Model.SapViaPagoId" name="@nameof(EProveedorMontePio.SapViaPagoId)" />
+		<input type="hidden" value="@Model.SapGrupoToleranciaId" name="@nameof(EProveedorMontePio.SapGrupoToleranciaId)" />
+
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<div class="row" style="font-weight:bold">
+					<div class="col-md-5 tamanioLetras">
+						<span class="colorTextoAzul">Razón social</span><br />
+						@Model.NombreORazonSocial<br />
+						@Model.Rfc &nbsp; &nbsp; &nbsp; &nbsp;  No. de proveedor: @Model.ProveedorId
+					</div>
+					<div class="col-md-4"></div>
+					<div class="col-md-3">
+						<h6 class="tamanioLetras textoAlineadoDer" style="font-weight:bold">Estatus: @Model.EstatusNombre</h6>
+					</div>
+				</div><br />
+				<div class="row">
+					<div class="col-md-1"></div>
+					<div class="col-md-2">
+						@{
+							vEstiloBoton = (ViewBag.Pagina == 0 ? vEstiloBoton1 : vEstiloBoton2);
+						}
+						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0">Datos Fiscales</button>
+					</div>
+					<div class="col-md-2">
+						@{
+							vEstiloBoton = (ViewBag.Pagina == 1 ? vEstiloBoton1 : vEstiloBoton2);
+						}
+						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="1">Contacto</button>
+					</div>
+					<div class="col-md-2">
+						@{
+							vEstiloBoton = (ViewBag.Pagina == 2 ? vEstiloBoton1 : vEstiloBoton2);
+						}
+						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="2">Datos Bancarios</button>
+					</div>
+					<div class="col-md-2">
+						@{
+							vEstiloBoton = (ViewBag.Pagina == 3 ? vEstiloBoton1 : vEstiloBoton2);
+						}
+						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="3">Documentación</button>
+					</div>
+					<div class="col-md-2">
+						@{
+							vEstiloBoton = (ViewBag.Pagina == 4 ? vEstiloBoton1 : vEstiloBoton2);
+						}
+						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="4">Acta Constitutiva</button>
+					</div>
+					<div class="col-md-1"></div>
+				</div>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div style="@vDatFisVisible">
+					<partial name="_DatosFiscales" view-data="@ViewData" model="@Model"></partial>
+				</div>
+				<div style="@vContactoVisible">
+					<partial name="_Contacto" view-data="@ViewData" model="@Model"></partial>
+				</div>
+				<div style="@vDatBanVisible">
+					<partial name="_DatosBancarios" view-data="@ViewData" model="@Model"></partial>
+				</div>
+				<div style="@vDocumVisible">
+					<partial name="_Documentacion" view-data="@ViewData" model="@ViewBag.Documentos"></partial>
+				</div>
+				<div style="@vAcConVisible">
+					<partial name="_ActaConstitutiva" view-data="@ViewData" model="@Model"></partial>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+@if (ViewBag.Pagina == 0 &&
+	 (Boolean)ViewBag.EsCaptura &&
+	 !String.IsNullOrWhiteSpace(@Model.Comentarios))
+{
+	<div class="row">
+		<div class="col-md-12">
+			<div class="mt-4 p-5 bg-success text-white rounded">
+				<h5>Comentarios.</h5>
+				@Model.Comentarios
+			</div>
+			<br />
+		</div>
+	</div>
+}
+@if (ViewBag.SubeArchivo ?? false == true)
+{
+	<div id="divSubeArchivo" class="modalDatos" xmodal="true" xmd-scrb="true" xmd-hauto="false" xmd-adh="100">
+		<form asp-action="_SubeArch" enctype="multipart/form-data">
+			<div xpanel="Edit" xpnl-messages="@ViewBag.MensajesSA"
+				xpnl-messages-class="panelCapMensajes"
+				xpnl-messages-title-class="panelCapMensajesTit"
+				xpnl-messages-ok-class="panelCapMensajesOk"
+				xpnl-messages-error-class="panelCapMensajesError">
+				<div class="row">
+					<div class="col-md-12 alinearCentro">
+						<h3> Subir archivo</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<input class="form-control fileclass" name="archivo" id="Archivo" type="file" title="Subir" /> <br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 alinearCentro">
+						<button class="btn btn-sm btn-primary Boton" asp-action="@nameof(ProveedoresController.SubeArchivo)" type="submit">Subir Archivo</button>
+						&nbsp;
+						<button class="btn btn-sm btn-primary Boton" type="button" onclick="xfModal('divSubeArchivo', false)">Regresar</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+}

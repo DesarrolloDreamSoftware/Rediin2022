@@ -17,5 +17,19 @@
                 <button maccion="LimpiaFiltros" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoLimpiaFiltros)"></button>
             </div>
         </div>
+        <div msub-panel="MasFiltros">
+            <div msub-panel="CapTitulo">@MMensajesXId.MasFiltros</div>
+            <div msub-panel="CapDatos">
+                <div melemento="CapLin">
+                    <div melemento="FilCol" melem-cols="12">
+                        <select mval-filter="Model" xval-for="FilTipoCapturaId"></select>
+                    </div>
+                </div>
+            </div>
+            <div msub-panel="FilAccionesGen">
+                <button maccion="Filtra" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(ProcesosOperativosController.ProcesoOperativoObjetoLimpiaFiltros)"></button>
+            </div>
+        </div>
     </div>
 </form>

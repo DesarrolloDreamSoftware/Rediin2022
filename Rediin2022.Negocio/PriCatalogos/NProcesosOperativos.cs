@@ -247,7 +247,8 @@ namespace Rediin2022.Negocio.PriCatalogos
             _procesoOperativoColReglas = Validaciones.CreaReglasNeg<EProcesoOperativoCol>(Mensajes);
             _procesoOperativoColReglas.AddSL(e => e.ColumnaId, 0L, Validaciones._int64Max, false); // Consecutivo
             _procesoOperativoColReglas.AddSL(e => e.Etiqueta, 2, 100);
-            _procesoOperativoColReglas.AddSL(e => e.Tipo, TiposColumna.Ninguno, TiposColumna.Hora);
+			_procesoOperativoColReglas.AddSL(e => e.Propiedad, 0, 100, false);
+			_procesoOperativoColReglas.AddSL(e => e.Tipo, TiposColumna.Ninguno, TiposColumna.Hora);
             _procesoOperativoColReglas.AddSL(e => e.Decimales, (Int16)0, Validaciones._int16Max, false);
             _procesoOperativoColReglas.AddSL(e => e.ConOrden, 0, Validaciones._int32Max, false);
             _procesoOperativoColReglas.AddSL(e => e.ConOrdenar);
@@ -262,9 +263,13 @@ namespace Rediin2022.Negocio.PriCatalogos
             _procesoOperativoColReglas.AddSL(e => e.CapCmbProcesoOperativoId, 0L, Validaciones._int64Max, false).MessageForRange = MMensajesXId.ValidaSeleccion;
             _procesoOperativoColReglas.AddSL(e => e.CapCmbIdColumnaId, 0L, Validaciones._int64Max, false).MessageForRange = MMensajesXId.ValidaSeleccion;
             _procesoOperativoColReglas.AddSL(e => e.CapCmbTextoColumnaId, 0L, Validaciones._int64Max, false).MessageForRange = MMensajesXId.ValidaSeleccion;
+            _procesoOperativoColReglas.AddSL(e => e.ComboId, Combos.Ninguno, Combos.Modelos, false);
             _procesoOperativoColReglas.AddSL(e => e.Activo);
 
-            return _procesoOperativoColReglas;
+			//Habilitado
+			//_procesoOperativoColReglas.AddEnabled(e => e.Propiedad, e => UsuarioSesion.UsuarioId == 1 || UsuarioSesion.UsuarioId == 2);
+
+			return _procesoOperativoColReglas;
         }
         #endregion
 
@@ -333,6 +338,7 @@ namespace Rediin2022.Negocio.PriCatalogos
             _procesoOperativoObjetoReglas.AddSL(e => e.Orden, (Int16)0, Validaciones._int16Max, false);
             _procesoOperativoObjetoReglas.AddSL(e => e.Obligatorio);
             _procesoOperativoObjetoReglas.AddSL(e => e.DiasVencimiento, (Int16)0, Validaciones._int16Max, false);
+            _procesoOperativoObjetoReglas.AddSL(e => e.TipoCapturaId, TipoCaptura.Ninguno, TipoCaptura.PersonaExtranjera, false);
             _procesoOperativoObjetoReglas.AddSL(e => e.Activo);
 
             return _procesoOperativoObjetoReglas;

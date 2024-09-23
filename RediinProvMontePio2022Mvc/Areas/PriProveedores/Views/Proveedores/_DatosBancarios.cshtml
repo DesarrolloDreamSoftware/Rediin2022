@@ -1,0 +1,96 @@
+﻿@using Rediin2022.Entidades.PriClientes
+
+@model EProveedorMontePio
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-4">
+                <div>
+                    <div class="form-floating mb-4 mt-4">
+                        <select xval="Model" xval-for="@Model.BancoId" xval-first-item="Selecciona" xval-items="@ViewBag.Bancos" class="form-select">
+                        </select>
+                        <label for="Estado">Banco</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="inputTamanio">
+                    <div class="form-floating mb-3 mt-3">
+                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.Cuenta" placeholder="Cuenta" />
+                        <label for="Cuenta">CUENTA</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="inputTamanio">
+                    <div class="form-floating mb-3 mt-3">
+                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.CuentaClabe" placeholder="Clabe" />
+                        <label for="Clabe">CLABE</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div>
+                    <div class="form-floating mb-4 mt-4">
+                        <select xval="Model" xval-for="@Model.BancoId2" xval-first-item="Selecciona" xval-items="@ViewBag.Bancos" class="form-select">
+                        </select>
+                        <label for="Estado">Banco</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="inputTamanio">
+                    <div class="form-floating mb-3 mt-3">
+                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.Cuenta2" placeholder="Cuenta" />
+                        <label for="Cuenta">CUENTA</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="inputTamanio">
+                    <div class="form-floating mb-3 mt-3">
+                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.CuentaClabe2" placeholder="Clabe" />
+                        <label for="Clabe">CLABE</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div>
+                    <div class="form-floating mb-4 mt-4">
+                        <select xval="Model" xval-for="@Model.BancoId3" xval-first-item="Selecciona" xval-items="@ViewBag.Bancos" class="form-select">
+                        </select>
+                        <label for="Estado">Banco</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="inputTamanio">
+                    <div class="form-floating mb-3 mt-3">
+                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.Cuenta3" placeholder="Cuenta" />
+                        <label for="Cuenta">CUENTA</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="inputTamanio">
+                    <div class="form-floating mb-3 mt-3">
+                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.CuentaClabe3" placeholder="Clabe" />
+                        <label for="Clabe">CLABE</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura">Guardar</button>
+                <button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura" asp-action="@nameof(ProveedoresController.RevisionExpediente)">Solicita revisión de expediente</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>

@@ -100,6 +100,14 @@ namespace Rediin2022.Aplicacion.PriCatalogos
                                                                procesoOperativoId);
         }
         /// <summary>
+        /// Consulta adicional de la entidad ProcesoOperativoCol.
+        /// </summary>
+        public async Task<List<EProcesoOperativoColMin>> ProcesoOperativoColCTMin(Int64 procesoOperativoId)
+        {
+            return await CallAsync<List<EProcesoOperativoColMin>>(NomFn(),
+                                                                  procesoOperativoId);
+        }
+        /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativoCol.
         /// </summary>
         public async Task<List<MEElemento>> ProcesoOperativoColCmb(Int64 procesoOperativoId)

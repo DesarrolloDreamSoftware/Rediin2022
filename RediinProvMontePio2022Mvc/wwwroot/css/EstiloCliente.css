@@ -1,0 +1,122 @@
+﻿body {
+    font-family: Arial !important;
+    display: grid;
+    min-height: 100vh;
+    grid-template-rows: auto 1fr auto;
+    font-size:11pt;
+}
+
+.fileclass
+{
+    font-size:9pt;
+}
+
+.InputLinea {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 2px solid;
+    border-block-color: #84a2d8;
+}
+
+.InputTotal {
+    border-color: #325490;
+}
+
+.inputTamanio {
+    width: 100%;
+    float: left;
+}
+
+.textoInicial {
+    color: #549bb4;
+    text-align: center;
+}
+
+.tamanioLetras {
+    font-size: 11pt;
+}
+
+.colorTextoAzul {
+    color: #203864;
+}
+
+.colorTextoNegro{
+    color: black;
+}
+
+.colorTextoError {
+    font-weight:700;
+    color: #ed1a1a;
+}
+
+.textoAlineadoDer {
+    text-align: right;
+}
+
+.alinearCentro {
+    text-align: center;
+}
+
+.Boton {
+    border-radius: 5px;
+    background-color: #549BB4;
+}
+
+
+.botonMenu {
+    width: 100%;
+    background-color: #549BB4;
+}
+.botonMenuSel {
+    width: 100%;
+    background-color: #336475;
+}
+
+.estiloTabla {
+    border-collapse: collapse;
+    width: 100%;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.bordeTrIni {
+    border-bottom: 2px solid #549bb4;
+}
+
+.bordeTr {
+    border-bottom: 1px solid #549bb4;
+}
+.modalDatos {
+    text-align: left;
+    padding: 5px;
+    background-color: white;
+    border-radius: 4px;
+    -o-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+.panelCapMensajes {
+    background-color: #f8f8f8;
+}
+
+.panelCapMensajesTit {
+    text-align: center;
+    font-size: 12pt;
+    color: #9a9a9a;
+    font-weight: bold;
+}
+
+.panelCapMensajesOk {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: green;
+}
+
+.panelCapMensajesError {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-left: 20px;
+    color: red;
+}

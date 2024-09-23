@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Rediin2022.Comun\Rediin2022.Comun.csproj" />
     <ProjectReference Include="..\Rediin2022.Entidades\Rediin2022.Entidades.csproj" />
   </ItemGroup>
 

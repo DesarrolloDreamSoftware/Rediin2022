@@ -4,6 +4,7 @@ using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Negocio;
 using Rediin2022.AccesoDatos.PriClientes;
+using Rediin2022.Comun.PriOperacion;
 using Rediin2022.Entidades.Idioma;
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
@@ -19,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace Rediin2022.Negocio.PriClientes
 {
-    public class NExpedientes : RExpendientes, INExpedientes
+    public class NExpedientes : RExpedientes, INExpedientes
     {
         #region Constructores
         public NExpedientes(IMConexionEntidad conexionEntidad,
@@ -35,10 +36,6 @@ namespace Rediin2022.Negocio.PriClientes
         #region Propiedades
         public INConExpedientes NConExpedientes { get; }
         public INProcesosOperativos NProcesosOperativos { get; }
-        //public IMMensajes Mensajes
-        //{
-        //    get { return NProcesosOperativos.Mensajes; }
-        //}
         #endregion
 
         #region Funciones
@@ -314,134 +311,6 @@ namespace Rediin2022.Negocio.PriClientes
             });
         }
         #endregion
-
-        //No config Proveedor
-        #region Funciones especificas para un proc operativo
-        /// <summary>
-        /// Regresa los datos del proveedor segun el usuario autentificado 
-        /// para el proceso operativo especifico de proveedores.
-        /// </summary>
-        /// <param name="usuarioId"></param>
-        /// <returns></returns>
-        public async Task<EDatosProveedor> ProveedorXUsuario(Int64 procesoOperativoIdProveedor,
-                                                             Int64 usuarioId)
-        {
-            EDatosProveedor vDP = new EDatosProveedor();
-
-            //Obtenemos la relacion de las columnas con sus propiedades
-            List<ERelacionProcOper> vRelaciones = await base.RelacionProcesoOperativo(procesoOperativoIdProveedor);
-            if (vRelaciones == null || vRelaciones.Count == 0)
-                return vDP;
-
-            //Obtenemos la columna de UsuarioId.
-            Int64 vColUsuarioId = UtilExpediente.ObtenRelacion(vRelaciones, "UsuarioId").ColumnaId;
-            if (vColUsuarioId == 0)
-                return vDP;
-
-            //Obtenemos el id de expediente del usuario.
-            Int64 vExpendienteId = await base.ProveedorExpedienteId(usuarioId,
-                                                              procesoOperativoIdProveedor,
-                                                              vColUsuarioId);
-            if (vExpendienteId <= 0)
-                return vDP;
-
-            //Obtenemos los datos del expediente.
-            EConExpediente vExpediente = await NConExpedientes.ConExpedienteXId(vExpendienteId);
-            if (vExpediente == null)
-                return vDP;
-
-            //Obtenemos los metadatos de las columnas
-            List<EProcesoOperativoCol> vColMD =
-                await NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoIdProveedor);
-
-            //Cargamos las propiedades
-            vDP.Proveedor = new EProveedor();
-            foreach (ERelacionProcOper vRelacion in vRelaciones)
-            {
-                PropertyInfo vPI = vDP.Proveedor.GetType().GetProperty(vRelacion.Propiedad);
-                if (vPI != null)
-                    vPI.SetValue(vDP.Proveedor, UtilExpediente.ObtenValor(vColMD, vExpediente, vRelacion.ColumnaId, vPI.PropertyType));
-            }
-
-            //Cargamos el ultimo comentario
-            EExpedienteEstatu vEstatusUlt = await NConExpedientes.ExpedienteEstatusUltimo(vExpendienteId);
-            vDP.Proveedor.Comentarios = vEstatusUlt.Comentarios;
-
-            //Creamos las reglas de negocio
-            vDP.ReglasNegocio = new List<MEReglaNeg>();
-            vDP.Proveedor.ExpedienteId = vExpendienteId;
-            vDP.Proveedor.ProcesoOperativoId = procesoOperativoIdProveedor;
-            vDP.Proveedor.ProcesoOperativoEstId = vExpediente.ProcesoOperativoEstId;
-            vDP.Proveedor.EstatusNombre = vExpediente.EstatusNombre;
-            vDP.Proveedor.UsuarioId = usuarioId;
-            foreach (EProcesoOperativoCol vPOC in vColMD)
-            {
-                vDP.ReglasNegocio.Add(new MEReglaNeg()
-                {
-                    Property = vRelaciones.FirstOrDefault(e => e.ColumnaId == vPOC.ColumnaId, new ERelacionProcOper()).Propiedad,
-                    Label = vPOC.Etiqueta,
-                    Required = vPOC.CapObligatorio,
-                    RangeMin = vPOC.CapRangoIni,
-                    RangeMax = vPOC.CapRangoFin,
-                    Decimals = (vPOC.Tipo == TiposColumna.Importe ? vPOC.Decimales : 0)
-                });
-            }
-
-            return vDP;
-        }
-        /// <summary>
-        /// Actualiza el proveedor.
-        /// </summary>
-        /// <param name="proveedor"></param>
-        /// <returns></returns>
-        public async Task<Boolean> ProveedorActualiza(EProveedor proveedor)
-        {
-            EExpediente vExp = new EExpediente();
-            vExp.ProcesoOperativoId = proveedor.ProcesoOperativoId;
-            vExp.ExpendienteId = proveedor.ExpedienteId;
-
-            List<ERelacionProcOper> vRelPO =
-                await RelacionProcesoOperativo(proveedor.ProcesoOperativoId);
-
-            PropertyInfo[] vPIEnt = proveedor.GetType().GetProperties();
-            foreach (ERelacionProcOper vRel in vRelPO)
-            {
-                PropertyInfo vPI = vPIEnt.FirstOrDefault(e => e.Name == vRel.Propiedad, null);
-                if (vPI != null)
-                {
-                    String vValor = String.Empty;
-                    Object vValorOrg = vPI.GetValue(proveedor);
-
-                    if (vValorOrg == null)
-                        vValor = String.Empty;
-                    else if (vValorOrg is DateTime)
-                        vValor = String.Format("{0:dd/MM/yyyy HH:mm:ss}", vValorOrg);
-                    else if (vValorOrg is String)
-                        vValor = (String)vValorOrg;
-                    else
-                        vValor = vValorOrg.ToString();
-
-                    vExp.Valores.Add(new EExpendienteValor()
-                    {
-                        ColumnaId = vRel.ColumnaId,
-                        Valor = vValor
-                    }); ;
-                }
-            }
-
-            return await ExpedienteActualiza(vExp);
-        }
-        /// <summary>
-        /// Pasa el expediente al siguiente estatus.
-        /// </summary>
-        /// <param name="expedienteId"></param>
-        /// <returns></returns>
-        public async Task<Boolean> ProveedorCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
-        {
-            return await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus);
-        }
-        #endregion
-        //No config Proveedor
 
         #endregion
     }

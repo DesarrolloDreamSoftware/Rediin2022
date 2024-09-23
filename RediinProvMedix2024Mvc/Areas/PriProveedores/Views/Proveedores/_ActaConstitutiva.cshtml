@@ -1,0 +1,153 @@
+﻿@using Rediin2022.Entidades.PriClientes
+
+@model EProveedorMedix
+<div style="margin-top:20px">
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-5">
+			<div class="row">
+				<div class="col-md-12 alinearCentro">
+					<b>Acta Constitutiva</b>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.NotarioNombre" placeholder="NomNotario" />
+							<label for="NomNotario">Nombre del notario</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.NumeroEscritura" placeholder="NumEsc" />
+							<label for="NumEsc">No. escritura</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.FechaEscritura" placeholder="FechaEsc" />
+							<label for="FechaEsc">Fecha escritura</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.RepresentanteLegal" placeholder="RepreLeg" />
+							<label for="RepreLeg">Representante legal</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div>
+						<div class="form-floating mb-4 mt-4">
+							<select class="form-select" xval="Model" xval-items="@ViewBag.Identificaciones" xval-first-item="Selecciona" xval-for="@Model.IdentificacionId">
+							</select>
+							<label for="Identificación">Identificación</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.NumIdentificacion" placeholder="NumIden" />
+							<label for="NumIden">No. de identificación</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-5">
+			<div class="row">
+				<div class="col-md-12 alinearCentro">
+					<b>Poder Notarial</b>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialNotarioNombre" placeholder="NomNotario" />
+							<label for="NomNotario">Nombre del notario</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialNumEscritura" placeholder="NumEsc" />
+							<label for="NumEsc">No. escritura</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialFechaEscritura" placeholder="FechaEsc" />
+							<label for="FechaEsc">Fecha escritura</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialRepresentanteLegal" placeholder="RepreLeg" />
+							<label for="RepreLeg">Representante legal</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div>
+						<div class="form-floating mb-4 mt-4">
+							<select class="form-select" xval="Model" xval-first-item="Selecciona" xval-items="@ViewBag.Identificaciones" xval-for="@Model.PoderNotarialIdentificacionId">
+							</select>
+							<label for="Identificación">Identificación</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="inputTamanio">
+						<div class="form-floating mb-3 mt-3">
+							<input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialNumIdentificacion" placeholder="NumIden" />
+							<label for="NumIden">No. de identificación</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-3">
+			<button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura">Guardar</button>
+			<button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura" asp-action="@nameof(ProveedoresController.RevisionExpediente)">Solicita revisión de expediente</button>
+		</div>
+		<div class="col-md-4" style="text-align:center">
+			<button type="submit" asp-action="@nameof(ProveedoresController.CopiaActaConstitutiva)" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura">Copiar datos</button>
+		</div>
+		<div class="col-md-3"></div>
+		<div class="col-md-1"></div>
+	</div>
+</div>

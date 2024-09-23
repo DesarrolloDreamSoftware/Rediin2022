@@ -121,6 +121,14 @@ namespace Rediin2022Api.Areas.PriCatalogos.Controllers
             return await NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoId);
         }
         /// <summary>
+        /// Consulta adicional de la entidad ProcesoOperativoCol.
+        /// </summary>
+        [HttpGet("{procesoOperativoId}")]
+        public async Task<List<EProcesoOperativoColMin>> ProcesoOperativoColCTMin(Int64 procesoOperativoId)
+        {
+            return await NProcesosOperativos.ProcesoOperativoColCTMin(procesoOperativoId);
+        }
+        /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativoCol.
         /// </summary>
         [HttpGet("{procesoOperativoId}")]

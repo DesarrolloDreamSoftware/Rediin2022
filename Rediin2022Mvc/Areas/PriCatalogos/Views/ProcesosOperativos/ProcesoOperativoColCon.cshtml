@@ -29,6 +29,9 @@
 						<span mhead-for="@nameof(EProcesoOperativoCol.Etiqueta)" xhead-sort="true"></span>
 					</th>
 					<th>
+						<span mhead-for="@nameof(EProcesoOperativoCol.Propiedad)" xhead-sort="true"></span>
+					</th>
+					<th>
 						<span mhead-for="@nameof(EProcesoOperativoCol.CapTab)"></span>
 					</th>
 					<th>
@@ -54,6 +57,12 @@
 					</th>
 					<th>
 						<span mhead-for="@nameof(EProcesoOperativoCol.CapRangoFin)" xhead-sort="true"></span>
+					</th>
+					<th>
+						<span mhead-for="@nameof(EProcesoOperativoCol.ComboId)" xhead-sort="true" xhead-tt-id="encComboId"></span>
+						<div id="ttComboId" mtt="encComboId">
+							<div mttcont="@nameof(EProcesoOperativoCol.ComboId)"></div>
+						</div>
 					</th>
 				</tr>
 			</thead>
@@ -84,6 +93,9 @@
 								<span mcell-for="@Model[i].Etiqueta"></span>
 							</td>
 							<td>
+								<span mcell-for="@Model[i].Propiedad"></span>
+							</td>
+							<td>
 								<span mcell-for="@Model[i].CapTab"></span>
 							</td>
 							<th>
@@ -106,6 +118,9 @@
 							</td>
 							<td>
 								<span mcell-for="@Model[i].CapRangoFin"></span>
+							</td>
+							<td>
+								<span mcell-for="@Model[i].ComboId"></span>
 							</td>
 						</tr>
 					}

@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="PriClientes\Expedientes\Proveedor\ERelacionProcOper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="DSEntityNetX.Entities">
       <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Entities.dll</HintPath>
     </Reference>

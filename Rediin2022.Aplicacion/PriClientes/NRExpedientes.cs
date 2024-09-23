@@ -73,8 +73,8 @@ namespace Rediin2022.Aplicacion.PriClientes
         }
         #endregion
 
-        //No config Proveedor
-        #region Funciones especificas para un proc operativo
+        //ProcesoOperativoIdMontePio
+        #region Funciones especificas para Monte Pio
         /// <summary>
         /// Regresa los datos del proveedor segun el usuario autentificado 
         /// para el proceso operativo especifico de proveedores.
@@ -82,7 +82,7 @@ namespace Rediin2022.Aplicacion.PriClientes
         /// <param name="usuarioId"></param>
         /// <returns></returns>
         public async Task<EDatosProveedor> ProveedorXUsuario(Int64 procesoOperativoIdProveedor, 
-                                                        Int64 usuarioId)
+                                                               Int64 usuarioId)
         {
             return await CallAsync<EDatosProveedor>(NomFn(),
                                                        procesoOperativoIdProveedor, 
@@ -93,7 +93,7 @@ namespace Rediin2022.Aplicacion.PriClientes
         /// </summary>
         /// <param name="proveedor"></param>
         /// <returns></returns>
-        public async Task<Boolean> ProveedorActualiza(EProveedor proveedor)
+        public async Task<Boolean> ProveedorActualiza(EProveedorMontePio proveedor)
         {
             return await CallAsync<Boolean>(NomFn(), proveedor);
         }
@@ -106,17 +106,17 @@ namespace Rediin2022.Aplicacion.PriClientes
         {
             return await CallAsync<Boolean>(NomFn(), conExpedienteCambioEstatus);
         }
-        /// <summary>
-        /// Relaciones de las ColumnaId con una Propiedad para los procesos operativos que se fijan.
-        /// </summary>
-        /// <param name="procesoOperativoId"></param>
-        /// <returns></returns>
-        public async Task<List<ERelacionProcOper>> RelacionProcesoOperativo(Int64 procesoOperativoId)
-        {
-            return await CallAsync<List<ERelacionProcOper>>(NomFn(), procesoOperativoId);
-        }
+        ///// <summary>
+        ///// Relaciones de las ColumnaId con una Propiedad para los procesos operativos que se fijan.
+        ///// </summary>
+        ///// <param name="procesoOperativoId"></param>
+        ///// <returns></returns>
+        //public async Task<List<ERelacionProcOper>> RelacionProcesoOperativo(Int64 procesoOperativoId)
+        //{
+        //    return await CallAsync<List<ERelacionProcOper>>(NomFn(), procesoOperativoId);
+        //}
         #endregion
-        //No config Proveedor
+        //ProcesoOperativoIdMontePio
 
         #endregion
     }
