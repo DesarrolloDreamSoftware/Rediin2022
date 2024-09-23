@@ -1,0 +1,111 @@
+﻿@using Rediin2022.Entidades.PriClientes
+
+@model EProveedorMedix
+<div class="row">
+	<div class="col-md-1"></div>
+	<div class="col-md-10">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="inputTamanio">
+					<div class="form-floating mb-3 mt-3">
+						<input class="InputLinea form-control" xval="Model" xval-for="@Model.NombreORazonSocial" placeholder="Nombre" />
+						<label for="Nombre">Nombre o Razón Social</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="inputTamanio">
+					<div class="form-floating mb-3 mt-3">
+						<input class="InputLinea form-control" xval="Model" xval-for="@Model.Rfc" placeholder="RFC" />
+						<label for="RFC">RFC</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="inputTamanio">
+					<div class="form-floating mb-3 mt-3">
+						<input class="InputLinea form-control" xval="Model" xval-for="@Model.CodigoPostal" placeholder="Código" />
+						<label for="Código">Código Postal</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="inputTamanio">
+					<div class="form-floating mb-3 mt-3">
+						<input class="InputLinea form-control" xval="Model" xval-for="@Model.Calle" placeholder="Calle" />
+						<label for="Calle">Calle</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">
+				<div class="inputTamanio">
+					<div class="form-floating mb-3 mt-3">
+						<input class="InputLinea form-control" xval="Model" xval-for="@Model.NumeroExterior" placeholder="NumExt" />
+						<label for="NumExt">Número exterior</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="inputTamanio">
+					<div class="form-floating mb-3 mt-3">
+						<input class="InputLinea form-control" xval="Model" xval-for="@Model.NumeroInterior" placeholder="NumInt" />
+						<label for="NumInt">Número interior</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div>
+					<div class="form-floating mb-4 mt-4">
+						<select xval="Model" xval-for="@Model.EstadoId" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Estados" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
+						</select>
+						<label for="Estado">Estado</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div>
+					<div class="form-floating mb-4 mt-4">
+						<select xval="Model" xval-for="@Model.MunicipioId" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Municipio" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
+						</select>
+						<label for="Municipio">Municipio</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div>
+					<div class="form-floating mb-4 mt-4">
+						<select xval="Model" xval-for="@Model.ColoniaId" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Colonia" class="form-select">
+						</select>
+						<label for="Colonia">Colonia</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura">Guardar</button>
+				<button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura" asp-action="@nameof(ProveedoresController.RevisionExpediente)">Solicita revisión de expediente</button>
+			</div>
+		</div>
+		@*@if ((Boolean)ViewBag.EsCaptura && 
+			 !String.IsNullOrWhiteSpace(@Model.Comentarios))
+		{
+			<div class="row">
+				<div class="col-md-12">
+					<div class="mt-4 p-5 bg-success text-white rounded">
+						<h5>Comentarios.</h5>
+						@Model.Comentarios
+					</div>
+					<br />
+				</div>
+			</div>
+		}*@
+	</div>
+	<div class="col-md-1"></div>
+</div>

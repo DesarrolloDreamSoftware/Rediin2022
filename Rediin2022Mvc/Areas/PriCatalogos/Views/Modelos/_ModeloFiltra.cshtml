@@ -1,0 +1,24 @@
+﻿@model EModeloFiltro
+@{
+    EVModelos EV = ViewBag.EV;
+}
+
+<form asp-action="_FiltraModelo">
+    <div mpanel="Base" xpnl-rules="@EV.Modelo.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="3">
+                <input mval-filter="Model" xval-for="FilModeloNombre"/>
+            </div>
+            <div melemento="FilCol" melem-cols="3">
+                <select mval-filter="Model" xval-for="FilTipoCapturaId"></select>
+            </div>
+            <div melemento="FilCol" melem-cols="3">
+                <select mval-filter="Model" xval-for="FilActivo"></select>
+            </div>
+            <div melemento="FilColBtn" melem-cols="3">
+                <button maccion="Filtra" asp-action="@nameof(ModelosController.ModeloFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(ModelosController.ModeloLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>

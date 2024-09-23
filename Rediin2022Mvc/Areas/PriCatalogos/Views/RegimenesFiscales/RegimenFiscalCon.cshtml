@@ -1,0 +1,72 @@
+﻿@model List<ERegimenFiscal>
+@{
+    ViewData["Title"] = "Consulta";
+    EVRegimenesFiscales EV = ViewBag.EV;
+}
+<div mpanel="Display" xpnl-messages="@ViewBag.Mensajes" xpnl-rules="@EV.RegimenFiscal.Reglas" >
+    <div msub-panel="ConTitulo">
+        @MensajesXId._RegimenFiscalTitCon
+    </div>
+    <div msub-panel="ConFiltro">
+        <partial name="_RegimenFiscalFiltra" model="@EV.RegimenFiscal.Filtro" view-data="ViewData" />
+    </div>
+    <div msub-panel="ConDatos">
+        <table melemento="ConTabla" xsort-action="@nameof(RegimenesFiscalesController.RegimenFiscalOrdena)"
+               xsort-current="@EV.RegimenFiscal.ColOrden">
+            <thead melemento="ConTablaEnc">
+                <tr>
+                    <th></th>
+                    <th>
+                        <span mhead-for="@nameof(ERegimenFiscal.Activo)" xhead-sort="true"></span>
+                    </th>
+                    <th>
+                        <span mhead-for="@nameof(ERegimenFiscal.RegimenFiscaId)" xhead-sort="true"></span>
+                    </th>
+                    <th>
+                        <span mhead-for="@nameof(ERegimenFiscal.RegimenFiscalClave)" xhead-sort="true"></span>
+                    </th>
+                    <th>
+                        <span mhead-for="@nameof(ERegimenFiscal.RegimenFiscalNombre)" xhead-sort="true"></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    for (int i = 0; i < Model.Count(); i++)
+                    {
+                        String vDivAcciones = "divPanelAcciones" + i.ToString();
+                        <tr mrsel="@(EV.RegimenFiscal.Indice == i)">
+                            <td nowrap>
+                                <a maccion="IniciaActualiza" asp-action="@nameof(RegimenesFiscalesController.RegimenFiscalActualizaIni)" asp-route-indice="@i"></a>
+                                <div msub-panel="ConAccionesXReg" id="@vDivAcciones">
+                                    <a maccion="ConsultaXIdList" asp-action="@nameof(RegimenesFiscalesController.RegimenFiscalXId)" asp-route-indice="@i"></a>
+                                    <a maccion="EliminaList" asp-action="@nameof(RegimenesFiscalesController.RegimenFiscalElimina)" asp-route-indice="@i"></a>
+                                </div>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].Activo"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].RegimenFiscaId"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].RegimenFiscalClave"></span>
+                            </td>
+                            <td>
+                                <span mcell-for="@Model[i].RegimenFiscalNombre"></span>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div msub-panel="ConPaginador">
+        <div mdata-pager="@EV.RegimenFiscal.Pag?.DatPag" xdp-action="@nameof(RegimenesFiscalesController.RegimenFiscalPaginacion)"></div>
+    </div>
+    <div msub-panel="ConAccionesGen">
+        <a maccion="IniciaInserta" asp-action="@nameof(RegimenesFiscalesController.RegimenFiscalInsertaIni)" asp-route-indice="-1"></a>
+        &nbsp;
+    </div>
+</div>

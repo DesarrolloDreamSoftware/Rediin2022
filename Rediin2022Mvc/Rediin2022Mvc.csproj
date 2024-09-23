@@ -1,0 +1,168 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <UserSecretsId>604491d4-804d-4b61-bfaf-f700f53094d3</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\SiseguiPriSeguridad\**" />
+    <Compile Remove="Areas\SiseguiPubSeguridad\**" />
+    <Compile Remove="Areas\x\**" />
+    <Compile Remove="Models\**" />
+    <Compile Remove="obj\**" />
+    <Compile Remove="Views\**" />
+    <Compile Remove="wwwroot\lib\bootstrap4_3_1\**" />
+    <Compile Remove="x\**" />
+    <Content Remove="Areas\SiseguiPriSeguridad\**" />
+    <Content Remove="Areas\SiseguiPubSeguridad\**" />
+    <Content Remove="Areas\x\**" />
+    <Content Remove="Models\**" />
+    <Content Remove="obj\**" />
+    <Content Remove="Views\**" />
+    <Content Remove="wwwroot\lib\bootstrap4_3_1\**" />
+    <Content Remove="x\**" />
+    <EmbeddedResource Remove="Areas\SiseguiPriSeguridad\**" />
+    <EmbeddedResource Remove="Areas\SiseguiPubSeguridad\**" />
+    <EmbeddedResource Remove="Areas\x\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <EmbeddedResource Remove="Views\**" />
+    <EmbeddedResource Remove="wwwroot\lib\bootstrap4_3_1\**" />
+    <EmbeddedResource Remove="x\**" />
+    <None Remove="Areas\SiseguiPriSeguridad\**" />
+    <None Remove="Areas\SiseguiPubSeguridad\**" />
+    <None Remove="Areas\x\**" />
+    <None Remove="Models\**" />
+    <None Remove="obj\**" />
+    <None Remove="Views\**" />
+    <None Remove="wwwroot\lib\bootstrap4_3_1\**" />
+    <None Remove="x\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GroupDocs.Viewer" Version="24.8.0" />
+    <PackageReference Include="MailKit" Version="4.7.1.1" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rediin2022.Aplicacion\Rediin2022.Aplicacion.csproj" />
+    <ProjectReference Include="..\Rediin2022.Comun\Rediin2022.Comun.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DSEntityNetX.Application">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Application.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Common">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Entities">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Mvc">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="DSEntityNetX.Web">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Librerias\DSEntityNetX.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Aplicacion">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Aplicacion.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.AspNetCore">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.AspNetCore.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Comun">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Comun.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Entidades">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Entidades.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Mvc">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Mvc.RazorCom">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Mvc.RazorCom.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Mvc.Seguridad">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Mvc.Seguridad.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Mvc.TagHelpers">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Mvc.TagHelpers.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Negocio">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Negocio.dll</HintPath>
+    </Reference>
+    <Reference Include="DSMetodNetX.Web">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="Sisegui2020.Aplicacion">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\Sisegui2020.Aplicacion.dll</HintPath>
+    </Reference>
+    <Reference Include="Sisegui2020.Entidades">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\Sisegui2020.Entidades.dll</HintPath>
+    </Reference>
+    <Reference Include="SpoolLR2020">
+      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\SpoolLR2020.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\PriOperacion\Views\ConExpedientes\ConExpedienteObjetoCap.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\lib\bootstrap-toggle-master\.gitignore" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\doc\nytdev.svg" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\doc\script.js" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\Gruntfile.js" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\js\bootstrap-toggle.js" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\js\bootstrap-toggle.min.js" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\js\bootstrap-toggle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\js\bootstrap2-toggle.js" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\js\bootstrap2-toggle.min.js" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\js\bootstrap2-toggle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\LICENSE" />
+    <None Include="wwwroot\lib\bootstrap-toggle-master\README.md" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-theme.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-theme.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\npm.js" />
+    <None Include="wwwroot\lib\bootstrap\LICENSE" />
+    <None Include="wwwroot\lib\DateTimePicker\jquery.datetimepicker.full.js" />
+    <None Include="wwwroot\lib\DateTimePicker\jquery.datetimepicker.full.min.js" />
+    <None Include="wwwroot\lib\DateTimePicker\jquery.datetimepicker.min.js" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\jquery.validate.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\LICENSE.md" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

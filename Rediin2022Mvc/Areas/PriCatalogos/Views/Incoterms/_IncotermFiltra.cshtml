@@ -1,0 +1,21 @@
+﻿@model EIncotermFiltro
+@{
+    EVIncoterms EV = ViewBag.EV;
+}
+
+<form asp-action="_FiltraIncoterm">
+    <div mpanel="Base" xpnl-rules="@EV.Incoterm.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilIncotermNombre"/>
+            </div>
+            <div melemento="FilCol" melem-cols="4">
+                <select mval-filter="Model" xval-for="FilActivo"></select>
+            </div>
+            <div melemento="FilColBtn" melem-cols="4">
+                <button maccion="Filtra" asp-action="@nameof(IncotermsController.IncotermFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(IncotermsController.IncotermLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>

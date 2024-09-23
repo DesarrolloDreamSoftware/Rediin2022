@@ -1,0 +1,54 @@
+﻿@using Rediin2022.Entidades.PriOperacion
+
+@model List<EConExpedienteObjeto>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <table class="estiloTabla" cellpadding="10">
+            <tr class="bordeTrIni">
+                <th>Documento</th>
+                <th>Acciones</th>
+                <th>Archivo</th>
+                <th>Fecha de carga</th>
+            </tr>
+            @if (Model != null)
+            {
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                    <tr class="bordeTr">
+                        <td>
+                            <span xcell-for="@Model[i].ProcesoOperativoObjetoNombre"></span>
+                        </td>
+                        <td>
+                            @if (ViewBag.EsCaptura)
+                            {
+                                <a style="background-color:#549BB4" asp-action="@nameof(ProveedoresController.SubeArchivoIni)" asp-route-indice="@i" xvisible="@ViewBag.EsCaptura"><img src="~/Imagenes/LogoSubir.png" width="27 px" title="Subir Archivo"></a>
+                                @if (!String.IsNullOrWhiteSpace(Model[i].ArchivoNombre))
+                                {
+                                    <a style="background-color:#549BB4" asp-action="@nameof(ProveedoresController.EliminaArchivo)" asp-route-indice="@i"><img src="~/Imagenes/LogoElimina.png" width="25 px" title="Elimina Archivo"></a>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @if (String.IsNullOrWhiteSpace(Model[i].ArchivoNombre))
+                            {
+                                <span xcell-for="@Model[i].ArchivoNombre"></span>
+                            }
+                            else
+                            {
+                                <a asp-action="@nameof(ProveedoresController.DescargaArchivo)" asp-route-indice="@i"><span xcell-for="@Model[i].ArchivoNombre"></span></a>
+                            }
+                        </td>
+                        <td>
+                            @if (!String.IsNullOrWhiteSpace(Model[i].ArchivoNombre))
+                            {
+                                <span xcell-for="@Model[i].FechaUltMod"></span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+    <div class="col-md-1"></div>
+</div>

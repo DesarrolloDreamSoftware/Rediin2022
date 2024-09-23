@@ -1,4 +1,5 @@
 ﻿using DSMetodNetX.Entidades;
+using Rediin2022.Entidades.PriCatalogos;
 using System;
 
 namespace Rediin2022.Entidades.PriOperacion
@@ -11,5 +12,9 @@ namespace Rediin2022.Entidades.PriOperacion
         [MDAMain(true)] public String ValorTexto { get; set; } = String.Empty;
         [MDAMain(true)] public Decimal ValorNumerico { get; set; } = 0M;
         [MDAMain(true)] public DateTime ValorFecha { get; set; } = DateTime.MinValue;
+        /// <summary>
+        /// Solo para presentacion
+        /// </summary>
+        public Combos ComboId { get; set; } = Combos.Ninguno;
     }
 }

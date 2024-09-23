@@ -51,11 +51,15 @@ public interface INProcesosOperativos : IMCtrMensajes
     /// Consulta por id de la entidad ProcesoOperativoCol.
     /// </summary>
     Task<EProcesoOperativoCol> ProcesoOperativoColXId(Int64 procesoOperativoId,
-                                                          Int64 columnaId);
+                                                      Int64 columnaId);
     /// <summary>
     /// Consulta adicional de la entidad ProcesoOperativoCol.
     /// </summary>
     Task<List<EProcesoOperativoCol>> ProcesoOperativoColCT(Int64 procesoOperativoId);
+    /// <summary>
+    /// Consulta adicional de la entidad ProcesoOperativoCol.
+    /// </summary>
+    Task<List<EProcesoOperativoColMin>> ProcesoOperativoColCTMin(Int64 procesoOperativoId);
     /// <summary>
     /// Consulta para combos de la entidad ProcesoOperativoCol.
     /// </summary>

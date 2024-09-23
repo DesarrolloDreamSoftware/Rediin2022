@@ -1,6 +1,5 @@
 using DSMetodNetX.Aplicacion;
 using DSMetodNetX.Entidades;
-
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Entidades.PriOperacion;
@@ -17,7 +16,6 @@ namespace Rediin2022.Aplicacion.PriOperacion
         public MAccionesGen Accion { get; set; } = MAccionesGen.Ninguna;
 
         //Enc
-
         public MEVSFCon<EConExpProcOperativo, EConExpProcOperativoPag, EConExpProcOperativoFiltro> ConExpProcOperativo { get; set; } = new();
         //public EConExpProcOperativoPag ConExpProcOperativoPag { get; set; } = null;
         //public String ConExpProcOperativoColOrden { get; set; } = String.Empty;
@@ -56,21 +54,12 @@ namespace Rediin2022.Aplicacion.PriOperacion
         //public Int32 ExpedienteEstatuIndice { get; set; } = 0;
         //public EExpedienteEstatu ExpedienteEstatuSel { get; set; } = null;
 
-        //No config Proveedor
-        public Int64 ParamProveedorProcesoOperativoId { get; set; }
-        public Dictionary<Int64, List<MEElemento>> CombosProveedores { get; set; }
-        public Int64 ParamProveedorColumnaIdPais { get; set; }
-        public Int64 ParamProveedorColumnaIdEstado { get; set; }
-        public Int64 ParamProveedorColumnaIdMunicipio { get; set; }
-        public Int64 ParamProveedorColumnaIdColonia { get; set; }
-        public Int64 ParamEstIdCaptura { get; set; }
-        public Int64 ParamEstIdAutorizado { get; set; }
-        public Int64 ParamProveedorColumnaIdNombre { get; set; }
-        public Int64 ParamProveedorColumnaIdCorreo { get; set; }
-        public Int64 ParamPerfilIdNvoUsr { get; set; }
-        public Int64 ProveedorColumnaIdUsuario { get; set; }
-        public String ParamUrlRediinProveedores { get; set; }
-        //No config Proveedor
+        public EProcesoOperativoCol ColumnaIdPais { get; set; } = null;
+        public EProcesoOperativoCol ColumnaIdEstado { get; set; } = null;
+        public EProcesoOperativoCol ColumnaIdMunicipio { get; set; } = null;
+        public EProcesoOperativoCol ColumnaIdColonias { get; set; } = null;
+
+        public EVConExpedientesMontePio MontePio { get; set; } = null;
         #endregion
     }
 }

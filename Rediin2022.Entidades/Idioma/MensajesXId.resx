@@ -427,13 +427,13 @@
     <value>Condiciones pago</value>
   </data>
   <data name="_SapCondicionPagoTitCap" xml:space="preserve">
-    <value>Condici&#243;n de pago</value>
+    <value>Condición de pago</value>
   </data>
   <data name="SapCondicionPagoId" xml:space="preserve">
-    <value>Cve condici&#243;n de pago</value>
+    <value>Cve condición de pago</value>
   </data>
   <data name="SapCondicionPagoNombre" xml:space="preserve">
-    <value>Condici&#243;n de pago</value>
+    <value>Condición de pago</value>
   </data>
   <data name="_SapCuentaAsociadaTitCon" xml:space="preserve">
     <value>Cuentas asociadas</value>
@@ -460,16 +460,16 @@
     <value>Grupo de cuenta</value>
   </data>
   <data name="_SapGrupoTesoreriaTitCon" xml:space="preserve">
-    <value>Grupos de tesorer&#237;a</value>
+    <value>Grupos de tesorería</value>
   </data>
   <data name="_SapGrupoTesoreriaTitCap" xml:space="preserve">
-    <value>Grupo de tesorer&#237;a</value>
+    <value>Grupo de tesorería</value>
   </data>
   <data name="SapGrupoTesoreriaId" xml:space="preserve">
-    <value>Cve Grupo de tesorer&#237;a</value>
+    <value>Cve Grupo de tesorería</value>
   </data>
   <data name="SapGrupoTesoreriaNombre" xml:space="preserve">
-    <value>Grupo de tesorer&#237;a</value>
+    <value>Grupo de tesorería</value>
   </data>
   <data name="_SapGrupoToleranciaTitCon" xml:space="preserve">
     <value>Grupos de tolerancia</value>
@@ -487,13 +487,13 @@
     <value>Organizaciones de compra</value>
   </data>
   <data name="_SapOrganizacionCompraTitCap" xml:space="preserve">
-    <value>Organizaci&#243;n de compra</value>
+    <value>Organización de compra</value>
   </data>
   <data name="SapOrganizacionCompraId" xml:space="preserve">
-    <value>Cve Organizaci&#243;n de compra</value>
+    <value>Cve Organización de compra</value>
   </data>
   <data name="SapOrganizacionCompraNombre" xml:space="preserve">
-    <value>Organizaci&#243;n de compra</value>
+    <value>Organización de compra</value>
   </data>
   <data name="_SapSociedadTitCon" xml:space="preserve">
     <value>Sociedades</value>
@@ -532,16 +532,16 @@
     <value>Tratamiento</value>
   </data>
   <data name="_SapViaPagoTitCon" xml:space="preserve">
-    <value>V&#237;as de pago</value>
+    <value>Vías de pago</value>
   </data>
   <data name="_SapViaPagoTitCap" xml:space="preserve">
-    <value>V&#237;a de pago</value>
+    <value>Vía de pago</value>
   </data>
   <data name="SapViaPagoId" xml:space="preserve">
-    <value>Cve V&#237;a de pago</value>
+    <value>Cve Vía de pago</value>
   </data>
   <data name="SapViaPagoNombre" xml:space="preserve">
-    <value>V&#237;a de pago</value>
+    <value>Vía de pago</value>
   </data>
   <data name="_SapBancoTitCon" xml:space="preserve">
     <value>Bancos</value>
@@ -554,5 +554,68 @@
   </data>
   <data name="SapBancoNombre" xml:space="preserve">
     <value>Banco</value>
+  </data>
+  <data name="_ModeloTitCon" xml:space="preserve">
+    <value>Modelos</value>
+  </data>
+  <data name="_ModeloTitCap" xml:space="preserve">
+    <value>Modelo</value>
+  </data>
+  <data name="ModeloId" xml:space="preserve">
+    <value>Cve modelo</value>
+  </data>
+  <data name="ModeloNombre" xml:space="preserve">
+    <value>Modelo</value>
+  </data>
+  <data name="TipoCapturaId" xml:space="preserve">
+    <value>Tipo de captura</value>
+  </data>
+  <data name="TipoCaptura" xml:space="preserve">
+    <value>Tipo de captura</value>
+  </data>
+  <data name="TipoCaptura_Ninguno" xml:space="preserve">
+    <value>Enumerador vacío</value>
+  </data>
+  <data name="TipoCaptura_PersonaFisica" xml:space="preserve">
+    <value>Person Física</value>
+  </data>
+  <data name="TipoCaptura_PersonaMoral" xml:space="preserve">
+    <value>Persona Moral</value>
+  </data>
+  <data name="TipoCaptura_PersonaExtranjera" xml:space="preserve">
+    <value>Persona Extranjera</value>
+  </data>
+  <data name="_IncotermTitCon" xml:space="preserve">
+    <value>Incoterms</value>
+  </data>
+  <data name="_IncotermTitCap" xml:space="preserve">
+    <value>Incoterm</value>
+  </data>
+  <data name="IncotermId" xml:space="preserve">
+    <value>Id Incoterm</value>
+  </data>
+  <data name="IncotermClave" xml:space="preserve">
+    <value>Clave Incoterm</value>
+  </data>
+  <data name="IncotermNombre" xml:space="preserve">
+    <value>Incoterm</value>
+  </data>
+  <data name="_RegimenFiscalTitCon" xml:space="preserve">
+    <value>Régimenes fiscales</value>
+  </data>
+  <data name="_RegimenFiscalTitCap" xml:space="preserve">
+    <value>Régimen fiscal</value>
+  </data>
+  <data name="RegimenFiscaId" xml:space="preserve">
+    <value>Id Régimen</value>
+  </data>
+  <data name="RegimenFiscalClave" xml:space="preserve">
+    <value>Clave Régimen</value>
+  </data>
+  <data name="RegimenFiscalNombre" xml:space="preserve">
+    <value>Régimen fiscal</value>
+  </data>
+  <data name="ComboId" xml:space="preserve">
+    <value>Cve combo</value>
   </data>
 </root>

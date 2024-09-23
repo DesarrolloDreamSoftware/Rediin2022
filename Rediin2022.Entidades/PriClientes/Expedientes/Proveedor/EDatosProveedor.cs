@@ -9,7 +9,10 @@ namespace Rediin2022.Entidades.PriClientes
 {
     public class EDatosProveedor
     {
-        public EProveedor Proveedor { get; set; }
+        /// <summary>
+        /// JSON Que es el proveedor hay que deserealizar
+        /// </summary>
+        public string Proveedor { get; set; } = string.Empty;
         public List<MEReglaNeg> ReglasNegocio { get; set; }
     }
 }

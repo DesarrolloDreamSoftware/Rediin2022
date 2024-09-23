@@ -183,54 +183,6 @@ namespace Rediin2022Api.Areas.PriClientes.Controllers
         }
         #endregion
 
-        //No config Proveedor
-        #region Funciones especificas para un proc operativo
-        /// <summary>
-        /// Regresa los datos del proveedor segun el usuario autentificado 
-        /// para el proceso operativo especifico de proveedores.
-        /// </summary>
-        /// <param name="usuarioId"></param>
-        /// <returns></returns>
-        [HttpGet("{procesoOperativoIdProveedor}/{usuarioId}")]
-        public async Task<EDatosProveedor> ProveedorXUsuario(Int64 procesoOperativoIdProveedor,
-                                                                Int64 usuarioId)
-        {
-            return await NExpedientes.ProveedorXUsuario(procesoOperativoIdProveedor,
-                                                        usuarioId);
-        }
-        /// <summary>
-        /// Actualiza el proveedor.
-        /// </summary>
-        /// <param name="proveedor"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<Boolean> ProveedorActualiza(EProveedor proveedor)
-        {
-            return await NExpedientes.ProveedorActualiza(proveedor);
-        }
-        /// <summary>
-        /// Pasa el expediente al siguiente estatus.
-        /// </summary>
-        /// <param name="conExpedienteCambioEstatus"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<Boolean> ProveedorCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
-        {
-            return await NExpedientes.ProveedorCambioEstatus(conExpedienteCambioEstatus);
-        }
-        /// <summary>
-        /// Relaciones de las ColumnaId con una Propiedad para los procesos operativos que se fijan.
-        /// </summary>
-        /// <param name="procesoOperativoId"></param>
-        /// <returns></returns>
-        [HttpGet("{procesoOperativoId}")]
-        public async Task<List<ERelacionProcOper>> RelacionProcesoOperativo(Int64 procesoOperativoId)
-        {
-            return await NExpedientes.RelacionProcesoOperativo(procesoOperativoId);
-        }
-        #endregion
-        //No config Proveedor
-
         #endregion
     }
 }

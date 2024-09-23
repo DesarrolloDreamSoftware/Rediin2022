@@ -3,6 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <BaseOutputPath>D:\1Proyectos\Demexis - Rediin\3 Desarrollo\3 LibreriasRediin</BaseOutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>D:\1Proyectos\Demexis - Rediin\3 Desarrollo\3 LibreriasRediin</OutputPath>
+    <NoWarn>1701;1702;8600;8601;8602;8603;8604;8618;8620;8625</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Rediin2022.Comun\Rediin2022.Comun.csproj" />
     <ProjectReference Include="..\Rediin2022.Entidades\Rediin2022.Entidades.csproj" />
   </ItemGroup>
 

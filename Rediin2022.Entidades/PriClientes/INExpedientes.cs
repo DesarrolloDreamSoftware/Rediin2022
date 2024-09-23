@@ -35,34 +35,4 @@ public interface INExpedientes : IMCtrMensajes
     /// <returns></returns>
     Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb);
     #endregion
-
-    //No config Proveedor
-    #region Funciones especificas para un proc operativo
-    /// <summary>
-    /// Regresa los datos del proveedor segun el usuario autentificado 
-    /// para el proceso operativo especifico de proveedores.
-    /// </summary>
-    /// <param name="usuarioId"></param>
-    /// <returns></returns>
-    Task<EDatosProveedor> ProveedorXUsuario(Int64 procesoOperativoIdProveedor, Int64 usuarioId);
-    /// <summary>
-    /// Actualiza el proveedor.
-    /// </summary>
-    /// <param name="proveedor"></param>
-    /// <returns></returns>
-    Task<Boolean> ProveedorActualiza(EProveedor proveedor);
-    /// <summary>
-    /// Pasa el expediente al siguiente estatus.
-    /// </summary>
-    /// <param name="conExpedienteCambioEstatus"></param>
-    /// <returns></returns>
-    Task<Boolean> ProveedorCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus);
-    /// <summary>
-    /// Relaciones de las ColumnaId con una Propiedad para los procesos operativos que se fijan.
-    /// </summary>
-    /// <param name="procesoOperativoId"></param>
-    /// <returns></returns>
-    Task<List<ERelacionProcOper>> RelacionProcesoOperativo(Int64 procesoOperativoId);
-    #endregion
-    //No config Proveedor
 }

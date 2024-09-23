@@ -161,6 +161,14 @@ namespace Rediin2022.AccesoDatos.PriCatalogos
             return await _conexion.LoadEntitiesAsync<EProcesoOperativoCol>("NCProcesosOperativosColsCT");
         }
         /// <summary>
+        /// Consulta adicional de la entidad ProcesoOperativoCol.
+        /// </summary>
+        public async Task<List<EProcesoOperativoColMin>> ProcesoOperativoColCTMin(Int64 procesoOperativoId)
+        {
+            _conexion.AddParamIn(procesoOperativoId);
+            return await _conexion.LoadEntitiesAsync<EProcesoOperativoColMin>("NCProcesosOperativosColsCTMin");
+        }
+        /// <summary>
         /// Consulta para combos de la entidad ProcesoOperativoCol.
         /// </summary>
         public async Task<List<MEElemento>> ProcesoOperativoColCmb(Int64 procesoOperativoId)

@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Html;
+@using Sisegui2020.Entidades.PubSeguridad
+
+@model EAutentificar
+<form asp-action="Autentifica">
+	<div class="row">
+		<div class="col-md-4 "></div>
+
+		<div class="col-md-4" xpanel="Edit" xpnl-rules="@ViewBag.Reglas">
+			<div class="row">
+				<div class="col-md-12 textoInicial">
+					<h4>Iniciar sesión</h4>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 ">
+					<input class="form-control InputTotal" xval="Model" xval-for="Usuario" placeholder="Usuario" />
+				</div>
+			</div>
+			<br />
+			<div class="row">
+				<div class="col-md-12 ">
+					<input class="form-control InputTotal" xval="Model" type="password" xval-for="Contrasenia" placeholder="Contraseña" />
+				</div>
+			</div>
+			<br />
+			<div class="row">
+				<div class="col-md-12" style="text-align:center">
+					<button type="submit" asp-action="@nameof(AutentificacionController.Autentifica)" class="btn btn-primary Boton">Iniciar</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h6 class="colorTextoError alinearCentro">@ViewBag.MensajeError</h6>
+				</div>
+			</div>
+			<br />
+			<div class="row">
+				<div class="col-md-12 textoAlineadoDer">
+					<h6><a href="">Olvide mi contraseña</a></h6>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-4 "></div>
+	</div>
+</form>

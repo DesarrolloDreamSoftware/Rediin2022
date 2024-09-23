@@ -12,6 +12,7 @@ namespace Rediin2022.Entidades.PriCatalogos
         public Int64 ProcesoOperativoId { get; set; } = 0L; //[Llave padre]
 
         //Columnas principales
+        public String FilPropiedad { get; set; } = String.Empty;
         public String FilEtiqueta { get; set; } = String.Empty;
         public TiposColumna FilTipo { get; set; } = TiposColumna.Ninguno;
         public Boolean FiltraFilActivo { get; set; } = false;

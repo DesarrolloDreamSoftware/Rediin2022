@@ -1,0 +1,21 @@
+﻿@model ERegimenFiscalFiltro
+@{
+    EVRegimenesFiscales EV = ViewBag.EV;
+}
+
+<form asp-action="_FiltraRegimenFiscal">
+    <div mpanel="Base" xpnl-rules="@EV.RegimenFiscal.Reglas">
+        <div melemento="CapLin">
+            <div melemento="FilCol" melem-cols="4">
+                <input mval-filter="Model" xval-for="FilRegimenFiscalNombre"/>
+            </div>
+            <div melemento="FilCol" melem-cols="4">
+                <select mval-filter="Model" xval-for="FilActivo"></select>
+            </div>
+            <div melemento="FilColBtn" melem-cols="4">
+                <button maccion="Filtra" asp-action="@nameof(RegimenesFiscalesController.RegimenFiscalFiltra)"></button>
+                <button maccion="LimpiaFiltros" asp-action="@nameof(RegimenesFiscalesController.RegimenFiscalLimpiaFiltros)"></button>
+            </div>
+        </div>
+    </div>
+</form>
