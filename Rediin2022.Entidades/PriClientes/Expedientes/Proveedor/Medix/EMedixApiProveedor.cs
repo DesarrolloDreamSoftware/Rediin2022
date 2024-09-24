@@ -55,6 +55,8 @@ public class EMedixApiProveedor
 	public string vendedorResponsable { get; set; }
 	public string incoTerms1 { get; set; }
 	public string incoTerms2 { get; set; }
+	public string curp { get; set; }
+	public string regimenFiscal { get; set; }
 	public List<EMedixApiCuenta> cuentas { get; set; } = new List<EMedixApiCuenta>();
 	public string numeroProveedor { get; set; }
 	public string respuestaSAPCodigo { get; set; }
