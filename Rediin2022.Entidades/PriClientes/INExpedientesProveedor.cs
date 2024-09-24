@@ -1,3 +1,4 @@
+using DSEntityNetX.Entities.Common;
 using DSMetodNetX.Entidades;
 using Rediin2022.Entidades.PriOperacion;
 using System;
@@ -23,7 +24,7 @@ public interface INExpedientesProveedor : IMCtrMensajes
     /// </summary>
     /// <param name="proveedor"></param>
     /// <returns></returns>
-    Task<Boolean> ProveedorActualiza(string proveedor);
+    Task<Boolean> ProveedorActualiza(EString proveedor);
     /// <summary>
     /// Pasa el expediente al siguiente estatus.
     /// </summary>

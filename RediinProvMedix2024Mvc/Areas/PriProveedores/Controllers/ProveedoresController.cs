@@ -1,6 +1,7 @@
 ﻿using DSEntityNetX.Business.Rules;
 using DSEntityNetX.Common.Casting;
 using DSEntityNetX.Common.File;
+using DSEntityNetX.Entities.Common;
 using DSEntityNetX.Entities.Language;
 using DSEntityNetX.Entities.Rules;
 using DSEntityNetX.Mvc.Session;
@@ -167,7 +168,7 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
             //	proveedor.PoderNotarialIdentificacion = NIdentificaciones.IdentificacionXId(proveedor.PoderNotarialIdentificacionId)?.IdentificacionNombre ?? String.Empty;
 
             //Actualizacion
-            if (await NExpedientesProveedor.ProveedorActualiza(JsonSerializer.Serialize(proveedor)))
+            if (await NExpedientesProveedor.ProveedorActualiza(new EString() { StringValue = JsonSerializer.Serialize(proveedor) }))
             {
                 EDatosProveedor vProveedorXUsuario = await NExpedientesProveedor.ProveedorXUsuario(proveedor.ProcesoOperativoId, proveedor.UsuarioId);
                 EV.ProveedorReglas = vProveedorXUsuario.ReglasNegocio;

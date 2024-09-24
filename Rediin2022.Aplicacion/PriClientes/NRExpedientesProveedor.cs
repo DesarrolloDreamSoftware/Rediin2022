@@ -1,4 +1,5 @@
 using DSEntityNetX.Common.Casting;
+using DSEntityNetX.Entities.Common;
 using DSMetodNetX.Aplicacion;
 using DSMetodNetX.Entidades;
 
@@ -44,7 +45,7 @@ namespace Rediin2022.Aplicacion.PriClientes
         /// </summary>
         /// <param name="proveedor"></param>
         /// <returns></returns>
-        public async Task<Boolean> ProveedorActualiza(string proveedor)
+        public async Task<Boolean> ProveedorActualiza(EString proveedor)
         {
             return await CallAsync<Boolean>(NomFn(), proveedor);
         }

@@ -1,3 +1,4 @@
+using DSEntityNetX.Entities.Common;
 using DSEntityNetX.Entities.File;
 using DSMetodNetX.Api.Seguridad;
 using DSMetodNetX.Entidades;
@@ -68,7 +69,7 @@ namespace Rediin2022Api.Areas.PriClientes.Controllers
         /// <param name="proveedor"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<Boolean> ProveedorActualiza(string proveedor)
+        public async Task<Boolean> ProveedorActualiza(EString proveedor)
         {
             return await NExpedientesProveedor.ProveedorActualiza(proveedor);
         }

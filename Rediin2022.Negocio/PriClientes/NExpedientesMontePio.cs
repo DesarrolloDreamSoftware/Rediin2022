@@ -1,3 +1,4 @@
+using DSEntityNetX.Entities.Common;
 using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
 using Rediin2022.AccesoDatos.PriClientes;
@@ -89,9 +90,9 @@ namespace Rediin2022.Negocio.PriClientes
         /// </summary>
         /// <param name="proveedor"></param>
         /// <returns></returns>
-        public async Task<Boolean> ProveedorActualiza(string proveedor)
+        public async Task<Boolean> ProveedorActualiza(EString proveedor)
         {
-            EProveedorMontePio vProveedor = JsonSerializer.Deserialize<EProveedorMontePio>(proveedor);
+            EProveedorMontePio vProveedor = JsonSerializer.Deserialize<EProveedorMontePio>(proveedor.StringValue);
 
             EExpediente vExp = new EExpediente();
             vExp.ProcesoOperativoId = vProveedor.ProcesoOperativoId;
