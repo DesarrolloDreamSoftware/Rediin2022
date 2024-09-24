@@ -24,13 +24,14 @@ namespace RediinProvMedix2022Mvc.Areas.PubSeguridad.Controllers
             NSeguridad = nSeguridad;
         }
 
-		public override void OnActionExecuting(ActionExecutingContext context)
-		{
-			EV = new EVSeguridad(HttpContext);
-			base.OnActionExecuting(context);
-		}
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (EV == null)
+                EV = new EVSeguridad(HttpContext);
+            base.OnActionExecuting(context);
+        }
 
-		public INSeguridad NSeguridad { get; set; }
+        public INSeguridad NSeguridad { get; set; }
 
         private EVSeguridad EV { get; set; }
 

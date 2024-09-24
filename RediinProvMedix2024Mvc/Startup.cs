@@ -71,6 +71,7 @@ namespace RediinProvMedix2024Mvc
             services.AddScoped<INIdentificaciones, NRIdentificaciones>();
             services.AddScoped<INPaises, NRPaises>();
             services.AddScoped<INEstablecimientos, NREstablecimientos>();
+            services.AddScoped<INRegimenesFiscales, NRRegimenesFiscales>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

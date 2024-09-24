@@ -5,6 +5,7 @@ using DSMetodNetX.Entidades.Config;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Entidades.PriOperacion;
 using RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers;
@@ -21,7 +22,13 @@ namespace RediinProvMedix2022Mvc.Areas.PubSeguridad.Controllers
         public AutentificacionController(INSeguridad nSeguridad)
         {
             NSeguridad = nSeguridad;
-            EV = new EVSeguridad(HttpContext);
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if(EV == null)
+                EV = new EVSeguridad(HttpContext);
+            base.OnActionExecuting(context);
         }
 
         public INSeguridad NSeguridad { get; set; }
