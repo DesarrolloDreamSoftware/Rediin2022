@@ -38,7 +38,7 @@ namespace Rediin2022.Aplicacion.PriOperacion
 			get { return NConExpedientes.Mensajes; }
 		}
 
-		private EVConExpedientes EV { get; set; }
+		public EVConExpedientes EV { get; set; }
 
 		private IConfig Config { get; set; }
 		private HttpClient HttpClient { get; set; }
