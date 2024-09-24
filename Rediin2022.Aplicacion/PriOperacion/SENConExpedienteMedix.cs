@@ -7,6 +7,10 @@ using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Entidades.PriOperacion;
 using Sisegui2020.Entidades.PriSeguridad;
 using System;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Rediin2022.Aplicacion.PriOperacion
@@ -18,7 +22,8 @@ namespace Rediin2022.Aplicacion.PriOperacion
 									 INExpedientes nExpedientes,
 									 INExpedientesProveedor nExpedientesProveedor,
 									 INUsuarios nUsuarios,
-									 IConfig config)
+									 IConfig config,
+									 HttpClient httpClient)
 		{
 			Servicios = servicios;
 			Config = config;
@@ -26,15 +31,17 @@ namespace Rediin2022.Aplicacion.PriOperacion
 			NExpedientes = nExpedientes;
 			NExpedientesProveedor = nExpedientesProveedor;
 			NUsuarios = nUsuarios;
+			HttpClient = httpClient;
 		}
-		public IMMensajes Mensajes
+		private IMMensajes Mensajes
 		{
 			get { return NConExpedientes.Mensajes; }
 		}
 
-		public EVConExpedientes EV { get; set; }
+		private EVConExpedientes EV { get; set; }
 
-		public IConfig Config { get; set; }
+		private IConfig Config { get; set; }
+		private HttpClient HttpClient { get; set; }
 
 		private IMSrvPrivado Servicios { get; set; }
 		private INConExpedientes NConExpedientes { get; set; }
@@ -140,9 +147,30 @@ namespace Rediin2022.Aplicacion.PriOperacion
 				ActualizaAPI();
 			}
 		}
-		public void ActualizaAPI()
+		public async void ActualizaAPI()
 		{
+			EMedixApi vApiBase = new();
+			//Lenamos el proveedor
+			vApiBase.proveedor.calle = "";
+
+
+			//Convertimos el proveedor a base64
+			string vApiBaseJson = JsonSerializer.Serialize(vApiBase);
+			byte[] vApiBaseBytes = Encoding.UTF8.GetBytes(vApiBaseJson);
+			string vApiBaseBase64 = Convert.ToBase64String(vApiBaseBytes);
+
+			//Preparamos la entidad de envio
 			EMedixApiEnviar vEnvio = new();
+			vEnvio.solicitud.idApp = EV.Medix.ApiSapUsuario;
+			vEnvio.solicitud.pwdApp = EV.Medix.ApiSapPwd;
+			vEnvio.solicitud.enc_request = vApiBaseBase64;
+
+			//Llamamos al API
+			HttpResponseMessage vRes = await HttpClient.PostAsJsonAsync(EV.Medix.ApiSapUrl, vEnvio);
+			if (vRes.IsSuccessStatusCode)
+			{
+				EMedixApiRespuesta vApiRespuesta = await vRes.Content.ReadFromJsonAsync<EMedixApiRespuesta>();
+			}
 		}
 
 		public bool ValidaEstatus(long procesoOperativoEstId)
