@@ -7,6 +7,7 @@ using DSEntityNetX.Mvc.Session;
 using DSMetodNetX.Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Rediin2022.Comun.PriOperacion;
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
@@ -40,7 +41,6 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 			NIdentificaciones = nIdentificaciones;
 			NPaises = nPaises;
 			NEstablecimientos = nEstablecimientos;
-			EV = new EVProveedor(HttpContext);
 		}
 		#endregion
 
@@ -55,9 +55,15 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 		public INEstablecimientos NEstablecimientos { get; set; }
 
 		public EVProveedor EV { get; set; }
-		#endregion
+        #endregion
 
-		public async Task<IActionResult> CapturaProveedorInicia()
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (EV == null)
+                EV = new EVProveedor(HttpContext);
+            base.OnActionExecuting(context);
+        }
+        public async Task<IActionResult> CapturaProveedorInicia()
 		{
 			EEstablecimiento vEstablecimiento =
 				await NEstablecimientos.EstablecimientoXId(EV.EstablecimientoId, null);

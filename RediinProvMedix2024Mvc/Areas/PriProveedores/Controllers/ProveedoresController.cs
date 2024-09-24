@@ -7,6 +7,8 @@ using DSEntityNetX.Mvc.Session;
 using DSMetodNetX.Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Rediin2022.Aplicacion.PriCatalogos;
 using Rediin2022.Comun.PriOperacion;
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
@@ -30,7 +32,8 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 									 INBancos nBancos,
 									 INIdentificaciones nIdentificaciones,
 									 INPaises nPaises,
-									 INEstablecimientos nEstablecimientos)
+									 INEstablecimientos nEstablecimientos,
+									 INRegimenesFiscales nRegimenesFiscales)
 		{
 			NExpedientes = nExpedientes;
 			NExpedientesProveedor = nExpedientesProveedor;
@@ -40,7 +43,7 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 			NIdentificaciones = nIdentificaciones;
 			NPaises = nPaises;
 			NEstablecimientos = nEstablecimientos;
-			EV = new EVProveedor(HttpContext);
+			NRegimenesFiscales = nRegimenesFiscales;
 		}
 		#endregion
 
@@ -53,11 +56,18 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 		public INParametrosSistema NParametrosSistema { get; set; }
 		public INExpedientes NExpedientes { get; set; }
 		public INEstablecimientos NEstablecimientos { get; set; }
+		public INRegimenesFiscales NRegimenesFiscales { get; set; }
 
 		public EVProveedor EV { get; set; }
-		#endregion
+        #endregion
 
-		public async Task<IActionResult> CapturaProveedorInicia()
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (EV == null)
+                EV = new EVProveedor(HttpContext);
+            base.OnActionExecuting(context);
+        }
+        public async Task<IActionResult> CapturaProveedorInicia()
 		{
 			EEstablecimiento vEstablecimiento =
 				await NEstablecimientos.EstablecimientoXId(EV.EstablecimientoId, null);
@@ -111,12 +121,14 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 
 			ViewBag.Colonia = null;
 			ViewBag.Municipio = null;
-			ViewBag.Estados = await NPaises.EstadoCmb(1);
+			ViewBag.Pais = await NPaises.PaisCmb();
+            ViewBag.Estados = await NPaises.EstadoCmb(1);
+			ViewBag.Regimen = await NRegimenesFiscales.RegimenFiscalCmb();
 			if (proveedor.EstadoId > 0)
 			{
 				ViewBag.Municipio = await NPaises.MunicipioCmb(proveedor.EstadoId);
-				if (proveedor.MunicipioId > 0)
-					ViewBag.Colonia = await NPaises.ColoniaCmb(proveedor.MunicipioId);
+				//if (proveedor.MunicipioId > 0)
+				//	ViewBag.Colonia = await NPaises.ColoniaCmb(proveedor.MunicipioId);
 			}
 
 			ViewBag.EsCaptura = EV.EstatusIdCaptura == proveedor.ProcesoOperativoEstId;
@@ -300,7 +312,7 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 
 			foreach (var vReg in vReglas.Rules)
 			{
-				if (vReg.Property == nameof(EProveedorMedix.NumeroInterior) ||
+				if (//vReg.Property == nameof(EProveedorMedix.NumeroInterior) ||
 					vReg.Property == nameof(EProveedorMedix.BancoId2) ||
 					vReg.Property == nameof(EProveedorMedix.Cuenta2) ||
 					vReg.Property == nameof(EProveedorMedix.CuentaClabe2) ||
@@ -308,16 +320,16 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 					vReg.Property == nameof(EProveedorMedix.Cuenta3) ||
 					vReg.Property == nameof(EProveedorMedix.CuentaClabe3) ||
 					vReg.Property == nameof(EProveedorMedix.SapSociedadId) ||
-					vReg.Property == nameof(EProveedorMedix.SapSociedadGLId) ||
-					vReg.Property == nameof(EProveedorMedix.SapGrupoCuentaId) ||
-					vReg.Property == nameof(EProveedorMedix.SapOrganizacionCompraId) ||
-					vReg.Property == nameof(EProveedorMedix.SapTratamientoId) ||
-					vReg.Property == nameof(EProveedorMedix.SapCuentaAsociadaId) ||
-					vReg.Property == nameof(EProveedorMedix.SapGrupoTesoreriaId) ||
-					vReg.Property == nameof(EProveedorMedix.SapBancoId) ||
-					vReg.Property == nameof(EProveedorMedix.SapCondicionPagoId) ||
-					vReg.Property == nameof(EProveedorMedix.SapViaPagoId) ||
-					vReg.Property == nameof(EProveedorMedix.SapGrupoToleranciaId))
+					//vReg.Property == nameof(EProveedorMedix.SapSociedadGLId) ||
+					//vReg.Property == nameof(EProveedorMedix.SapGrupoCuentaId) ||
+					vReg.Property == nameof(EProveedorMedix.SapOrganizacionCompraId)) //||
+					//vReg.Property == nameof(EProveedorMedix.SapTratamientoId) ||
+					//vReg.Property == nameof(EProveedorMedix.SapCuentaAsociadaId) ||
+					//vReg.Property == nameof(EProveedorMedix.SapGrupoTesoreriaId) ||
+					//vReg.Property == nameof(EProveedorMedix.SapBancoId) ||
+					//vReg.Property == nameof(EProveedorMedix.SapCondicionPagoId) ||
+					//vReg.Property == nameof(EProveedorMedix.SapViaPagoId) ||
+					//vReg.Property == nameof(EProveedorMedix.SapGrupoToleranciaId))
 					continue;
 
 				vReg.MessageForExpr = XLanguageXId.MessageForExpr;

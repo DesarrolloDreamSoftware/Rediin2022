@@ -48,16 +48,16 @@
 		<input type="hidden" value="@Model.EstatusNombre" name="@nameof(EProveedorMedix.EstatusNombre)" />
 		<input type="hidden" value="@Model.Comentarios" name="@nameof(EProveedorMedix.Comentarios)" />
 		<input type="hidden" value="@Model.SapSociedadId" name="@nameof(EProveedorMedix.SapSociedadId)" />
-		<input type="hidden" value="@Model.SapSociedadGLId" name="@nameof(EProveedorMedix.SapSociedadGLId)" />
-		<input type="hidden" value="@Model.SapGrupoCuentaId" name="@nameof(EProveedorMedix.SapGrupoCuentaId)" />
+		@* <input type="hidden" value="@Model.SapSociedadGLId" name="@nameof(EProveedorMedix.SapSociedadGLId)" /> *@
+		@* <input type="hidden" value="@Model.SapGrupoCuentaId" name="@nameof(EProveedorMedix.SapGrupoCuentaId)" /> *@
 		<input type="hidden" value="@Model.SapOrganizacionCompraId" name="@nameof(EProveedorMedix.SapOrganizacionCompraId)" />
-		<input type="hidden" value="@Model.SapTratamientoId" name="@nameof(EProveedorMedix.SapTratamientoId)" />
-		<input type="hidden" value="@Model.SapCuentaAsociadaId" name="@nameof(EProveedorMedix.SapCuentaAsociadaId)" />
-		<input type="hidden" value="@Model.SapGrupoTesoreriaId" name="@nameof(EProveedorMedix.SapGrupoTesoreriaId)" />
-		<input type="hidden" value="@Model.SapBancoId" name="@nameof(EProveedorMedix.SapBancoId)" />
+		@* <input type="hidden" value="@Model.SapTratamientoId" name="@nameof(EProveedorMedix.SapTratamientoId)" /> *@
+		@* <input type="hidden" value="@Model.SapCuentaAsociadaId" name="@nameof(EProveedorMedix.SapCuentaAsociadaId)" /> *@
+		@* <input type="hidden" value="@Model.SapGrupoTesoreriaId" name="@nameof(EProveedorMedix.SapGrupoTesoreriaId)" /> *@
+		@* <input type="hidden" value="@Model.SapBancoId" name="@nameof(EProveedorMedix.SapBancoId)" /> *@
 		<input type="hidden" value="@Model.SapCondicionPagoId" name="@nameof(EProveedorMedix.SapCondicionPagoId)" />
-		<input type="hidden" value="@Model.SapViaPagoId" name="@nameof(EProveedorMedix.SapViaPagoId)" />
-		<input type="hidden" value="@Model.SapGrupoToleranciaId" name="@nameof(EProveedorMedix.SapGrupoToleranciaId)" />
+		@* <input type="hidden" value="@Model.SapViaPagoId" name="@nameof(EProveedorMedix.SapViaPagoId)" /> *@
+		@* <input type="hidden" value="@Model.SapGrupoToleranciaId" name="@nameof(EProveedorMedix.SapGrupoToleranciaId)" /> *@
 
 		<div class="row">
 			<div class="col-md-1"></div>
@@ -85,7 +85,7 @@
 						@{
 							vEstiloBoton = (ViewBag.Pagina == 1 ? vEstiloBoton1 : vEstiloBoton2);
 						}
-						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="1">Contacto</button>
+						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="1">Vendedor</button>
 					</div>
 					<div class="col-md-2">
 						@{
@@ -116,7 +116,7 @@
 					<partial name="_DatosFiscales" view-data="@ViewData" model="@Model"></partial>
 				</div>
 				<div style="@vContactoVisible">
-					<partial name="_Contacto" view-data="@ViewData" model="@Model"></partial>
+					<partial name="_Vendedor1" view-data="@ViewData" model="@Model"></partial>
 				</div>
 				<div style="@vDatBanVisible">
 					<partial name="_DatosBancarios" view-data="@ViewData" model="@Model"></partial>
