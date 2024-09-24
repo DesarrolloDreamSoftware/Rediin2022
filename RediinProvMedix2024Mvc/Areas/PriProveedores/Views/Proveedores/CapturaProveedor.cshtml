@@ -53,6 +53,12 @@
         <input type="hidden" value="@Model.SapOrganizacionCompraId" name="@nameof(EProveedorMedix.SapOrganizacionCompraId)" />
         <input type="hidden" value="@Model.SapCondicionPagoId" name="@nameof(EProveedorMedix.SapCondicionPagoId)" />
         <input xhidden-for="TipoCaptura" />
+        <input xhidden-for="MonedaId" />
+        <input xhidden-for="Destino" />
+        <input xhidden-for="IncotermId" />
+        <input xhidden-for="Busqueda1"/>
+        <input xhidden-for="Busqueda2"/>
+        <input xhidden-for="ProveedorIdAnt"/>
 
         <div class="row">
 			<div class="col-md-1">
@@ -82,7 +88,7 @@
 						@{
 							vEstiloBoton = (ViewBag.Pagina == 1 ? vEstiloBoton1 : vEstiloBoton2);
 						}
-						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="1">Contacto</button>
+						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="1">Vendedor</button>
 					</div>
 					<div class="col-md-2">
 						@{
