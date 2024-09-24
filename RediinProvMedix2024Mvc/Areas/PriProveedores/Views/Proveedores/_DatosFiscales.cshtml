@@ -1,118 +1,126 @@
-﻿@using Rediin2022.Entidades.PriClientes
+﻿@using Rediin2022.Entidades.PriCatalogos
+@using Rediin2022.Entidades.PriClientes
+@using RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 
 @model EProveedorMedix
-<div class="row">
-	<div class="col-md-1"></div>
-	<div class="col-md-10">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="inputTamanio">
-					<div class="form-floating mb-3 mt-3">
-						<input class="InputLinea form-control" xval="Model" xval-for="@Model.NombreORazonSocial" placeholder="Nombre" />
-						<label for="Nombre">Nombre</label>
-					</div>
-				</div>
-			</div>
-		</div>
-        <div class="row">
-			<div class="col-md-6">
-				<div>
-					<div class="form-floating mb-4 mt-4">
-						<select xval="Model" xval-for="@Model.PaisId" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Pais" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
-						</select>
-						<label for="Pais">Pais</label>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div>
-					<div class="form-floating mb-4 mt-4">
-						<select xval="Model" xval-for="@Model.EstadoId" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Estados" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
-						</select>
-						<label for="Estado">Estado</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<div class="inputTamanio">
-					<div class="form-floating mb-3 mt-3">
-						<input class="InputLinea form-control" xval="Model" xval-for="@Model.Municipio" placeholder="Municipio" />
-						<label for="Municipio">Alcaldia o Municipio</label>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="inputTamanio">
-					<div class="form-floating mb-3 mt-3">
-						<input class="InputLinea form-control" xval="Model" xval-for="@Model.Colonia" placeholder="Colonia" />
-						<label for="Colonia">Colonia</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<div class="inputTamanio">
-					<div class="form-floating mb-3 mt-3">
-						<input class="InputLinea form-control" xval="Model" xval-for="@Model.Calle" placeholder="Calle" />
-						<label for="Calle">Calle</label>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="inputTamanio">
-					<div class="form-floating mb-3 mt-3">
-						<input class="InputLinea form-control" xval="Model" xval-for="@Model.Numero" placeholder="Numero" />
-						<label for="Numero">Numero</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<div class="inputTamanio">
-					<div class="form-floating mb-3 mt-3">
-						<input class="InputLinea form-control" xval="Model" xval-for="@Model.CodigoPostal" placeholder="Código" />
-						<label for="Código">Código Postal</label>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="inputTamanio">
-					<div class="form-floating mb-3 mt-3">
-						<input class="InputLinea form-control" xval="Model" xval-for="@Model.Curp" placeholder="Curp" />
-						<label for="CURP">CURP</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<div class="inputTamanio">
-					<div class="form-floating mb-3 mt-3">
-						<input class="InputLinea form-control" xval="Model" xval-for="@Model.Rfc" placeholder="RFC" />
-						<label for="RFC">RFC</label>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div>
-					<div class="form-floating mb-4 mt-4">
-						<select xval="Model" xval-for="@Model.RegimenFiscalId" xval-group-select="Regimen" xval-first-item="Selecciona" xval-items="@ViewBag.Regimen" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
-						</select>
-						<label for="RegimenFiscal">Régimen Fiscal</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura">Guardar</button>
-				<button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura" asp-action="@nameof(ProveedoresController.RevisionExpediente)">Solicita revisión de expediente</button>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-1"></div>
+
+<div xpanel="Edit" xpnl-rules="@ViewBag.Reglas">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.NombreORazonSocial" placeholder="Nombre" />
+                            <label for="Nombre">Nombre</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div>
+                        <div class="form-floating mb-4 mt-4">
+                            <select xval="Model" xval-for="@Model.PaisId" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Pais" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
+                            </select>
+                            <label for="Pais">Pais</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <div class="form-floating mb-4 mt-4">
+                            <select xval="Model" xval-for="@Model.EstadoId" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Estados" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
+                            </select>
+                            <label for="Estado">Estado</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.Municipio" placeholder="Municipio" />
+                            <label for="Municipio">Alcaldia o Municipio</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.Colonia" placeholder="Colonia" />
+                            <label for="Colonia">Colonia</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.Calle" placeholder="Calle" />
+                            <label for="Calle">Calle</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.Numero" placeholder="Numero" />
+                            <label for="Numero">Numero</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.CodigoPostal" placeholder="Código" />
+                            <label for="Código">Código Postal</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.Curp" placeholder="Curp" />
+                            @if(Model.TipoCaptura == TipoCaptura.PersonaFisica)
+                            {
+                                <label for="CURP">CURP</label>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.Rfc" placeholder="RFC" />
+                            @if(Model.TipoCaptura != TipoCaptura.PersonaExtranjera)
+                            {
+                                <label for="RFC">RFC</label>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <div class="form-floating mb-4 mt-4">
+                            <select xval="Model" xval-for="@Model.RegimenFiscalId" xval-group-select="Regimen" xval-first-item="Selecciona" xval-items="@ViewBag.Regimen" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
+                            </select>
+                            @if (Model.TipoCaptura != TipoCaptura.PersonaExtranjera)
+                            {
+                                <label for="RegimenFiscal">Régimen Fiscal</label>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
 </div>

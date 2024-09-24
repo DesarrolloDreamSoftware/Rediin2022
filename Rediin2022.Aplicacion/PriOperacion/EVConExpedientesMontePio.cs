@@ -4,7 +4,6 @@ namespace Rediin2022.Aplicacion.PriOperacion;
 
 public class EVConExpedientesMontePio
 {
-    public Int64 ProcesoOperativoIdProveedor { get; set; }
     //JRD QUITAR public Dictionary<Int64, List<MEElemento>> CombosProveedores { get; set; }
     //public Int64 ParamProveedorColumnaIdPais { get; set; }
     //public Int64 ParamProveedorColumnaIdEstado { get; set; }

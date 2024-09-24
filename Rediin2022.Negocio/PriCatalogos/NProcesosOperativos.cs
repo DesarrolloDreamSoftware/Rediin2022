@@ -263,7 +263,7 @@ namespace Rediin2022.Negocio.PriCatalogos
             _procesoOperativoColReglas.AddSL(e => e.CapCmbProcesoOperativoId, 0L, Validaciones._int64Max, false).MessageForRange = MMensajesXId.ValidaSeleccion;
             _procesoOperativoColReglas.AddSL(e => e.CapCmbIdColumnaId, 0L, Validaciones._int64Max, false).MessageForRange = MMensajesXId.ValidaSeleccion;
             _procesoOperativoColReglas.AddSL(e => e.CapCmbTextoColumnaId, 0L, Validaciones._int64Max, false).MessageForRange = MMensajesXId.ValidaSeleccion;
-            _procesoOperativoColReglas.AddSL(e => e.ComboId, Combos.Ninguno, Combos.Modelos, false);
+            _procesoOperativoColReglas.AddSL(e => e.ComboId, Combos.Ninguno, Combos.Monedas, false);
             _procesoOperativoColReglas.AddSL(e => e.Activo);
 
 			//Habilitado

@@ -3,7 +3,7 @@ using DSMetodNetX.Entidades;
 using DSMetodNetX.Entidades.Correo;
 using DSMetodNetX.Mvc;
 using DSMetodNetX.Mvc.Seguridad;
-using GroupDocs.Viewer.Options;
+//using GroupDocs.Viewer.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -33,6 +33,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                                         //Para catalogos
                                         INPaises nPaises,
                                         INBancos nBancos,
+                                        INIdentificaciones nIdentificaciones,
                                         INSapSociedades nSapSociedades,
                                         INSapSociedadesGL nSapSociedadesGL,
                                         INSapGrupoCuentas nSapGrupoCuentas,
@@ -46,7 +47,8 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                                         INSapGruposTolerancia nSapGruposTolerancia,
                                         INIncoterms nIncoterms,
                                         INRegimenesFiscales nRegimenesFiscales,
-                                        INModelos nModelos)
+                                        INModelos nModelos,
+                                        INMonedas nMonedas)
         {
             NConExpedientes = nConExpedientes;
             NProcesosOperativos = nProcesosOperativos;
@@ -55,6 +57,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             //Para catalogos
             NPaises = nPaises;
             NBancos = nBancos;
+            NIdentificaciones = nIdentificaciones;
             NSapSociedades = nSapSociedades;
             NSapSociedadesGL = nSapSociedadesGL;
             NSapGrupoCuentas = nSapGrupoCuentas;
@@ -69,6 +72,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             NIncoterms = nIncoterms;
             NRegimenesFiscales = nRegimenesFiscales;
             NModelos = nModelos;
+            NMonedas = nMonedas;
         }
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -85,6 +89,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
 
         private INPaises NPaises { get; set; } //Catalogos
         private INBancos NBancos { get; set; } //Catalogos
+        private INIdentificaciones NIdentificaciones { get; set; } //Catalogos
         private INSapSociedades NSapSociedades { get; set; }
         private INSapSociedadesGL NSapSociedadesGL { get; set; } //Catalogos
         private INSapGrupoCuentas NSapGrupoCuentas { get; set; } //Catalogos
@@ -99,6 +104,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
         private INIncoterms NIncoterms { get; set; } //Catalogos
         private INRegimenesFiscales NRegimenesFiscales { get; set; } //Catalogos
         private INModelos NModelos { get; set; } //Catalogos
+        private INMonedas NMonedas { get; set; } //Catalogos
         private EVConExpedientes EV
         {
             get { return base.MEVCtrl<EVConExpedientes>(); }
@@ -181,6 +187,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                 { Combos.Municipios, null },
                 { Combos.Colonias, null },
                 { Combos.Bancos, await NBancos.BancoCmb() },
+                { Combos.Identificaciones, await NIdentificaciones.IdentificacionCmb() },
                 { Combos.SAPSociedades, await NSapSociedades.SapSociedadCmb() },
                 { Combos.SAPSociedadesGL, await NSapSociedadesGL.SapSociedadGLCmb() },
                 { Combos.SapGrupoCuentas, await NSapGrupoCuentas.SapGrupoCuentaCmb() },
@@ -194,7 +201,8 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                 { Combos.SapGrupoTolerancia, await NSapGruposTolerancia.SapGrupoToleranciaCmb() },
                 { Combos.Incoterms, await NIncoterms.IncotermCmb() },
                 { Combos.RegimenesFiscales, await NRegimenesFiscales.RegimenFiscalCmb() },
-                { Combos.Modelos, await NModelos.ModeloCmb() }
+                { Combos.Modelos, await NModelos.ModeloCmb() },
+                { Combos.Monedas, await NMonedas.MonedaCmb() }
             };
 
             //Entidades adicionales
@@ -229,13 +237,13 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                     {
                         vCol.ElementosCmb = vCombos[vCol.ComboId];
 
-                        if (vCol.ComboId == Combos.Paises)
+                        if (EV.ColumnaIdPais == null && vCol.ComboId == Combos.Paises)
                             EV.ColumnaIdPais = vCol;
-                        else if (vCol.ComboId == Combos.Estados)
+                        else if (EV.ColumnaIdEstado == null && vCol.ComboId == Combos.Estados)
                             EV.ColumnaIdEstado = vCol;
-                        else if (vCol.ComboId == Combos.Municipios)
+                        else if (EV.ColumnaIdMunicipio == null && vCol.ComboId == Combos.Municipios)
                             EV.ColumnaIdMunicipio = vCol;
-                        else if (vCol.ComboId == Combos.Colonias)
+                        else if (EV.ColumnaIdColonias == null && vCol.ComboId == Combos.Colonias)
                             EV.ColumnaIdColonias = vCol;
                     }
                 }
@@ -244,8 +252,12 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             //Proveedor especifico
             if (SENConExpedienteProv != null)
             {
-                if (!(await SENConExpedienteProv.Inicia()))
-                    return await ConExpProcOperativoCon();
+                EV.ProcesoOperativoIdProveedor = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoId");
+                if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor)
+                {
+                    if (!(await SENConExpedienteProv.Inicia()))
+                        return await ConExpProcOperativoCon();
+                }
             }
 
             return RedirectToAction(nameof(ConExpedienteCon));
@@ -325,7 +337,8 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             conExpediente.ControlEstatus = EV.ConExpProcOperativo.Sel.ControlEstatus;
             //conExpediente.ProcesoOperativoEstId = 0L;
 
-            if (SENConExpedienteProv != null)
+            if (SENConExpedienteProv != null && 
+                EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor)
                 await SENConExpedienteProv.Inserta(conExpediente); //Proveedor especifico
             else
                 await NConExpedientes.ConExpedienteInserta(conExpediente);
@@ -390,7 +403,9 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             vConExpedienteCambioEstatus.Comentarios = String.Empty;
 
             //Adi
-            if (SENConExpedienteProv != null && SENConExpedienteProv.ValidaEstatus(procesoOperativoEstIdSig))
+            if (SENConExpedienteProv != null &&
+                EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor &&
+                SENConExpedienteProv.ValidaEstatus(procesoOperativoEstIdSig))
                 return await ConExpedienteCambioEstatusCap(vConExpedienteCambioEstatus);
             else
                 return await ConExpedienteCambioEstatus(vConExpedienteCambioEstatus);
@@ -422,14 +437,17 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             if (await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus))
             {
                 //Adi
-                if (SENConExpedienteProv != null)
+                if (SENConExpedienteProv != null &&
+                    EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor)
                     SENConExpedienteProv.CambioEstatus(conExpedienteCambioEstatus);
 
                 return RedirectToAction(nameof(ConExpedienteCon));
             }
 
             //Adi
-            if (SENConExpedienteProv != null && SENConExpedienteProv.ValidaEstatus(conExpedienteCambioEstatus.ProcesoOperativoEstId))
+            if (SENConExpedienteProv != null &&
+                EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor &&
+                SENConExpedienteProv.ValidaEstatus(conExpedienteCambioEstatus.ProcesoOperativoEstId))
                 return await ConExpedienteCambioEstatusCap(conExpedienteCambioEstatus);
             else
                 return RedirectToAction(nameof(ConExpedienteCon));
@@ -772,19 +790,19 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             vFS.CopyTo(vMS);
             return await Task.FromResult(File(vMS.ToArray(), vCont, "Archivo" + Path.GetExtension(vObj.ArchivoNombre)));
         }
-        [MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
-        public async Task<IActionResult> ConExpedienteObjetoDescarga2(Int32 indice)
-        {
-            Int32 totalPaginas = 0;
-            EConExpedienteObjeto vObj = EV.ConExpedienteObjeto.Pag.Pagina[indice];
-            String imageFilesPath = Path.Combine(Path.Combine(vObj.Ruta, "temp"), "page-{0}.png");
-            using GroupDocs.Viewer.Viewer v = new GroupDocs.Viewer.Viewer(Path.Combine(vObj.Ruta, vObj.ArchivoNombre));
-            GroupDocs.Viewer.Results.ViewInfo i = v.GetViewInfo(GroupDocs.Viewer.Options.ViewInfoOptions.ForPngView(false));
-            totalPaginas = i.Pages.Count;
-            GroupDocs.Viewer.Options.PngViewOptions o = new PngViewOptions(imageFilesPath);
-            v.View(o);
-            return await Task.FromResult(new JsonResult(totalPaginas));
-        }
+        //[MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
+        //public async Task<IActionResult> ConExpedienteObjetoDescarga2(Int32 indice)
+        //{
+        //    Int32 totalPaginas = 0;
+        //    EConExpedienteObjeto vObj = EV.ConExpedienteObjeto.Pag.Pagina[indice];
+        //    String imageFilesPath = Path.Combine(Path.Combine(vObj.Ruta, "temp"), "page-{0}.png");
+        //    using GroupDocs.Viewer.Viewer v = new GroupDocs.Viewer.Viewer(Path.Combine(vObj.Ruta, vObj.ArchivoNombre));
+        //    GroupDocs.Viewer.Results.ViewInfo i = v.GetViewInfo(GroupDocs.Viewer.Options.ViewInfoOptions.ForPngView(false));
+        //    totalPaginas = i.Pages.Count;
+        //    GroupDocs.Viewer.Options.PngViewOptions o = new PngViewOptions(imageFilesPath);
+        //    v.View(o);
+        //    return await Task.FromResult(new JsonResult(totalPaginas));
+        //}
         [MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
         public async Task<IActionResult> ConExpedienteObjetoDescargaImg(Int32 indice, Int32 pagina)
         {

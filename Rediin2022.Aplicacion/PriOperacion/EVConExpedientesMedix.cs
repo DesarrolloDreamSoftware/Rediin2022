@@ -4,7 +4,6 @@ namespace Rediin2022.Aplicacion.PriOperacion;
 
 public class EVConExpedientesMedix
     {
-	public Int64 ProcesoOperativoIdProveedor { get; set; }
 	public Int64 ParamEstIdCaptura { get; set; }
 	public Int64 ParamEstIdAutorizado { get; set; }
 	public Int64 ParamColumnaIdNombre { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rediin2022.Entidades.PriCatalogos;
+using System;
 
 namespace Rediin2022.Entidades.PriClientes
 {
@@ -248,15 +249,9 @@ namespace Rediin2022.Entidades.PriClientes
 		//public String SapViaPagoId { get; set; }
 		//public String SapGrupoToleranciaId { get; set; }
 
-
-
-
-
-
-
-
-
-
-
+		/// <summary>
+		/// Exclusivo para cliente Medix, se usa para validar en las reglas de negocio.
+		/// </summary>
+		public TipoCaptura TipoCaptura { get; set; } = TipoCaptura.Ninguno;
 	}
 }

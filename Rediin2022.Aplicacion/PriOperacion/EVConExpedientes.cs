@@ -59,6 +59,7 @@ namespace Rediin2022.Aplicacion.PriOperacion
         public EProcesoOperativoCol ColumnaIdMunicipio { get; set; } = null;
         public EProcesoOperativoCol ColumnaIdColonias { get; set; } = null;
 
+        public Int64 ProcesoOperativoIdProveedor { get; set; }
         public EVConExpedientesMontePio MontePio { get; set; } = null;
         public EVConExpedientesMedix Medix { get; set; } = null;
         #endregion

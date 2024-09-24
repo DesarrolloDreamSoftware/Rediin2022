@@ -98,11 +98,11 @@
                 {
                     Boolean vActivar = vCol.ElementosCmb != null && vCol.ElementosCmb.Count > 0;
 
-                    if (vCol.ComboId == Combos.Paises ||
-                        vCol.ComboId == Combos.Estados ||
-                        vCol.ComboId == Combos.Municipios)
+                    if ((EV.ColumnaIdPais != null && EV.ColumnaIdPais.ColumnaId == vCol.ColumnaId) ||
+                        (EV.ColumnaIdEstado != null && EV.ColumnaIdEstado.ColumnaId == vCol.ColumnaId) ||
+                        (EV.ColumnaIdMunicipio != null && EV.ColumnaIdMunicipio.ColumnaId == vCol.ColumnaId))
                     {
-                        String vAccion = (ViewBag.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInsertaCap2) : nameof(ConExpedientesController.ConExpedienteActualizaCap2));
+                        String vAccion = (EV.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInsertaCap2) : nameof(ConExpedientesController.ConExpedienteActualizaCap2));
                         vAccion += $"?PEMColumnaId={vCol.ColumnaId}";
                         <select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
                                 xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"

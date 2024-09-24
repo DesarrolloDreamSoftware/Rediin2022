@@ -39,7 +39,6 @@ namespace Rediin2022.Aplicacion.PriOperacion
         public async Task<Boolean> Inicia()
         {
             EV.MontePio = new();
-            EV.MontePio.ProcesoOperativoIdProveedor = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoId");
             EV.MontePio.ParamEstIdCaptura = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdCaptura");
             EV.MontePio.ParamEstIdAutorizado = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdAutorizado");
             EV.MontePio.ParamUrlRediinProveedores = await Servicios.ParamSist.Param<String>("RediinProveedorUrl");
@@ -160,8 +159,7 @@ namespace Rediin2022.Aplicacion.PriOperacion
         }
         public bool ValidaEstatus(long procesoOperativoEstId)
         {
-            return EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.MontePio.ProcesoOperativoIdProveedor &&
-                    procesoOperativoEstId == EV.MontePio.ParamEstIdCaptura;
+            return procesoOperativoEstId == EV.MontePio.ParamEstIdCaptura;
         }
 
         private async void EnviaCorreo(String correoDestino, String subject, String body)

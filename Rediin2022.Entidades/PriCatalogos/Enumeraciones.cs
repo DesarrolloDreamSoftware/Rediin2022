@@ -39,6 +39,7 @@ public enum Combos
     Municipios,
     Colonias,
     Bancos,
+    Identificaciones,
     [Description("SAP Sociedades")]
     SAPSociedades,
     [Description("SAP Sociedades GL")]
@@ -64,5 +65,6 @@ public enum Combos
     Incoterms,
     [Description("Regimenes fiscales")]
     RegimenesFiscales,
-    Modelos
+    Modelos, 
+    Monedas
 }

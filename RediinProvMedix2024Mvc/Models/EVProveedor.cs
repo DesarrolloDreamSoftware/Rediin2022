@@ -1,5 +1,7 @@
 ﻿using DSEntityNetX.Mvc.Session;
 using DSMetodNetX.Entidades;
+using Microsoft.AspNetCore.Http;
+using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Entidades.PriOperacion;
 

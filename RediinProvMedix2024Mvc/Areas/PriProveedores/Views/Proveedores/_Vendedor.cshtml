@@ -1,69 +1,66 @@
 ﻿@using Rediin2022.Entidades.PriClientes
 
 @model EProveedorMedix
-<div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="inputTamanio">
-                    <div class="form-floating mb-3 mt-3">
-                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.VendedorNombre" placeholder="Nombre" />
-                        <label for="VendedorNombre">Nombre del vendedor</label>
+
+<div xpanel="Edit" xpnl-rules="@ViewBag.Reglas">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.VendedorNombre" placeholder="Nombre" />
+                            <label for="VendedorNombre">Nombre del vendedor</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.Telefono" placeholder="Telefono" />
+                            <label for="Telefono">Telefono</label>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="inputTamanio">
-                    <div class="form-floating mb-3 mt-3">
-                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.Telefono" placeholder="Telefono" />
-                        <label for="Telefono">Telefono</label>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.Celular" placeholder="Celular" />
+                            <label for="Celular">Celular</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.CorreoElectronico1" placeholder="Correo1" />
+                            <label for="CorreoElectronico1">Correo Electronico 1</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.CorreoElectronico2" placeholder="Correo2" />
+                            <label for="CorreoElectronico2">Correo Electronico 2</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="inputTamanio">
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="InputLinea form-control" xval="Model" xval-for="@Model.CorreoElectronico3" placeholder="Correo3" />
+                            <label for="CorreoElectronico3">Correo Electronico 3</label>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="inputTamanio">
-                    <div class="form-floating mb-3 mt-3">
-                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.Celular" placeholder="Celular" />
-                        <label for="Celular">Celular</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="inputTamanio">
-                    <div class="form-floating mb-3 mt-3">
-                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.CorreoElectronico1" placeholder="Correo1" />
-                        <label for="CorreoElectronico1">Correo Electronico 1</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="inputTamanio">
-                    <div class="form-floating mb-3 mt-3">
-                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.CorreoElectronico2" placeholder="Correo2" />
-                        <label for="CorreoElectronico2">Correo Electronico 2</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="inputTamanio">
-                    <div class="form-floating mb-3 mt-3">
-                        <input class="InputLinea form-control" xval="Model" xval-for="@Model.CorreoElectronico3" placeholder="Correo3" />
-                        <label for="CorreoElectronico3">Correo Electronico 3</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura">Guardar</button>
-                <button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura" asp-action="@nameof(ProveedoresController.RevisionExpediente)">Solicita revisión de expediente</button>
-            </div>
-        </div>
+        <div class="col-md-1"></div>
     </div>
-    <div class="col-md-1"></div>
 </div>

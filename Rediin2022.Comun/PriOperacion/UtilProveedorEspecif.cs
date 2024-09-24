@@ -31,9 +31,9 @@ public class UtilProveedorEspecif
         else if (vNombres.Length >= 2)
         {
             usuario.ApellidoMaterno = "S/N.";
-            usuario.ApellidoPaterno = vNombres[vNombres.Length - 2];
+            usuario.ApellidoPaterno = vNombres[vNombres.Length - 1];
             usuario.Nombre = String.Empty;
-            for (int i = 0; i < vNombres.Length - 2; i++)
+            for (int i = 0; i < vNombres.Length - 1; i++)
                 usuario.Nombre += (i > 0 ? " " : String.Empty) + vNombres[i];
 
             usuario.Usuario = $"{usuario.Nombre[0]}{usuario.ApellidoPaterno}".ToLower();
