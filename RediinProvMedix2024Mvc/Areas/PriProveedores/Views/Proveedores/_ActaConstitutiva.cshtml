@@ -16,8 +16,8 @@
                     <div class="col-md-12">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.NotarioNombre" placeholder="NomNotario" />
-                                <label for="NomNotario">Nombre del notario</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="NotarioNombre" placeholder="NomNotario" />
+                                <label xlabel="NotarioNombre" xlbl-value="Nombre del notario" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
@@ -26,16 +26,16 @@
                     <div class="col-md-6">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.NumeroEscritura" placeholder="NumEsc" />
-                                <label for="NumEsc">No. escritura</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="NumeroEscritura" placeholder="NumEsc" />
+                                <label xlabel="NumeroEscritura" xlbl-value="No. escritura" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.FechaEscritura" placeholder="FechaEsc" />
-                                <label for="FechaEsc">Fecha escritura</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="FechaEscritura" placeholder="FechaEsc" />
+                                <label xlabel="FechaEscritura" xlbl-value="Fecha escritura" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
@@ -44,8 +44,8 @@
                     <div class="col-md-12">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.RepresentanteLegal" placeholder="RepreLeg" />
-                                <label for="RepreLeg">Representante legal</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="RepresentanteLegal" placeholder="RepreLeg" />
+                                <label xlabel="RepresentanteLegal" xlbl-value="Representante legal" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
@@ -54,17 +54,17 @@
                     <div class="col-md-6">
                         <div>
                             <div class="form-floating mb-4 mt-4">
-                                <select class="form-select" xval="Model" xval-items="@ViewBag.Identificaciones" xval-first-item="Selecciona" xval-for="@Model.IdentificacionId">
+                                <select xval-for="IdentificacionId" class="form-select" xval="Model" xval-items="@ViewBag.Identificaciones" xval-first-item="Selecciona">
                                 </select>
-                                <label for="Identificación">Identificación</label>
+                                <label xlabel="IdentificacionId" xlbl-value="Identificación" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.NumIdentificacion" placeholder="NumIden" />
-                                <label for="NumIden">No. de identificación</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="NumIdentificacion" placeholder="NumIden" />
+                                <label xlabel="NumIdentificacion" xlbl-value="No. de identificación" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
@@ -83,8 +83,8 @@
                     <div class="col-md-12">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialNotarioNombre" placeholder="NomNotario" />
-                                <label for="NomNotario">Nombre del notario</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="PoderNotarialNotarioNombre" placeholder="NomNotario" />
+                                <label xlabel="PoderNotarialNotarioNombre" xlbl-value="Nombre del notario" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
@@ -93,16 +93,16 @@
                     <div class="col-md-6">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialNumEscritura" placeholder="NumEsc" />
-                                <label for="NumEsc">No. escritura</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="PoderNotarialNumEscritura" placeholder="NumEsc" />
+                                <label xlabel="PoderNotarialNumEscritura" xlbl-value="No. escritura" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialFechaEscritura" placeholder="FechaEsc" />
-                                <label for="FechaEsc">Fecha escritura</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="PoderNotarialFechaEscritura" placeholder="FechaEsc" />
+                                <label xlabel="PoderNotarialFechaEscritura" xlbl-value="Fecha escritura" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
@@ -111,8 +111,8 @@
                     <div class="col-md-12">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialRepresentanteLegal" placeholder="RepreLeg" />
-                                <label for="RepreLeg">Representante legal</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="PoderNotarialRepresentanteLegal" placeholder="RepreLeg" />
+                                <label xlabel="PoderNotarialRepresentanteLegal" xlbl-value="Representante legal" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
@@ -121,17 +121,17 @@
                     <div class="col-md-6">
                         <div>
                             <div class="form-floating mb-4 mt-4">
-                                <select class="form-select" xval="Model" xval-first-item="Selecciona" xval-items="@ViewBag.Identificaciones" xval-for="@Model.PoderNotarialIdentificacionId">
+                                <select class="form-select" xval="Model" xval-for="PoderNotarialIdentificacionId" xval-first-item="Selecciona" xval-items="@ViewBag.Identificaciones">
                                 </select>
-                                <label for="Identificación">Identificación</label>
+                                <label xlabel="PoderNotarialIdentificacionId" xlbl-value="Identificación" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="inputTamanio">
                             <div class="form-floating mb-3 mt-3">
-                                <input class="InputLinea form-control" xval="Model" xval-for="@Model.PoderNotarialNumIdentificacion" placeholder="NumIden" />
-                                <label for="NumIden">No. de identificación</label>
+                                <input class="InputLinea form-control" xval="Model" xval-for="PoderNotarialNumIdentificacion" placeholder="NumIden" />
+                                <label xlabel="PoderNotarialNumIdentificacion" xlbl-value="No. de identificación" xlbl-req-show="true"></label>
                             </div>
                         </div>
                     </div>
