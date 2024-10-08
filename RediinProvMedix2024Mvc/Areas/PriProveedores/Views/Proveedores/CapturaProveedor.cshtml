@@ -39,81 +39,92 @@
      xpnl-messages-class="panelCapMensajes"
      xpnl-messages-title-class="panelCapMensajesTit"
      xpnl-messages-ok-class="panelCapMensajesOk"
-     xpnl-messages-error-class="panelCapMensajesError">
+     xpnl-messages-error-class="panelCapMensajesError"
+     xpnl-messages-iderror="panelCapMensajesErrorId">
     <form asp-action="_CapturaExpediente">
         <input type="hidden" value="@ViewBag.Pagina" name="Pagina" />
-        <input type="hidden" value="@Model.ProcesoOperativoId" name="@nameof(EProveedorMedix.ProcesoOperativoId)" />
-        <input type="hidden" value="@Model.ExpedienteId" name="@nameof(EProveedorMedix.ExpedienteId)" />
-        <input type="hidden" value="@Model.UsuarioId" name="@nameof(EProveedorMedix.UsuarioId)" />
-        <input type="hidden" value="@Model.ProcesoOperativoEstId" name="@nameof(EProveedorMedix.ProcesoOperativoEstId)" />
-        <input type="hidden" value="@Model.ProveedorId" name="@nameof(EProveedorMedix.ProveedorId)" />
-        <input type="hidden" value="@Model.EstatusNombre" name="@nameof(EProveedorMedix.EstatusNombre)" />
-        <input type="hidden" value="@Model.Comentarios" name="@nameof(EProveedorMedix.Comentarios)" />
-        <input type="hidden" value="@Model.SapSociedadId" name="@nameof(EProveedorMedix.SapSociedadId)" />
-        <input type="hidden" value="@Model.SapOrganizacionCompraId" name="@nameof(EProveedorMedix.SapOrganizacionCompraId)" />
-        <input type="hidden" value="@Model.SapCondicionPagoId" name="@nameof(EProveedorMedix.SapCondicionPagoId)" />
-        <input xhidden-for="TipoCaptura" />
+        <input xhidden-for="ProcesoOperativoId" />
+        <input xhidden-for="ExpedienteId" />
+        <input xhidden-for="ProcesoOperativoEstId" />
+        <input xhidden-for="EstatusNombre" />
+        <input xhidden-for="Comentarios" />
+        <input xhidden-for="UsuarioId" />
+        <input xhidden-for="ProveedorId" />
+        <input xhidden-for="ModeloId" />
+        <input xhidden-for="SapSociedadId" />
+        <input xhidden-for="SapOrganizacionCompraId" />
         <input xhidden-for="MonedaId" />
-        <input xhidden-for="Destino" />
+        <input xhidden-for="SapCondicionPagoId" />
         <input xhidden-for="IncotermId" />
-        <input xhidden-for="Busqueda1"/>
-        <input xhidden-for="Busqueda2"/>
-        <input xhidden-for="ProveedorIdAnt"/>
+        <input xhidden-for="Destino" />
+        <input xhidden-for="Busqueda1" />
+        <input xhidden-for="Busqueda2" />
+        <input xhidden-for="ProveedorIdAnt" />
+        @* <input xhidden-for="TipoCaptura" /> *@
+        <input type="hidden" value="@((Int32)Model.TipoCaptura)" id="TipoCaptura" name="TipoCaptura" />
 
         <div class="row">
-			<div class="col-md-1">
+            <div class="col-md-1">
             </div>
-			<div class="col-md-10">
-				<div class="row" style="font-weight:bold">
-					<div class="col-md-5 tamanioLetras">
-						<span class="colorTextoAzul">Razón social</span><br />
-						@Model.NombreORazonSocial<br />
-						@Model.Rfc &nbsp; &nbsp; &nbsp; &nbsp;  No. de proveedor: @Model.ProveedorId
-					</div>
-					<div class="col-md-4"></div>
-					<div class="col-md-3">
-						<h6 class="tamanioLetras textoAlineadoDer" style="font-weight:bold">Estatus: @Model.EstatusNombre</h6>
-					</div>
-				</div>
+            <div class="col-md-10">
+                <div class="row" style="font-weight:bold">
+                    <div class="col-md-5 tamanioLetras">
+                        <span class="colorTextoAzul">Razón social</span><br />
+                        @Model.NombreORazonSocial<br />
+                        @Model.Rfc &nbsp; &nbsp; &nbsp; &nbsp;  No. de proveedor: @Model.ProveedorId
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-3">
+                        <h6 class="tamanioLetras textoAlineadoDer" style="font-weight:bold">Estatus: @Model.EstatusNombre</h6>
+                    </div>
+                </div>
                 <br />
-				<div class="row">
-					<div class="col-md-1"></div>
-					<div class="col-md-2">
-						@{
-							vEstiloBoton = (ViewBag.Pagina == 0 ? vEstiloBoton1 : vEstiloBoton2);
-						}
-						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0">Datos Fiscales</button>
-					</div>
-					<div class="col-md-2">
-						@{
-							vEstiloBoton = (ViewBag.Pagina == 1 ? vEstiloBoton1 : vEstiloBoton2);
-						}
-						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="1">Vendedor</button>
-					</div>
-					<div class="col-md-2">
-						@{
-							vEstiloBoton = (ViewBag.Pagina == 2 ? vEstiloBoton1 : vEstiloBoton2);
-						}
-						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="2">Datos Bancarios</button>
-					</div>
-					<div class="col-md-2">
-						@{
-							vEstiloBoton = (ViewBag.Pagina == 3 ? vEstiloBoton1 : vEstiloBoton2);
-						}
-						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="3">Documentación</button>
-					</div>
-					<div class="col-md-2">
-						@{
-							vEstiloBoton = (ViewBag.Pagina == 4 ? vEstiloBoton1 : vEstiloBoton2);
-						}
-						<button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="4">Acta Constitutiva</button>
-					</div>
-					<div class="col-md-1"></div>
-				</div>
-			</div>
-			<div class="col-md-1">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        @{
+                            vEstiloBoton = (ViewBag.Pagina == 0 ? vEstiloBoton1 : vEstiloBoton2);
+                        }
+                        <button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0">Datos Fiscales</button>
+                    </div>
+                    <div class="col-md-2">
+                        @{
+                            vEstiloBoton = (ViewBag.Pagina == 1 ? vEstiloBoton1 : vEstiloBoton2);
+                        }
+                        <button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="1">Vendedor</button>
+                    </div>
+                    <div class="col-md-2">
+                        @{
+                            vEstiloBoton = (ViewBag.Pagina == 2 ? vEstiloBoton1 : vEstiloBoton2);
+                        }
+                        <button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="2">Datos Bancarios</button>
+                    </div>
+                    <div class="col-md-2">
+                        @{
+                            vEstiloBoton = (ViewBag.Pagina == 3 ? vEstiloBoton1 : vEstiloBoton2);
+                        }
+                        <button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="3">Documentación</button>
+                    </div>
+                    @if (Model.TipoCaptura == TipoCaptura.PersonaMoral)
+                    {
+                        <div class="col-md-2">
+                            @{
+                                vEstiloBoton = (ViewBag.Pagina == 4 ? vEstiloBoton1 : vEstiloBoton2);
+                            }
+                            <button type="submit" class="@vEstiloBoton" asp-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="4">Acta Constitutiva</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2">
+                        </div>
+                    }
+                    <div class="col-md-1"></div>
+                </div>
             </div>
-		</div>
+            <div class="col-md-1">
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-12">
@@ -129,16 +140,19 @@
                 <div style="@vDocumVisible">
                     <partial name="_Documentacion" view-data="@ViewData" model="@ViewBag.Documentos"></partial>
                 </div>
-                <div style="@vAcConVisible">
-                    <partial name="_ActaConstitutiva" view-data="@ViewData" model="@Model"></partial>
-                </div>
+                @if (Model.TipoCaptura == TipoCaptura.PersonaMoral)
+                {
+                    <div style="@vAcConVisible">
+                            <partial name="_ActaConstitutiva" view-data="@ViewData" model="@Model"></partial>
+                    </div>
+                }
                 @if (ViewBag.Pagina != 3)
                 {
                     <div class="row">
                         <div class="col-md-1">
                         </div>
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura" asp-action="@nameof(ProveedoresController.ProveedorActualiza)">Guardar</button>
+                            <button xvalidate="@nameof(EProveedorMedix)" type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura" asp-action="@nameof(ProveedoresController.ProveedorActualiza)">Guardar</button>
                             <button type="submit" class="btn btn-sm btn-primary Boton" xvisible="@ViewBag.EsCaptura" asp-action="@nameof(ProveedoresController.RevisionExpediente)">Solicita revisión de expediente</button>
                         </div>
                         <div class="col-md-4" style="text-align:center">
@@ -150,14 +164,16 @@
                         <div class="col-md-4">
                         </div>
                     </div>
+                    <br />
+                    <br />
                 }
             </div>
         </div>
     </form>
 </div>
 @if (ViewBag.Pagina == 0 &&
- (Boolean)ViewBag.EsCaptura &&
- !String.IsNullOrWhiteSpace(@Model.Comentarios))
+(Boolean)ViewBag.EsCaptura &&
+!String.IsNullOrWhiteSpace(@Model.Comentarios))
 {
     <div class="row">
         <div class="col-md-12">

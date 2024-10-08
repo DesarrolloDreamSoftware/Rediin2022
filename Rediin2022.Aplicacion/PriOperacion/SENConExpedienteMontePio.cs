@@ -14,11 +14,11 @@ namespace Rediin2022.Aplicacion.PriOperacion
     public class SENConExpedienteMontePio : ISENConExpedienteProv
     {
         public SENConExpedienteMontePio(IMSrvPrivado servicios,
-                                        INConExpedientes nConExpedientes, 
+                                        INConExpedientes nConExpedientes,
                                         INExpedientes nExpedientes,
                                         INExpedientesProveedor nExpedientesProveedor,
                                         INUsuarios nUsuarios)
-        { 
+        {
             Servicios = servicios;
             NConExpedientes = nConExpedientes;
             NExpedientes = nExpedientes;
@@ -160,6 +160,10 @@ namespace Rediin2022.Aplicacion.PriOperacion
         public bool ValidaEstatus(long procesoOperativoEstId)
         {
             return procesoOperativoEstId == EV.MontePio.ParamEstIdCaptura;
+        }
+        public async Task<bool> ValidaEstatusParaCambio(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
+        {
+            return await Task.FromResult(true);
         }
 
         private async void EnviaCorreo(String correoDestino, String subject, String body)

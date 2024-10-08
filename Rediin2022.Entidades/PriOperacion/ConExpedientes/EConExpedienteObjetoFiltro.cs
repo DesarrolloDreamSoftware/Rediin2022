@@ -1,5 +1,6 @@
 
 using DSMetodNetX.Entidades;
+using Rediin2022.Entidades.PriCatalogos;
 using System;
 using System.Collections.Generic;
 
@@ -16,6 +17,7 @@ namespace Rediin2022.Entidades.PriOperacion
 
         //Columnas vista
         public String FilProcesoOperativoObjetoNombre { get; set; } = String.Empty;
+        public TipoCaptura FilTipoCapturaId { get; set; } = TipoCaptura.Ninguno;
         #endregion
     }
 }

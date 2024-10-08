@@ -1,4 +1,5 @@
 ﻿using DSEntityNetX.Entities.Common;
+using DSEntityNetX.Entities.Language;
 using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
 using Rediin2022.AccesoDatos.PriClientes;
@@ -9,7 +10,6 @@ using Rediin2022.Entidades.PriOperacion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -81,25 +81,15 @@ namespace Rediin2022.Negocio.PriClientes
                                                 usuarioId,
                                                 vEstatusUlt.Comentarios);
 
-            //Creamos las reglas de negocio
-            vDP.ReglasNegocio = new List<MEReglaNeg>();
-            UtilProveedorEspecif.CargaReglasNegocioProveedor(vColMD, vDP.ReglasNegocio);
-
-            IMReglasNeg<EProveedorMedix> vReglasAdic = Validaciones.CreaReglasNeg<EProveedorMedix>(Mensajes);
-            vReglasAdic.Rules = vDP.ReglasNegocio;
-            vReglasAdic.AddVisible(e => e.Rfc, e => e.TipoCaptura != TipoCaptura.PersonaExtranjera);
-            vReglasAdic.AddVisible(e => e.RegimenFiscalId, e => e.TipoCaptura != TipoCaptura.PersonaExtranjera);
-
-            vReglasAdic.AddVisible(e => e.Curp, e => e.TipoCaptura == TipoCaptura.PersonaFisica);
-
+            //Cargamos al proveedor el dato TipoCaptura
             EModelo vModelo = await NModelos.ModeloXId(vProveedor.ModeloId);
             if (vModelo != null)
                 vProveedor.TipoCaptura = vModelo.TipoCapturaId;
 
-            vReglasAdic.Rule(nameof(EProveedorMedix.Municipio)).Required = vProveedor.TipoCaptura != TipoCaptura.PersonaExtranjera;
-            vReglasAdic.Rule(nameof(EProveedorMedix.Colonia)).Required = vProveedor.TipoCaptura != TipoCaptura.PersonaExtranjera;
-            vReglasAdic.Rule(nameof(EProveedorMedix.Numero)).Required = vProveedor.TipoCaptura != TipoCaptura.PersonaExtranjera;
+            //Reglas de negocio
+            vDP.ReglasNegocio = CrearReglasNeg(vProveedor, vColMD);
 
+            //Salida
             vDP.Proveedor = JsonSerializer.Serialize(vProveedor);
             return vDP;
         }
@@ -131,6 +121,67 @@ namespace Rediin2022.Negocio.PriClientes
         public async Task<Boolean> ProveedorCambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
         {
             return await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus);
+        }
+
+        public List<MEReglaNeg> CrearReglasNeg(EProveedorMedix proveedor,
+                                               List<EProcesoOperativoCol> colMD)
+        {
+            //Creamos las reglas de negocio
+            IMReglasNeg<EProveedorMedix> vReglas = Validaciones.CreaReglasNeg<EProveedorMedix>(Mensajes);
+            vReglas.Rules = new List<MEReglaNeg>();
+            UtilProveedorEspecif.CargaReglasNegocioProveedor(colMD, vReglas.Rules);
+
+            foreach (MEReglaNeg vRN in vReglas.Rules)
+            {
+                //Los que se capturan en rediinProveedores
+                if (vRN.Property == nameof(EProveedorMedix.NombreORazonSocial) ||
+                    vRN.Property == nameof(EProveedorMedix.PaisId) ||
+                    vRN.Property == nameof(EProveedorMedix.EstadoId) ||
+                    vRN.Property == nameof(EProveedorMedix.Municipio) || //Depende TipoCaptura
+                    vRN.Property == nameof(EProveedorMedix.Colonia) || //Depende TipoCaptura
+                    vRN.Property == nameof(EProveedorMedix.Calle) ||
+                    vRN.Property == nameof(EProveedorMedix.Numero) || //Depende TipoCaptura
+                    vRN.Property == nameof(EProveedorMedix.CodigoPostal) ||
+                    vRN.Property == nameof(EProveedorMedix.Curp) || //Depende visibilidad
+                    vRN.Property == nameof(EProveedorMedix.Rfc) || //Depende visibilidad
+                    vRN.Property == nameof(EProveedorMedix.RegimenFiscalId) || //Depende visibilidad
+                    vRN.Property == nameof(EProveedorMedix.VendedorNombre) ||
+                    vRN.Property == nameof(EProveedorMedix.Telefono) ||
+                    vRN.Property == nameof(EProveedorMedix.CorreoElectronico1) ||
+                    vRN.Property == nameof(EProveedorMedix.PaisIdBanco1) ||
+                    vRN.Property == nameof(EProveedorMedix.BancoId1) ||
+                    vRN.Property == nameof(EProveedorMedix.Cuenta1) ||
+                    vRN.Property == nameof(EProveedorMedix.CuentaClabe1))
+                    vRN.Required = true; //Todos obligatorios
+                else if (proveedor.TipoCaptura == TipoCaptura.PersonaMoral && (
+                         vRN.Property == nameof(EProveedorMedix.NotarioNombre) ||
+                         vRN.Property == nameof(EProveedorMedix.NumeroEscritura) ||
+                         vRN.Property == nameof(EProveedorMedix.FechaEscritura) ||
+                         vRN.Property == nameof(EProveedorMedix.RepresentanteLegal) ||
+                         vRN.Property == nameof(EProveedorMedix.IdentificacionId) ||
+                         vRN.Property == nameof(EProveedorMedix.NumIdentificacion) ||
+                         vRN.Property == nameof(EProveedorMedix.PoderNotarialNotarioNombre) ||
+                         vRN.Property == nameof(EProveedorMedix.PoderNotarialNumEscritura) ||
+                         vRN.Property == nameof(EProveedorMedix.PoderNotarialFechaEscritura) ||
+                         vRN.Property == nameof(EProveedorMedix.PoderNotarialRepresentanteLegal) ||
+                         vRN.Property == nameof(EProveedorMedix.PoderNotarialIdentificacionId) ||
+                         vRN.Property == nameof(EProveedorMedix.PoderNotarialNumIdentificacion)))
+                    vRN.Required = true; //Todos obligatorios
+                else
+                    vRN.Required = false;
+
+                //if (colMD.FirstOrDefault(e => e.Propiedad == vRN.Property, new()).ComboId > 0)
+                //    vRN.MessageForExpr = XLanguageXId.MessageForExpr;
+            }
+
+            vReglas.AddVisible(e => e.Rfc, e => e.TipoCaptura != TipoCaptura.PersonaExtranjera);
+            vReglas.AddVisible(e => e.RegimenFiscalId, e => e.TipoCaptura != TipoCaptura.PersonaExtranjera);
+            vReglas.AddVisible(e => e.Curp, e => e.TipoCaptura == TipoCaptura.PersonaFisica);
+
+            vReglas.Rule(nameof(EProveedorMedix.Municipio)).Required = proveedor.TipoCaptura != TipoCaptura.PersonaExtranjera;
+            vReglas.Rule(nameof(EProveedorMedix.Colonia)).Required = proveedor.TipoCaptura != TipoCaptura.PersonaExtranjera;
+            vReglas.Rule(nameof(EProveedorMedix.Numero)).Required = proveedor.TipoCaptura != TipoCaptura.PersonaExtranjera;
+            return vReglas.Rules;
         }
         #endregion
     }

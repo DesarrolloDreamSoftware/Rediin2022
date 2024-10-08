@@ -1,5 +1,6 @@
 
 using DSMetodNetX.Entidades;
+using Rediin2022.Entidades.PriCatalogos;
 using System;
 
 namespace Rediin2022.Entidades.PriOperacion
@@ -22,6 +23,7 @@ namespace Rediin2022.Entidades.PriOperacion
         public Int32 Cantidad { get; set; } = 0;
         public Int16 Orden { get; set; } = 0;
         public Int16 DiasVencimiento { get; set; } = 0;
+        public TipoCaptura TipoCapturaId { get; set; } = TipoCaptura.Ninguno;
 
         //Columnas calculadas
         public String ArchivoVencido { get; set; } = String.Empty;

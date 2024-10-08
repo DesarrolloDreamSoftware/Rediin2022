@@ -6,5 +6,5 @@ namespace Rediin2022.Entidades.PriClientes;
 
 public class EMedixApi
 {
-	public EMedixApiProveedor proveedor { get; set; }
+	public EMedixApiProveedor proveedor { get; set; } = new EMedixApiProveedor();
 }

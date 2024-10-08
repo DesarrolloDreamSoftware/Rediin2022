@@ -12,4 +12,5 @@ public interface ISENConExpedienteProv
     Task<Boolean> Inserta(EConExpediente conExpediente);
     void CambioEstatus(EConExpedienteCambioEstatus conExpedienteCambioEstatus);
     bool ValidaEstatus(long procesoOperativoEstId);
+    Task<bool> ValidaEstatusParaCambio(EConExpedienteCambioEstatus conExpedienteCambioEstatus);
 }

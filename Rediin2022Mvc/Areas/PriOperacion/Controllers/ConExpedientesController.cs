@@ -7,6 +7,7 @@ using DSMetodNetX.Mvc.Seguridad;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Org.BouncyCastle.Tls;
 using Rediin2022.Aplicacion.PriOperacion;
 using Rediin2022.Comun.PriOperacion;
 using Rediin2022.Entidades.PriCatalogos;
@@ -337,7 +338,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             conExpediente.ControlEstatus = EV.ConExpProcOperativo.Sel.ControlEstatus;
             //conExpediente.ProcesoOperativoEstId = 0L;
 
-            if (SENConExpedienteProv != null && 
+            if (SENConExpedienteProv != null &&
                 EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor)
                 await SENConExpedienteProv.Inserta(conExpediente); //Proveedor especifico
             else
@@ -433,6 +434,13 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
         {
             conExpedienteCambioEstatus.ExpedienteId = EV.ConExpediente.Sel.ExpedienteId;
             //Eli conExpedienteCambioEstatus.ProcesoOperativoEstId = EV.ConExpediente.Sel.ProcesoOperativoEstId;
+
+            if (SENConExpedienteProv != null &&
+                EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor)
+            {
+                if (!await SENConExpedienteProv.ValidaEstatusParaCambio(conExpedienteCambioEstatus))
+                    return RedirectToAction(nameof(ConExpedienteCon));
+            }
 
             if (await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus))
             {

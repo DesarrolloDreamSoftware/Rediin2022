@@ -90,15 +90,10 @@ namespace Rediin2022.Entidades.PriClientes
 		/// </summary>
 		public string CorreoElectronico3 { get; set; } //0
 
-		//public String ContactoNombre { get; set; }
-		//public String ContactoCorreoElectronico { get; set; }
-		//public String ContactoTelefono { get; set; }
-		//public String ContactoCelular { get; set; }
-
 		/// <summary>
 		/// País Banco 1
 		/// </summary>
-		public String PaisIdBanco1 { get; set; } //0
+		public Int64 PaisIdBanco1 { get; set; } //0
 		/// <summary>
 		/// Banco 1
 		/// </summary>
@@ -112,14 +107,10 @@ namespace Rediin2022.Entidades.PriClientes
 		/// </summary>
 		public String CuentaClabe1 { get; set; } //0
 
-		//public Int64 BancoId { get; set; } //1
-		//public String Cuenta { get; set; } //1
-		//public String CuentaClabe { get; set; } //1
-
 		/// <summary>
 		/// Pais Banco 2
 		/// </summary>
-		public String PaisIdBanco2 { get; set; } //0
+		public Int64 PaisIdBanco2 { get; set; } //0
 		/// <summary>
 		/// Banco 2
 		/// </summary>
@@ -137,7 +128,7 @@ namespace Rediin2022.Entidades.PriClientes
 		/// <summary>
 		/// Pais Banco 3
 		/// </summary>
-		public String PaisIdBanco3 { get; set; } //0
+		public Int64 PaisIdBanco3 { get; set; } //0
 		/// <summary>
 		/// Banco 3
 		/// </summary>

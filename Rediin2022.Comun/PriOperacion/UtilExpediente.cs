@@ -101,6 +101,20 @@ public static class UtilExpediente
     {
         return relaciones.FirstOrDefault(e => e.Propiedad == propiedad, new EProcesoOperativoCol());
     }
+
+    public static Type ObtenTipoColumna(TiposColumna tipo)
+    {
+        if(tipo == TiposColumna.Boleano)
+            return typeof(Boolean);
+        else if (tipo == TiposColumna.Entero)
+            return typeof(Int64);
+        else if (tipo == TiposColumna.Fecha || tipo == TiposColumna.Hora || tipo == TiposColumna.FechaYHora)
+            return typeof(DateTime);
+        else if (tipo == TiposColumna.Importe)
+            return typeof(Decimal);
+        else 
+            return typeof(String);
+    }
 }
 
 

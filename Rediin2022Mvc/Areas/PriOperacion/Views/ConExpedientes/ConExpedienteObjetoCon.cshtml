@@ -52,6 +52,12 @@
 					<th>
 						<span mhead-for="@nameof(EConExpedienteObjeto.FechaUltMod)" xhead-sort="true"></span>
 					</th>
+					<th>
+						<span mhead-for="@nameof(EConExpedienteObjeto.TipoCapturaId)" xhead-sort="true" xhead-tt-id="encTipoCapturaId"></span>
+						<div id="ttTipoCapturaId" mtt="encTipoCapturaId">
+							<div mttcont="@nameof(EConExpedienteObjeto.TipoCapturaId)"></div>
+						</div>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -90,6 +96,9 @@
 							</td>
 							<td>
 								<span mcell-for="@Model[i].FechaUltMod" xcell-format="dd/MM/yyyy HH:mm"></span>
+							</td>
+							<td>
+								<span mcell-for="@Model[i].TipoCapturaId"></span>
 							</td>
 						</tr>
 					}
@@ -148,7 +157,8 @@
 @section Scripts {
 	<script src="~/PriOperacion/ConExpedientes/ConExpedienteObjeto.js" asp-append-version="true"></script>
 	<script src="~/PriCatalogos/ProcesosOperativos/ProcesoOperativoCol.js" asp-append-version="true"></script>
-	<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+	@* <script src="http://code.jquery.com/jquery-1.8.2.js"></script> *@
+	<script src="~/js/jquery-1.8.2.js"></script>
 	<script type="text/javascript">
 		$(window).load(function () {
 			$("#loader").fadeOut(1000);

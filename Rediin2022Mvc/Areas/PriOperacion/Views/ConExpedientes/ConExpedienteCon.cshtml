@@ -178,7 +178,7 @@
 @if (ViewBag.CambioEstatus ?? false == true)
 {
 	EConExpedienteCambioEstatus vConExpedienteCambioEstatus = ViewBag.ConExpedienteCambioEstatus;
-	<div id="mdlAcciones" mmodal="true">
+	<div id="mdlAcciones" mmodal="true" style="min-width:400px">
 		<form asp-action="_ConExpedienteCambioEstatus">
 			<div mpanel="Edit" xpnl-messages="@ViewBag.CAESMensajes">
 				<div msub-panel="CapTitulo">

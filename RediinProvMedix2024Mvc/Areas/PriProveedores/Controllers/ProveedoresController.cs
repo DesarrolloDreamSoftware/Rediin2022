@@ -1,15 +1,13 @@
 ﻿using DSEntityNetX.Business.Rules;
-using DSEntityNetX.Common.Casting;
 using DSEntityNetX.Common.File;
 using DSEntityNetX.Entities.Common;
 using DSEntityNetX.Entities.Language;
 using DSEntityNetX.Entities.Rules;
-using DSEntityNetX.Mvc.Session;
+using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Rediin2022.Aplicacion.PriCatalogos;
 using Rediin2022.Comun.PriOperacion;
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
@@ -17,6 +15,7 @@ using Rediin2022.Entidades.PriOperacion;
 using RediinProvMedix2022Mvc.Models;
 using Sisegui2020.Entidades.PriCatalogos;
 using Sisegui2020.Entidades.PriSeguridad;
+using System.Net;
 using System.Text.Json;
 
 namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
@@ -96,7 +95,7 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
                 CurrentPage = 1
             };
 
-            EV.Objetos = await NConExpedientes.ConExpedienteObjetoPag(vObjetoFiltro);
+            await CargaObjetos(vObjetoFiltro);
 
             return await ProveedorActualizaIni(0);
         }
@@ -118,9 +117,6 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
             ViewBag.Reglas = vProveedorReglas;
             ViewBag.Bancos = await NBancos.BancoCmb();
             ViewBag.Identificaciones = await NIdentificaciones.IdentificacionCmb();
-
-            ViewBag.Colonia = null;
-            ViewBag.Municipio = null;
             ViewBag.Regimen = await NRegimenesFiscales.RegimenFiscalCmb();
 
             ViewBag.Pais = await NPaises.PaisCmb();
@@ -136,36 +132,6 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
         public async Task<IActionResult> ProveedorActualiza(EProveedorMedix proveedor, Int32 pagina)
         {
             NExpedientes.Mensajes.Initialize();
-            //Carga de otros datos de combos
-            proveedor.PaisId = 1;
-
-            //proveedor.Pais = String.Empty;
-            //proveedor.Estado = String.Empty;
-            //proveedor.Municipio = String.Empty;
-            //proveedor.Colonia = String.Empty;
-            //proveedor.Banco = String.Empty;
-
-            //JRD PENDIENTE 18/09/2024
-            //proveedor.Identificacion = String.Empty;
-            //proveedor.PoderNotarialIdentificacion = String.Empty;
-
-            //proveedor.Pais = NPaises.PaisXId(1)?.PaisNombre ?? String.Empty;
-            //if (proveedor.EstadoId > 0)
-            //	proveedor.Estado = NPaises.EstadoXId(proveedor.EstadoId)?.EstadoNombre ?? String.Empty;
-            //if (proveedor.MunicipioId > 0)
-            //	proveedor.Municipio = NPaises.MunicipioXId(proveedor.MunicipioId)?.MunicipioNombre ?? String.Empty;
-            //if (proveedor.ColoniaId > 0)
-            //	proveedor.Colonia = NPaises.ColoniaXId(proveedor.ColoniaId)?.ColoniaNombre ?? String.Empty;
-            //if (proveedor.BancoId > 0)
-            //	proveedor.Banco = NBancos.BancoXId(proveedor.BancoId)?.BancoNombre ?? String.Empty;
-            //if (proveedor.BancoId2 > 0)
-            //	proveedor.Banco2 = NBancos.BancoXId(proveedor.BancoId2)?.BancoNombre ?? String.Empty;
-            //if (proveedor.BancoId3 > 0)
-            //	proveedor.Banco3 = NBancos.BancoXId(proveedor.BancoId3)?.BancoNombre ?? String.Empty;
-            //if (proveedor.IdentificacionId > 0)
-            //	proveedor.Identificacion = NIdentificaciones.IdentificacionXId(proveedor.IdentificacionId)?.IdentificacionNombre ?? String.Empty;
-            //if (proveedor.PoderNotarialIdentificacionId > 0)
-            //	proveedor.PoderNotarialIdentificacion = NIdentificaciones.IdentificacionXId(proveedor.PoderNotarialIdentificacionId)?.IdentificacionNombre ?? String.Empty;
 
             //Actualizacion
             if (await NExpedientesProveedor.ProveedorActualiza(new EString() { StringValue = JsonSerializer.Serialize(proveedor) }))
@@ -229,7 +195,7 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
                         CurrentPage = 1
                     };
 
-                    EV.Objetos = await NConExpedientes.ConExpedienteObjetoPag(vObjetoFiltro);
+                    await CargaObjetos(vObjetoFiltro);
 
                     NExpedientes.Mensajes.AddOk("El archivo se subió correctamente.");
                     ViewBag.Mensajes = NExpedientes.Mensajes;
@@ -267,7 +233,7 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
                     CurrentPage = 1
                 };
 
-                EV.Objetos = await NConExpedientes.ConExpedienteObjetoPag(vObjetoFiltro);
+                await CargaObjetos(vObjetoFiltro);
             }
 
             return await ProveedorActualizaIni(3);
@@ -302,39 +268,10 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
 
             //Validacion
             NExpedientes.Mensajes.Initialize();
-            EProveedorMedix vProveedor = EV.Proveedor;
             IXBusinessRules<EProveedorMedix, MEReglaNeg> vReglas =
                 new XBusinessRules<EProveedorMedix, MEReglaNeg>(NExpedientes.Mensajes, EV.ProveedorReglas);
 
-            foreach (var vReg in vReglas.Rules)
-            {
-                if (//vReg.Property == nameof(EProveedorMedix.NumeroInterior) ||
-                    vReg.Property == nameof(EProveedorMedix.BancoId2) ||
-                    vReg.Property == nameof(EProveedorMedix.Cuenta2) ||
-                    vReg.Property == nameof(EProveedorMedix.CuentaClabe2) ||
-                    vReg.Property == nameof(EProveedorMedix.BancoId3) ||
-                    vReg.Property == nameof(EProveedorMedix.Cuenta3) ||
-                    vReg.Property == nameof(EProveedorMedix.CuentaClabe3) ||
-                    vReg.Property == nameof(EProveedorMedix.SapSociedadId) ||
-                    //vReg.Property == nameof(EProveedorMedix.SapSociedadGLId) ||
-                    //vReg.Property == nameof(EProveedorMedix.SapGrupoCuentaId) ||
-                    vReg.Property == nameof(EProveedorMedix.SapOrganizacionCompraId)) //||
-                                                                                      //vReg.Property == nameof(EProveedorMedix.SapTratamientoId) ||
-                                                                                      //vReg.Property == nameof(EProveedorMedix.SapCuentaAsociadaId) ||
-                                                                                      //vReg.Property == nameof(EProveedorMedix.SapGrupoTesoreriaId) ||
-                                                                                      //vReg.Property == nameof(EProveedorMedix.SapBancoId) ||
-                                                                                      //vReg.Property == nameof(EProveedorMedix.SapCondicionPagoId) ||
-                                                                                      //vReg.Property == nameof(EProveedorMedix.SapViaPagoId) ||
-                                                                                      //vReg.Property == nameof(EProveedorMedix.SapGrupoToleranciaId))
-                    continue;
-
-                vReg.MessageForExpr = XLanguageXId.MessageForExpr;
-                vReg.MessageForRange = XLanguageXId.MessageForRange;
-                vReg.MessageForRequired = XLanguageXId.MessageForRequired;
-                vReg.Required = true;
-            }
-
-            vReglas.Validate(vProveedor);
+            vReglas.Validate(proveedor);
 
             EConExpedienteObjetoPag vDocumentacion = EV.Objetos;
             foreach (var vDoc in vDocumentacion.Pagina)
@@ -346,30 +283,36 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
             if (!NExpedientes.Mensajes.Ok)
             {
                 ViewBag.Mensajes = NExpedientes.Mensajes;
-                return await ProveedorActualizaCap(vProveedor, 0);
+                return await ProveedorActualizaCap(proveedor, 0);
             }
 
             //Actualizacion
             await NConExpedientes.ConExpedienteCambioEstatus(new EConExpedienteCambioEstatus()
             {
-                ExpedienteId = vProveedor.ExpedienteId,
+                ExpedienteId = proveedor.ExpedienteId,
                 ProcesoOperativoEstId = EV.EstatusIdRevision
             });
             EDatosProveedor vProveedorXUsuario =
-                await NExpedientesProveedor.ProveedorXUsuario(vProveedor.ProcesoOperativoId,
-                                                              vProveedor.UsuarioId);
+                await NExpedientesProveedor.ProveedorXUsuario(proveedor.ProcesoOperativoId,
+                                                              proveedor.UsuarioId);
             EV.ProveedorReglas = vProveedorXUsuario.ReglasNegocio;
             if (!string.IsNullOrWhiteSpace(vProveedorXUsuario.Proveedor))
                 EV.Proveedor = JsonSerializer.Deserialize<EProveedorMedix>(vProveedorXUsuario.Proveedor) ?? new();
             else
                 EV.Proveedor = new();
 
-            return await ProveedorActualizaCap(vProveedor, 0);
+            return await ProveedorActualizaCap(EV.Proveedor, 0);
         }
 
         private async Task<Int64> ParametroSistema(ProveedorParametrosSistema nombreParametro)
         {
             return await UtilProveedorEspecif.ParamSistemaInt64(NParametrosSistema, nombreParametro);
+        }
+        private async Task CargaObjetos(EConExpedienteObjetoFiltro objetoFiltro)
+        {
+            EConExpedienteObjetoPag vObjetos = await NConExpedientes.ConExpedienteObjetoPag(objetoFiltro);
+            vObjetos.Pagina = vObjetos.Pagina.FindAll(o => o.TipoCapturaId == EV.Proveedor.TipoCaptura).ToList();
+            EV.Objetos = vObjetos;
         }
     }
 }

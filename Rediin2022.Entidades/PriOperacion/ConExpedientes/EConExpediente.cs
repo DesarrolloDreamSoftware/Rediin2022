@@ -6,6 +6,7 @@ using System.Collections.Generic;
 namespace Rediin2022.Entidades.PriOperacion
 {
     [Serializable]
+    [MDAConsec(nameof(ExpedienteId))]
     public class EConExpediente: MEntidad
     {
         #region Propiedades

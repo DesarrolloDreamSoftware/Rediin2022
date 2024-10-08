@@ -12,7 +12,7 @@
                 <div class="col-md-12">
                     <div class="inputTamanio">
                         <div class="form-floating mb-3 mt-3">
-                            <input class="InputLinea form-control" xval="Model" xval-for="NombreORazonSocial" placeholder="Nombre" />
+                            <input class="InputLinea form-control" xval="Model" xval-for="NombreORazonSocial" xval-show-message="false" placeholder="Nombre" />
                             <label xlabel="NombreORazonSocial" xlbl-value="Nombre" xlbl-req-show="true"></label>
                         </div>
                     </div>
@@ -22,7 +22,7 @@
                 <div class="col-md-6">
                     <div>
                         <div class="form-floating mb-4 mt-4">
-                            <select xval="Model" xval-for="PaisId" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Pais" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
+                            <select xval="Model" xval-for="PaisId" xval-show-message="false" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Pais" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" class="form-select">
                             </select>
                             <label xlabel="PaisId" xlbl-value="Pais" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>
@@ -31,7 +31,7 @@
                 <div class="col-md-6">
                     <div>
                         <div class="form-floating mb-4 mt-4">
-                            <select xval="Model" xval-for="EstadoId" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Estados" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
+                            <select xval="Model" xval-for="EstadoId" xval-show-message="false" xval-group-select="Pais" xval-first-item="Selecciona" xval-items="@ViewBag.Estados" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" class="form-select">
                             </select>
                             <label xlabel="EstadoId" xlbl-value="Estado" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>
@@ -42,7 +42,7 @@
                 <div class="col-md-6">
                     <div class="inputTamanio">
                         <div class="form-floating mb-3 mt-3">
-                            <input class="InputLinea form-control" xval="Model" xval-for="Municipio" placeholder="Municipio" />
+                            <input class="InputLinea form-control" xval="Model" xval-for="Municipio" xval-show-message="false" placeholder="Municipio" />
                             <label xlabel="Municipio" xlbl-value="Alcaldia o Municipio" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                 <div class="col-md-6">
                     <div class="inputTamanio">
                         <div class="form-floating mb-3 mt-3">
-                            <input class="InputLinea form-control" xval="Model" xval-for="Colonia" placeholder="Colonia" />
+                            <input class="InputLinea form-control" xval="Model" xval-for="Colonia" xval-show-message="false" placeholder="Colonia" />
                             <label xlabel="Colonia" xlbl-value="Colonia" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                 <div class="col-md-6">
                     <div class="inputTamanio">
                         <div class="form-floating mb-3 mt-3">
-                            <input class="InputLinea form-control" xval="Model" xval-for="Calle" placeholder="Calle" />
+                            <input class="InputLinea form-control" xval="Model" xval-for="Calle" xval-show-message="false" placeholder="Calle" />
                             <label xlabel="Calle" xlbl-value="Calle" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                 <div class="col-md-6">
                     <div class="inputTamanio">
                         <div class="form-floating mb-3 mt-3">
-                            <input class="InputLinea form-control" xval="Model" xval-for="Numero" placeholder="Numero" />
+                            <input class="InputLinea form-control" xval="Model" xval-for="Numero" xval-show-message="false" placeholder="Numero" />
                             <label xlabel="Numero" xlbl-value="Numero" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                 <div class="col-md-6">
                     <div class="inputTamanio">
                         <div class="form-floating mb-3 mt-3">
-                            <input class="InputLinea form-control" xval="Model" xval-for="CodigoPostal" placeholder="Código" />
+                            <input class="InputLinea form-control" xval="Model" xval-for="CodigoPostal" xval-show-message="false" placeholder="Código" />
                             <label xlabel="CodigoPostal" xlbl-value="Código Postal" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                 <div class="col-md-6">
                     <div class="inputTamanio">
                         <div class="form-floating mb-3 mt-3">
-                            <input class="InputLinea form-control" xval="Model" xval-for="Curp" placeholder="Curp" />
+                            <input class="InputLinea form-control" xval="Model" xval-for="Curp" placeholder="Curp" xval-show-message="false" />
                             <label xlabel="Curp" xlbl-value="CURP" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                 <div class="col-md-6">
                     <div class="inputTamanio">
                         <div class="form-floating mb-3 mt-3">
-                            <input class="InputLinea form-control" xval="Model" xval-for="Rfc" placeholder="RFC" />
+                            <input class="InputLinea form-control" xval="Model" xval-for="Rfc" xval-show-message="false" placeholder="RFC" />
                             <label xlabel="Rfc" xlbl-value="RFC" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                 <div class="col-md-6">
                     <div>
                         <div class="form-floating mb-4 mt-4">
-                            <select xval="Model" xval-for="RegimenFiscalId" xval-group-select="Regimen" xval-first-item="Selecciona" xval-items="@ViewBag.Regimen" xval-action="@nameof(ProveedoresController.ProveedorActualizaCap)" asp-route-pagina="0" class="form-select">
+                            <select xval="Model" xval-for="RegimenFiscalId" xval-show-message="false" xval-first-item="Selecciona" xval-items="@ViewBag.Regimen" class="form-select">
                             </select>
                             <label xlabel="RegimenFiscalId" xlbl-value="Régimen Fiscal" xlbl-req-show="true" xlbl-hide-if-not-visible="true"></label>
                         </div>

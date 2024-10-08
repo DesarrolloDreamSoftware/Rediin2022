@@ -1,4 +1,6 @@
 ﻿using DSEntityNetX.Common.Casting;
+using DSEntityNetX.Common.Rules;
+using DSEntityNetX.Entities.Rules;
 using DSMetodNetX.Entidades;
 using Rediin2022.Entidades.PriCatalogos;
 using Rediin2022.Entidades.PriClientes;
@@ -11,11 +13,11 @@ namespace Rediin2022.Comun.PriOperacion;
 
 public class UtilProveedorEspecif
 {
-	public static async Task<Int64> ParamSistemaInt64(INParametrosSistema nParametrosSistema, ProveedorParametrosSistema nombreParametro)
-	{
-		return XObject.ToInt64((await nParametrosSistema.ParametroSistemaXId(nombreParametro.XDescription(), TiposParametrosSistema.General, 0))?.Valor ?? "0");
-	}
-	public static void SeparaNombreUsuario(string proveedor, EUsuario usuario)
+    public static async Task<Int64> ParamSistemaInt64(INParametrosSistema nParametrosSistema, ProveedorParametrosSistema nombreParametro)
+    {
+        return XObject.ToInt64((await nParametrosSistema.ParametroSistemaXId(nombreParametro.XDescription(), TiposParametrosSistema.General, 0))?.Valor ?? "0");
+    }
+    public static void SeparaNombreUsuario(string proveedor, EUsuario usuario)
     {
         String[] vNombres = proveedor.Split(" ");
         if (vNombres.Length >= 3)
@@ -47,8 +49,8 @@ public class UtilProveedorEspecif
     }
 
 
-    public static void CargaEntidadProveedor(List<EProcesoOperativoCol> colMD, 
-                                             EConExpediente expediente, 
+    public static void CargaEntidadProveedor(List<EProcesoOperativoCol> colMD,
+                                             EConExpediente expediente,
                                              object proveedor)
     {
         Type vProveedorTipo = proveedor.GetType();
@@ -65,15 +67,18 @@ public class UtilProveedorEspecif
     {
         foreach (EProcesoOperativoCol vPOC in colMD)
         {
-            reglasNegocio.Add(new MEReglaNeg()
-            {
-                Property = vPOC.Propiedad,
-                Label = vPOC.Etiqueta,
-                Required = vPOC.CapObligatorio,
-                RangeMin = vPOC.CapRangoIni,
-                RangeMax = vPOC.CapRangoFin,
-                Decimals = (vPOC.Tipo == TiposColumna.Importe ? vPOC.Decimales : 0)
-            });
+            IXBusinessRule vRegla =
+                XUtilRules.CreateRule<MEReglaNeg>(UtilExpediente.ObtenTipoColumna(vPOC.Tipo));
+
+            vRegla.Property = vPOC.Propiedad;
+            XUtilRules.LoadRule(vRegla,
+                                vPOC.Etiqueta,
+                                vPOC.CapRangoIni,
+                                vPOC.CapRangoFin,
+                                vPOC.CapObligatorio,
+                                (vPOC.Tipo == TiposColumna.Importe ? vPOC.Decimales : 0));
+
+            reglasNegocio.Add((MEReglaNeg)vRegla);
         }
     }
 
@@ -83,42 +88,42 @@ public class UtilProveedorEspecif
                                       Int64 usuarioId,
                                       string comentarios)
     {
-		vProveedor.ExpedienteId = vExpediente.ExpedienteId;
-		vProveedor.ProcesoOperativoId = procesoOperativoIdProveedor;
-		vProveedor.ProcesoOperativoEstId = vExpediente.ProcesoOperativoEstId;
-		vProveedor.EstatusNombre = vExpediente.EstatusNombre;
-		vProveedor.UsuarioId = usuarioId;
+        vProveedor.ExpedienteId = vExpediente.ExpedienteId;
+        vProveedor.ProcesoOperativoId = procesoOperativoIdProveedor;
+        vProveedor.ProcesoOperativoEstId = vExpediente.ProcesoOperativoEstId;
+        vProveedor.EstatusNombre = vExpediente.EstatusNombre;
+        vProveedor.UsuarioId = usuarioId;
         vProveedor.Comentarios = comentarios;
-	}
+    }
 
-    public static void CargaExpedienteValores(Object proveedor,        
+    public static void CargaExpedienteValores(Object proveedor,
                                               List<EProcesoOperativoColMin> colMD,
-											  List<EExpendienteValor> expedienteValores)
+                                              List<EExpendienteValor> expedienteValores)
     {
-		PropertyInfo[] vPIEnt = proveedor.GetType().GetProperties();
-		foreach (EProcesoOperativoColMin vPOC in colMD)
-		{
-			PropertyInfo vPI = vPIEnt.FirstOrDefault(e => e.Name == vPOC.Propiedad, null);
-			if (vPI != null)
-			{
-				String vValor = String.Empty;
-				Object vValorOrg = vPI.GetValue(proveedor);
+        PropertyInfo[] vPIEnt = proveedor.GetType().GetProperties();
+        foreach (EProcesoOperativoColMin vPOC in colMD)
+        {
+            PropertyInfo vPI = vPIEnt.FirstOrDefault(e => e.Name == vPOC.Propiedad, null);
+            if (vPI != null)
+            {
+                String vValor = String.Empty;
+                Object vValorOrg = vPI.GetValue(proveedor);
 
-				if (vValorOrg == null)
-					vValor = String.Empty;
-				else if (vValorOrg is DateTime)
-					vValor = String.Format("{0:dd/MM/yyyy HH:mm:ss}", vValorOrg);
-				else if (vValorOrg is String)
-					vValor = (String)vValorOrg;
-				else
-					vValor = vValorOrg.ToString();
+                if (vValorOrg == null)
+                    vValor = String.Empty;
+                else if (vValorOrg is DateTime)
+                    vValor = String.Format("{0:dd/MM/yyyy HH:mm:ss}", vValorOrg);
+                else if (vValorOrg is String)
+                    vValor = (String)vValorOrg;
+                else
+                    vValor = vValorOrg.ToString();
 
-				expedienteValores.Add(new EExpendienteValor()
-				{
-					ColumnaId = vPOC.ColumnaId,
-					Valor = vValor
-				}); ;
-			}
-		}
-	}
+                expedienteValores.Add(new EExpendienteValor()
+                {
+                    ColumnaId = vPOC.ColumnaId,
+                    Valor = vValor
+                }); ;
+            }
+        }
+    }
 }

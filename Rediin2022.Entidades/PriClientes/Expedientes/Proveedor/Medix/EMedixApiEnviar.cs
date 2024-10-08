@@ -6,5 +6,5 @@ namespace Rediin2022.Entidades.PriClientes;
 
 public class EMedixApiEnviar
 {
-	public EMedixApiSolicitud solicitud { get; set; }
+	public EMedixApiSolicitud solicitud { get; set; } = new EMedixApiSolicitud();
 }
