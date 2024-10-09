@@ -138,7 +138,7 @@ namespace RediinProvMedix2022Mvc.Areas.PriProveedores.Controllers
             {
                 EDatosProveedor vProveedorXUsuario = await NExpedientesProveedor.ProveedorXUsuario(proveedor.ProcesoOperativoId, proveedor.UsuarioId);
                 EV.ProveedorReglas = vProveedorXUsuario.ReglasNegocio;
-                if (string.IsNullOrWhiteSpace(vProveedorXUsuario.Proveedor))
+                if (!string.IsNullOrWhiteSpace(vProveedorXUsuario.Proveedor))
                     EV.Proveedor = JsonSerializer.Deserialize<EProveedorMedix>(vProveedorXUsuario.Proveedor) ?? new();
                 else
                     EV.Proveedor = new();

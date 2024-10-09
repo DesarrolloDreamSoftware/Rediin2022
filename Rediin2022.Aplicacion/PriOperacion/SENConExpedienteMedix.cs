@@ -1,4 +1,5 @@
 ﻿using DSEntityNetX.Common.Casting;
+using DSMetodNetX.Comun.Correo;
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Entidades.Config;
 using DSMetodNetX.Entidades.Correo;
@@ -75,7 +76,7 @@ namespace Rediin2022.Aplicacion.PriOperacion
         {
             EV.Medix = new();
             EV.Medix.ParamEstIdCaptura = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdCaptura");
-            EV.Medix.ParamEstIdAutorizado = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdAutorizado");
+            //EV.Medix.ParamEstIdAutorizado = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdAutorizado");
             EV.Medix.ParamEstIdRevisado = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdRevisado");
             EV.Medix.ParamUrlRediinProveedores = await Servicios.ParamSist.Param<String>("RediinProveedorUrl");
 
@@ -191,12 +192,12 @@ namespace Rediin2022.Aplicacion.PriOperacion
                               "Seguimiento en Portal de Rediin Proveedores",
                               $"Estimado {vProveedor}:<br/><br/>Su alta como proveedor tiene las siguientes observaciones:<br/>{conExpedienteCambioEstatus.Comentarios}");
             }
-            else if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.Medix.ParamEstIdAutorizado)
-            {
-                await EnviaCorreo(vCorreo,
-                            "Seguimiento en Portal de Rediin Proveedores",
-                            $"Estimado {vProveedor}:<br/><br/>Su alta como proveedor ha sido satisfactoria.");
-            }
+            //else if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.Medix. )
+            //{
+            //    await EnviaCorreo(vCorreo,
+            //                "Seguimiento en Portal de Rediin Proveedores",
+            //                $"Estimado {vProveedor}:<br/><br/>Su alta como proveedor ha sido satisfactoria.");
+            //}
         }
 
         public bool ValidaEstatus(long procesoOperativoEstId)
@@ -206,6 +207,8 @@ namespace Rediin2022.Aplicacion.PriOperacion
 
         public async Task<bool> ValidaEstatusParaCambio(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
         {
+            Console.WriteLine($"Valida estatus para cambio -> {conExpedienteCambioEstatus.ProcesoOperativoEstId} vs {EV.Medix.ParamEstIdRevisado}");
+
             if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.Medix.ParamEstIdRevisado)
                 return await ActualizaAPI(conExpedienteCambioEstatus.ExpedienteId);
             else
@@ -214,6 +217,7 @@ namespace Rediin2022.Aplicacion.PriOperacion
 
         private async Task<Boolean> ActualizaAPI(Int64 expedienteId)
         {
+            Console.WriteLine($"Entro a actualiza API");
             EMedixApi vApiBase = new();
             //Lenamos el proveedor
             await LlenaCamposAPI(vApiBase.proveedor);
@@ -242,24 +246,52 @@ namespace Rediin2022.Aplicacion.PriOperacion
                     EMedixApiRecibir vApiRecibir = await vRes.Content.ReadFromJsonAsync<EMedixApiRecibir>();
                     if (vApiRecibir.respuesta.estatus != "success")
                         Mensajes.AddError(vApiRecibir.respuesta.mensaje);
-                    else if (vApiRecibir.respuesta.data != null && 
-                             vApiRecibir.respuesta.data.proveedor != null && 
+                    else if (vApiRecibir.respuesta.data != null &&
+                             vApiRecibir.respuesta.data.proveedor != null &&
                              vApiRecibir.respuesta.data.proveedor.Count > 0)
                     {
-                        //Actualizamos en el expediente el proveedorId
-                        var conExpediente = await NConExpedientes.ConExpedienteXId(expedienteId);
-                        foreach (var vValor in conExpediente.Valores)
+                        if (string.IsNullOrWhiteSpace(vApiRecibir.respuesta.data.proveedor[0].numeroProveedor))
+                            Mensajes.AddError("El numero de proveedor esta vacio.");
+                        else
                         {
-                            if (vValor.ColumnaId == EV.Medix.ColumnaIdProveedor)
+                            Console.WriteLine($"numeroProveedor = [{vApiRecibir.respuesta.data.proveedor[0].numeroProveedor}]");
+                            //Actualizamos en el expediente el proveedorId
+                            var conExpediente = await NConExpedientes.ConExpedienteXId(expedienteId);
+                            Console.WriteLine($"Se obtubo el expendiente");
+                            foreach (var vValor in conExpediente.Valores)
                             {
-                                UtilExpediente.EstableceValor(vValor, TiposColumna.Entero, vApiRecibir.respuesta.data.proveedor[0].numeroProveedor);
-                                break;
+                                if (vValor.ColumnaId == EV.Medix.ColumnaIdProveedor)
+                                {
+                                    UtilExpediente.EstableceValor(vValor, TiposColumna.Entero, vApiRecibir.respuesta.data.proveedor[0].numeroProveedor);
+                                    break;
+                                }
                             }
+                            Console.WriteLine($"Se cargo el proveedor");
+                            if (await NConExpedientes.ConExpedienteActualiza(conExpediente))
+                            {
+                                Console.WriteLine($"Se actualizo el expendiente");
+
+                                String vCorreo = ObtenValor(EV.ConExpediente.Sel, EV.Medix.ParamColumnaIdCorreo).ToString();
+                                Console.WriteLine($"Correo [{vCorreo}]");
+                                String vProveedor = ObtenValor(EV.ConExpediente.Sel, EV.Medix.ParamColumnaIdNombre).ToString();
+                                Console.WriteLine($"Proveedor [{vProveedor}]");
+                                await EnviaCorreo(vCorreo,
+                                   "Seguimiento en Portal de Rediin Proveedores",
+                                   $"Estimado {vProveedor}:<br/><br/>Su alta como proveedor ha sido satisfactoria.");
+                                Console.WriteLine($"Se envio el correo");
+                            }
+                            else
+                                Console.WriteLine($"No se actualizo el expendiente");
                         }
-                        await NConExpedientes.ConExpedienteActualiza(conExpediente);
                     }
                     else
+                    {
                         Mensajes.AddError("No se recibio el proveedor en el resultado.");
+                    }
+                }
+                else
+                {
+                    Mensajes.AddError("Error al consultar el API.");
                 }
             }
             catch (Exception ex)
@@ -334,7 +366,8 @@ namespace Rediin2022.Aplicacion.PriOperacion
             apiProveedor.numeroRegistroAnterior = vProveedor.ProveedorIdAnt.ToString(); //Duda
             apiProveedor.claveMoneda = vProveedor.MonedaId;
             apiProveedor.vendedorResponsable = vProveedor.VendedorNombre;
-            apiProveedor.incoTerms1 = vIncoterm.IncotermClave;
+            if (vIncoterm != null)
+                apiProveedor.incoTerms1 = vIncoterm.IncotermClave;
             apiProveedor.incoTerms2 = vProveedor.Destino;
             apiProveedor.curp = vProveedor.Curp;
             if (vRegimenFiscal != null)
