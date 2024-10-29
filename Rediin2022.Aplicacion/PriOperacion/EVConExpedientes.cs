@@ -54,13 +54,29 @@ namespace Rediin2022.Aplicacion.PriOperacion
         //public Int32 ExpedienteEstatuIndice { get; set; } = 0;
         //public EExpedienteEstatu ExpedienteEstatuSel { get; set; } = null;
 
+        //Control de combo cascada
         public EProcesoOperativoCol ColumnaIdPais { get; set; } = null;
         public EProcesoOperativoCol ColumnaIdEstado { get; set; } = null;
         public EProcesoOperativoCol ColumnaIdMunicipio { get; set; } = null;
         public EProcesoOperativoCol ColumnaIdColonias { get; set; } = null;
 
+        //Diferenciacion entre expedintes segun el proveedor
+        /// <summary>
+        /// Id del proceso operativo, que nos indica cuales son los expedientes con funcionamiento especifico segun el proveedor.
+        /// </summary>
         public Int64 ProcesoOperativoIdProveedor { get; set; }
+        /// <summary>
+        /// Tipo de captura segun el expediente, si es &gt; 0 se filtraran los objetos que cumplan con el tipo de captura.
+        /// Esto por ahora solo se usa en Medix.
+        /// </summary>
+        public TipoCaptura TipoCapturaIdExpediente { get; set; } = 0;
+        /// <summary>
+        /// Proveedor MontePio
+        /// </summary>
         public EVConExpedientesMontePio MontePio { get; set; } = null;
+        /// <summary>
+        /// Proveedor Medix
+        /// </summary>
         public EVConExpedientesMedix Medix { get; set; } = null;
         #endregion
     }

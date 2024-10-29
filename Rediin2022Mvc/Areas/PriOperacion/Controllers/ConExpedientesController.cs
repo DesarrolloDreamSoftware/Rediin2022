@@ -439,7 +439,8 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                 EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor)
             {
                 if (!await SENConExpedienteProv.ValidaEstatusParaCambio(conExpedienteCambioEstatus))
-                    return RedirectToAction(nameof(ConExpedienteCon));
+                    return await ConExpedienteCon();
+                    //return RedirectToAction(nameof(ConExpedienteCon));
             }
 
             if (await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus))
@@ -676,12 +677,20 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
 
             Servicios.Gen.InicializaSFInd(EV.ConExpediente, indice);
 
+            //Por proveedor
+            EV.TipoCapturaIdExpediente = 0;
+            if (SENConExpedienteProv != null &&
+                EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor)
+                await SENConExpedienteProv.ValidaTipoCapturaXExpediente();
+
             return RedirectToAction(nameof(ConExpedienteObjetoCon));
         }
         [MValidaSeg(nameof(ConExpedienteObjetoInicia))]
         public async Task<IActionResult> ConExpedienteObjetoCon()
         {
             EV.ConExpedienteObjeto.Filtro.ExpedienteId = EV.ConExpediente.Sel.ExpedienteId;
+            if(EV.TipoCapturaIdExpediente > 0)
+                EV.ConExpedienteObjeto.Filtro.FilTipoCapturaId = EV.TipoCapturaIdExpediente;
 
             await Servicios.Pag.CargaPagOrdYFil(EV.ConExpedienteObjeto);
             EV.ConExpedienteObjeto.Pag = await NConExpedientes.ConExpedienteObjetoPag(EV.ConExpedienteObjeto.Filtro);

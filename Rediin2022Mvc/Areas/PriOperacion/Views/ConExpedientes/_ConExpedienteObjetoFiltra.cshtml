@@ -7,14 +7,17 @@
     <div mpanel="Base" xpnl-rules="@EV.ConExpedienteObjeto.Reglas">
         <div melemento="CapLin">
             <div melemento="FilCol" melem-cols="3">
-                <input mval-filter="Model" xval-for="FilArchivoNombre"/>
+                <input mval-filter="Model" xval-for="FilArchivoNombre" />
             </div>
             <div melemento="FilCol" melem-cols="3">
-                <input mval-filter="Model" xval-for="FilProcesoOperativoObjetoNombre"/>
+                <input mval-filter="Model" xval-for="FilProcesoOperativoObjetoNombre" />
             </div>
-            <div melemento="FilCol" melem-cols="3">
-                <select mval-filter="Model" xval-for="FilTipoCapturaId"></select>
-            </div>
+            @if (EV.TipoCapturaIdExpediente == 0)
+            {
+                <div melemento="FilCol" melem-cols="3">
+                    <select mval-filter="Model" xval-for="FilTipoCapturaId"></select>
+                </div>
+            }
             <div melemento="FilColBtn" melem-cols="3">
                 <button maccion="Filtra" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoFiltra)"></button>
                 <button maccion="LimpiaFiltros" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoLimpiaFiltros)"></button>
