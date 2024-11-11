@@ -50,10 +50,10 @@ public interface INConExpedientes : IMCtrMensajes
     /// Reglas de negocio de la entidad ConExpediente.
     /// </summary>
     Task<List<MEReglaNeg>> ConExpedienteReglas();
-    /// <summary>
-    /// Consulta para los combos que se capturan.
-    /// </summary>
-    Task<List<MEElemento>> ConExpedienteCmb(EProcesoOperativoCol procesoOperativoCol);
+    ///// <summary>
+    ///// Consulta para los combos que se capturan.
+    ///// </summary>
+    //Task<List<MEElemento>> ConExpedienteCmb(EProcesoOperativoCol procesoOperativoCol);
     #endregion
 
     #region ConExpedienteObjeto (Objs)

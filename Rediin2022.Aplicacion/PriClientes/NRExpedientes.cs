@@ -62,15 +62,15 @@ namespace Rediin2022.Aplicacion.PriClientes
         {
             return await CallAsync<EDocumento>(NomFn(), expendienteId, archivoNombre);
         }
-        /// <summary>
-        /// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
-        /// </summary>
-        /// <param name="expendienteDatCmb"></param>
-        /// <returns></returns>
-        public async Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb)
-        {
-            return await CallAsync<List<MEElemento>>(NomFn(), expendienteDatCmb);
-        }
+        ///// <summary>
+        ///// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
+        ///// </summary>
+        ///// <param name="expendienteDatCmb"></param>
+        ///// <returns></returns>
+        //public async Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb)
+        //{
+        //    return await CallAsync<List<MEElemento>>(NomFn(), expendienteDatCmb);
+        //}
         #endregion
 
         //ProcesoOperativoIdMontePio

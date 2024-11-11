@@ -21,6 +21,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
 {
@@ -232,9 +233,10 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             {
                 foreach (EProcesoOperativoCol vCol in EV.ProcOperColumnasCap)
                 {
-                    if (vCol.CapCmbProcesoOperativoId > 0) //JRD REVISAR PORQUE PARECE QUE ESTE CAMPO NO SE USA
-                        vCol.ElementosCmb = await NConExpedientes.ConExpedienteCmb(vCol);
-                    else if (vCol.ComboId > 0 && vCombos.ContainsKey(vCol.ComboId))
+                    //if (vCol.CapCmbProcesoOperativoId > 0) //JRD REVISAR PORQUE PARECE QUE ESTE CAMPO NO SE USA
+                    //    vCol.ElementosCmb = await NConExpedientes.ConExpedienteCmb(vCol);
+                    //else 
+                    if (vCol.ComboId > 0 && vCombos.ContainsKey(vCol.ComboId))
                     {
                         vCol.ElementosCmb = vCombos[vCol.ComboId];
 
@@ -799,6 +801,8 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             String vCont;
             if (vObj.ArchivoNombre.EndsWith("xlsb"))
                 vCont = "application/vnd.ms-excel";
+            else if (vObj.ArchivoNombre.EndsWith("docx"))
+                vCont = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             else
                 vCont = "application/pdf";
 
@@ -807,20 +811,31 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
             vFS.CopyTo(vMS);
             return await Task.FromResult(File(vMS.ToArray(), vCont, "Archivo" + Path.GetExtension(vObj.ArchivoNombre)));
         }
-        //[MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
-        //public async Task<IActionResult> ConExpedienteObjetoDescarga2(Int32 indice)
-        //{
-        //    Int32 totalPaginas = 0;
-        //    EConExpedienteObjeto vObj = EV.ConExpedienteObjeto.Pag.Pagina[indice];
-        //    String imageFilesPath = Path.Combine(Path.Combine(vObj.Ruta, "temp"), "page-{0}.png");
-        //    using GroupDocs.Viewer.Viewer v = new GroupDocs.Viewer.Viewer(Path.Combine(vObj.Ruta, vObj.ArchivoNombre));
-        //    GroupDocs.Viewer.Results.ViewInfo i = v.GetViewInfo(GroupDocs.Viewer.Options.ViewInfoOptions.ForPngView(false));
-        //    totalPaginas = i.Pages.Count;
-        //    GroupDocs.Viewer.Options.PngViewOptions o = new PngViewOptions(imageFilesPath);
-        //    v.View(o);
-        //    return await Task.FromResult(new JsonResult(totalPaginas));
-        //}
-        [MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
+
+        public async Task<IActionResult> ConExpedienteObjetoDescarga2(Int32 indice)
+        {
+			string urlDocumento = $"https://tu-servidor.com/PriOperacion/ConExpedientes/ConExpedienteObjetoDescarga?indice={indice}";
+			// Genera la URL para Google Docs Viewer
+			string googleViewerUrl = $"https://docs.google.com/gview?url={Uri.EscapeDataString(urlDocumento)}&embedded=true";
+
+			return Redirect(googleViewerUrl);
+		}
+
+
+		//[MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
+		//public async Task<IActionResult> ConExpedienteObjetoDescarga2(Int32 indice)
+		//{
+		//    Int32 totalPaginas = 0;
+		//    EConExpedienteObjeto vObj = EV.ConExpedienteObjeto.Pag.Pagina[indice];
+		//    String imageFilesPath = Path.Combine(Path.Combine(vObj.Ruta, "temp"), "page-{0}.png");
+		//    using GroupDocs.Viewer.Viewer v = new GroupDocs.Viewer.Viewer(Path.Combine(vObj.Ruta, vObj.ArchivoNombre));
+		//    GroupDocs.Viewer.Results.ViewInfo i = v.GetViewInfo(GroupDocs.Viewer.Options.ViewInfoOptions.ForPngView(false));
+		//    totalPaginas = i.Pages.Count;
+		//    GroupDocs.Viewer.Options.PngViewOptions o = new PngViewOptions(imageFilesPath);
+		//    v.View(o);
+		//    return await Task.FromResult(new JsonResult(totalPaginas));
+		//}
+		[MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
         public async Task<IActionResult> ConExpedienteObjetoDescargaImg(Int32 indice, Int32 pagina)
         {
             EConExpedienteObjeto vObj = EV.ConExpedienteObjeto.Pag.Pagina[indice];

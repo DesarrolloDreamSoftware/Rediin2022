@@ -34,7 +34,16 @@ public interface INExpedientesProveedor : IMCtrMensajes
     #endregion
 
     #region MontePio
-   
+
+    #endregion
+
+    #region Medix
+    /// <summary>
+    /// Reglas de validacion para SAP.
+    /// En Medix se usa para validar antes de pasar a estatus EnTesoreria
+    /// </summary>
+    /// <returns></returns>
+    Task<List<MEReglaNeg>> ReglasValidacionSAP(Int64 procesoOperativoIdProveedor);
     #endregion
 
     #endregion

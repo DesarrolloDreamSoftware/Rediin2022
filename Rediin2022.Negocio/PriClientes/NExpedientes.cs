@@ -296,20 +296,20 @@ namespace Rediin2022.Negocio.PriClientes
         {
             return await Task.FromResult(true);
         }
-        /// <summary>
-        /// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
-        /// </summary>
-        /// <param name="expendienteDatCmb"></param>
-        /// <returns></returns>
-        public async Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb)
-        {
-            return await NConExpedientes.ConExpedienteCmb(new EProcesoOperativoCol()
-            {
-                CapCmbProcesoOperativoId = expendienteDatCmb.CapCmbProcesoOperativoId,
-                CapCmbIdColumnaId = expendienteDatCmb.CapCmbIdColumnaId,
-                CapCmbTextoColumnaId = expendienteDatCmb.CapCmbTextoColumnaId
-            });
-        }
+        ///// <summary>
+        ///// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
+        ///// </summary>
+        ///// <param name="expendienteDatCmb"></param>
+        ///// <returns></returns>
+        //public async Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb)
+        //{
+        //    return await NConExpedientes.ConExpedienteCmb(new EProcesoOperativoCol()
+        //    {
+        //        CapCmbProcesoOperativoId = expendienteDatCmb.CapCmbProcesoOperativoId,
+        //        CapCmbIdColumnaId = expendienteDatCmb.CapCmbIdColumnaId,
+        //        CapCmbTextoColumnaId = expendienteDatCmb.CapCmbTextoColumnaId
+        //    });
+        //}
         #endregion
 
         #endregion

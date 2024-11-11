@@ -104,14 +104,14 @@ namespace Rediin2022Api.Areas.PriOperacion.Controllers
         {
             return await NConExpedientes.ConExpedienteReglas();
         }
-        /// <summary>
-        /// Consulta para los combos que se capturan.
-        /// </summary>
-        [HttpPost]
-        public async Task<List<MEElemento>> ConExpedienteCmb(EProcesoOperativoCol procesoOperativoCol)
-        {
-            return await NConExpedientes.ConExpedienteCmb(procesoOperativoCol);
-        }
+        ///// <summary>
+        ///// Consulta para los combos que se capturan.
+        ///// </summary>
+        //[HttpPost]
+        //public async Task<List<MEElemento>> ConExpedienteCmb(EProcesoOperativoCol procesoOperativoCol)
+        //{
+        //    return await NConExpedientes.ConExpedienteCmb(procesoOperativoCol);
+        //}
         #endregion
 
         #region ConExpedienteObjeto (Objs)

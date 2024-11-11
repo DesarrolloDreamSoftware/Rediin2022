@@ -28,11 +28,11 @@ public interface INExpedientes : IMCtrMensajes
     /// <param name="archivoNombre"></param>
     /// <returns></returns>
     Task<EDocumento> ObjectoDescargaDocto(Int64 expendienteId, String archivoNombre);
-    /// <summary>
-    /// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
-    /// </summary>
-    /// <param name="expendienteDatCmb"></param>
-    /// <returns></returns>
-    Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb);
+    ///// <summary>
+    ///// Listados para cargar los combos con expedientes de procesos operativos que son catalogos
+    ///// </summary>
+    ///// <param name="expendienteDatCmb"></param>
+    ///// <returns></returns>
+    //Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb);
     #endregion
 }

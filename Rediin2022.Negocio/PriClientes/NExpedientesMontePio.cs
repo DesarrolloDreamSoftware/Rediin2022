@@ -114,6 +114,15 @@ namespace Rediin2022.Negocio.PriClientes
         {
             return await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus);
         }
+        /// <summary>
+        /// Reglas de validacion para SAP.
+        /// En Medix se usa para validar antes de pasar a estatus EnTesoreria
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<MEReglaNeg>> ReglasValidacionSAP(Int64 procesoOperativoIdProveedor)
+        {
+            return new List<MEReglaNeg>();
+        }
         #endregion
     }
 }

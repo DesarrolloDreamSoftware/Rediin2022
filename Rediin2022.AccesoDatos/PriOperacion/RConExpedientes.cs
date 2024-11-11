@@ -40,22 +40,6 @@ namespace Rediin2022.AccesoDatos.PriOperacion
             return await _conexion.EntidadPagAsync<EConExpProcOperativo,
                                                     EConExpProcOperativoPag,
                                                     EConExpProcOperativoFiltro>(conExpProcOperativoFiltro, "NTExpEncCP");
-
-            //EConExpProcOperativoPag vConExpProcOperativoPag = new EConExpProcOperativoPag();
-
-            //_conexion.AddParamIn(MMetaDatos.establecimientoId, _conexion.UsuarioSesion.EstablecimientoId);
-            //_conexion.AddParamFilterTL(conExpProcOperativoFiltro);
-            //await _conexion.LoadEntityAsync<EConExpProcOperativoPag>("NTExpEncCP", vConExpProcOperativoPag);
-            //if (!Mensajes.Ok)
-            //    return vConExpProcOperativoPag;
-
-            //base.MProcesaDatPag(conExpProcOperativoFiltro, vConExpProcOperativoPag);
-
-            //_conexion.AddParamIn(MMetaDatos.establecimientoId, _conexion.UsuarioSesion.EstablecimientoId);
-            //_conexion.AddParamFilterPag(conExpProcOperativoFiltro);
-            //vConExpProcOperativoPag.Pagina = await _conexion.LoadEntitiesAsync<EConExpProcOperativo>("NTExpEncCP");
-
-            //return vConExpProcOperativoPag;
         }
         #endregion
 
@@ -250,14 +234,6 @@ namespace Rediin2022.AccesoDatos.PriOperacion
 
             await _conexion.EntityUpdateAsync(conExpediente, MAccionesBd.Inserta, "NTExpExpIAE");
             return conExpediente.ExpedienteId;
-
-            //if (!ActualizaValoresTemp(conExpediente))
-            //    return 0L;
-
-            ////Actualizamos en transaccion
-            //_conexion.AddParamEntity(conExpediente, MAccionesBd.Inserta);
-            //Int64 vResultado = await _conexion.ExecuteScalarAsync<Int64>("NTExpExpIAE");
-            //return vResultado;
         }
         /// <summary>
         /// Permite actualizar la entidad ConExpediente.
@@ -268,14 +244,6 @@ namespace Rediin2022.AccesoDatos.PriOperacion
                 return false;
 
             return await _conexion.EntityUpdateAsync(conExpediente, MAccionesBd.Actualiza, "NTExpExpIAE");
-
-            //if (!ActualizaValoresTemp(conExpediente))
-            //    return false;
-
-            ////Actualizamos en transaccion
-            //_conexion.AddParamEntity(conExpediente, MAccionesBd.Actualiza);
-            //await _conexion.ExecuteScalarAsync("NTExpExpIAE");
-            //return Mensajes.Ok;
         }
         /// <summary>
         /// Permite eliminar la entidad ConExpediente.
@@ -283,9 +251,6 @@ namespace Rediin2022.AccesoDatos.PriOperacion
         protected async Task<Boolean> ConExpedienteElimina(EConExpediente conExpediente)
         {
             return await _conexion.EntityUpdateAsync(conExpediente, MAccionesBd.Elimina, "NTExpExpIAE");
-
-            //_conexion.AddParamEntity(conExpediente, MAccionesBd.Elimina);
-            //return await _conexion.ExecuteNonQueryRetAsync("NTExpExpIAE");
         }
         /// <summary>
         /// Acción personalizada CambioEstatus.
@@ -318,39 +283,39 @@ namespace Rediin2022.AccesoDatos.PriOperacion
 
             return _conexion.Messages.Ok;
         }
-        /// <summary>
-        /// Consulta para los combos que se capturan.
-        /// </summary>
-        public async Task<List<MEElemento>> ConExpedienteCmb(EProcesoOperativoCol procesoOperativoCol)
-        {
-            _conexion.AddParamIn(procesoOperativoCol.CapCmbProcesoOperativoId);
-            _conexion.AddParamIn(procesoOperativoCol.CapCmbIdColumnaId);
-            _conexion.AddParamIn(procesoOperativoCol.CapCmbTextoColumnaId);
+        ///// <summary>
+        ///// Consulta para los combos que se capturan.
+        ///// </summary>
+        //public async Task<List<MEElemento>> ConExpedienteCmb(EProcesoOperativoCol procesoOperativoCol)
+        //{
+        //    _conexion.AddParamIn(procesoOperativoCol.CapCmbProcesoOperativoId);
+        //    _conexion.AddParamIn(procesoOperativoCol.CapCmbIdColumnaId);
+        //    _conexion.AddParamIn(procesoOperativoCol.CapCmbTextoColumnaId);
 
-            Dictionary<Int64, MEElemento> vElementosDic = new Dictionary<Int64, MEElemento>();
-            await _conexion.XConnection.LoadObjectAsync(
-                _conexion.GetCurrentCmd("NTExpExpCmb"),
-                _conexion.XConnection.GetXDataReader(),
-                dr =>
-                {
-                    Int64 vExpediente = dr.GetInt64(nameof(EConExpValores.ExpedienteId));
-                    TiposColumna vTipo = (TiposColumna)dr.GetInt16(nameof(EProcesoOperativoCol.Tipo));
+        //    Dictionary<Int64, MEElemento> vElementosDic = new Dictionary<Int64, MEElemento>();
+        //    await _conexion.XConnection.LoadObjectAsync(
+        //        _conexion.GetCurrentCmd("NTExpExpCmb"),
+        //        _conexion.XConnection.GetXDataReader(),
+        //        dr =>
+        //        {
+        //            Int64 vExpediente = dr.GetInt64(nameof(EConExpValores.ExpedienteId));
+        //            TiposColumna vTipo = (TiposColumna)dr.GetInt16(nameof(EProcesoOperativoCol.Tipo));
 
-                    if (!vElementosDic.ContainsKey(vExpediente))
-                        vElementosDic.Add(vExpediente, new MEElemento());
+        //            if (!vElementosDic.ContainsKey(vExpediente))
+        //                vElementosDic.Add(vExpediente, new MEElemento());
 
-                    MEElemento vElemento = vElementosDic[vExpediente];
+        //            MEElemento vElemento = vElementosDic[vExpediente];
 
-                    if (dr.GetInt64(nameof(EConExpValores.ColumnaId)) == procesoOperativoCol.CapCmbIdColumnaId)
-                        vElemento.Id = UtilExpedientesAD.ObtenValorXTipoStr(vTipo, dr);
-                    else if (dr.GetInt64(nameof(EConExpValores.ColumnaId)) == procesoOperativoCol.CapCmbTextoColumnaId)
-                        vElemento.Text = UtilExpedientesAD.ObtenValorXTipoStr(vTipo, dr);
+        //            if (dr.GetInt64(nameof(EConExpValores.ColumnaId)) == procesoOperativoCol.CapCmbIdColumnaId)
+        //                vElemento.Id = UtilExpedientesAD.ObtenValorXTipoStr(vTipo, dr);
+        //            else if (dr.GetInt64(nameof(EConExpValores.ColumnaId)) == procesoOperativoCol.CapCmbTextoColumnaId)
+        //                vElemento.Text = UtilExpedientesAD.ObtenValorXTipoStr(vTipo, dr);
 
-                    return true;
-                });
+        //            return true;
+        //        });
 
-            return new List<MEElemento>(vElementosDic.Values);
-        }
+        //    return new List<MEElemento>(vElementosDic.Values);
+        //}
         #endregion
 
         #region ConExpedienteObjeto (Objs)
@@ -362,20 +327,6 @@ namespace Rediin2022.AccesoDatos.PriOperacion
             return await _conexion.EntidadPagAsync<EConExpedienteObjeto,
                                                     EConExpedienteObjetoPag,
                                                     EConExpedienteObjetoFiltro>(conExpedienteObjetoFiltro, "NTExpObjsCP");
-
-            //EConExpedienteObjetoPag vConExpedienteObjetoPag = new EConExpedienteObjetoPag();
-
-            //_conexion.AddParamFilterTL(conExpedienteObjetoFiltro);
-            //await _conexion.LoadEntityAsync<EConExpedienteObjetoPag>("NTExpObjsCP", vConExpedienteObjetoPag);
-            //if (!Mensajes.Ok)
-            //    return vConExpedienteObjetoPag;
-
-            //base.MProcesaDatPag(conExpedienteObjetoFiltro, vConExpedienteObjetoPag);
-
-            //_conexion.AddParamFilterPag(conExpedienteObjetoFiltro);
-            //vConExpedienteObjetoPag.Pagina = await _conexion.LoadEntitiesAsync<EConExpedienteObjeto>("NTExpObjsCP");
-
-            //return vConExpedienteObjetoPag;
         }
         /// <summary>
         /// Permite insertar la entidad ConExpedienteObjeto.
@@ -384,11 +335,6 @@ namespace Rediin2022.AccesoDatos.PriOperacion
         {
             await _conexion.EntityUpdateAsync(conExpedienteObjeto, MAccionesBd.Inserta, "NTExpObjsIAE");
             return conExpedienteObjeto.ExpedienteObjetoId;
-
-            //_conexion.AddParamEntity(conExpedienteObjeto, MAccionesBd.Inserta);
-            //Int64 vResultado = await _conexion.ExecuteScalarValAsync("NTExpObjsIAE",
-            //                                              MensajesXId.ArchivoNombre);
-            //return vResultado;
         }
         /// <summary>
         /// Permite actualizar la entidad ConExpedienteObjeto.
@@ -396,9 +342,6 @@ namespace Rediin2022.AccesoDatos.PriOperacion
         protected async Task<Boolean> ConExpedienteObjetoActualiza(EConExpedienteObjeto conExpedienteObjeto)
         {
             return await _conexion.EntityUpdateAsync(conExpedienteObjeto, MAccionesBd.Actualiza, "NTExpObjsIAE");
-
-            //_conexion.AddParamEntity(conExpedienteObjeto, MAccionesBd.Actualiza);
-            //return await _conexion.ExecuteNonQueryRetAsync("NTExpObjsIAE");
         }
         /// <summary>
         /// Permite eliminar la entidad ConExpedienteObjeto.
@@ -406,9 +349,6 @@ namespace Rediin2022.AccesoDatos.PriOperacion
         protected async Task<Boolean> ConExpedienteObjetoElimina(EConExpedienteObjeto conExpedienteObjeto)
         {
             return await _conexion.EntityUpdateAsync(conExpedienteObjeto, MAccionesBd.Elimina, "NTExpObjsIAE");
-
-            //_conexion.AddParamEntity(conExpedienteObjeto, MAccionesBd.Elimina);
-            //return await _conexion.ExecuteNonQueryRetAsync("NTExpObjsIAE");
         }
         /// <summary>
         /// Acción personalizada SelArchivo.
@@ -430,20 +370,6 @@ namespace Rediin2022.AccesoDatos.PriOperacion
             return await _conexion.EntidadPagAsync<EExpedienteEstatu,
                                                     EExpedienteEstatuPag,
                                                     EExpedienteEstatuFiltro>(expedienteEstatuFiltro, "NTExpExpeEstaCP");
-
-            //EExpedienteEstatuPag vExpedienteEstatuPag = new EExpedienteEstatuPag();
-
-            //_conexion.AddParamFilterTL(expedienteEstatuFiltro);
-            //await _conexion.LoadEntityAsync<EExpedienteEstatuPag>("NTExpExpeEstaCP", vExpedienteEstatuPag);
-            //if (!Mensajes.Ok)
-            //    return vExpedienteEstatuPag;
-
-            //base.MProcesaDatPag(expedienteEstatuFiltro, vExpedienteEstatuPag);
-
-            //_conexion.AddParamFilterPag(expedienteEstatuFiltro);
-            //vExpedienteEstatuPag.Pagina = await _conexion.LoadEntitiesAsync<EExpedienteEstatu>("NTExpExpeEstaCP");
-
-            //return vExpedienteEstatuPag;
         }
         /// <summary>
         /// Consulta del utlimo estatus del expediente.

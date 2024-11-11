@@ -9,6 +9,7 @@ using Rediin2022.Entidades.PriClientes;
 using Rediin2022.Entidades.PriOperacion;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -122,9 +123,39 @@ namespace Rediin2022.Negocio.PriClientes
         {
             return await NConExpedientes.ConExpedienteCambioEstatus(conExpedienteCambioEstatus);
         }
+        /// <summary>
+        /// Reglas de validacion para SAP.
+        /// En Medix se usa para validar antes de pasar a estatus EnTesoreria
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<MEReglaNeg>> ReglasValidacionSAP(Int64 procesoOperativoIdProveedor)
+        {
+            List<EProcesoOperativoCol> vColMD =
+                await NProcesosOperativos.ProcesoOperativoColCT(procesoOperativoIdProveedor);
 
-        public List<MEReglaNeg> CrearReglasNeg(EProveedorMedix proveedor,
-                                               List<EProcesoOperativoCol> colMD)
+            IMReglasNeg<EProveedorMedix> vReglas = Validaciones.CreaReglasNeg<EProveedorMedix>(Mensajes);
+            vReglas.Rules = new List<MEReglaNeg>();
+            UtilProveedorEspecif.CargaReglasNegocioProveedor(vColMD, vReglas.Rules);
+
+            foreach (MEReglaNeg vRN in vReglas.Rules)
+            {
+                if (vRN.Property == nameof(EProveedorMedix.ProveedorId) ||
+                    vRN.Property == nameof(EProveedorMedix.SapSociedadId) ||
+                    vRN.Property == nameof(EProveedorMedix.SapOrganizacionCompraId) ||
+                    vRN.Property == nameof(EProveedorMedix.MonedaId) ||
+                    vRN.Property == nameof(EProveedorMedix.SapCondicionPagoId) ||
+                    vRN.Property == nameof(EProveedorMedix.IncotermId) ||
+                    vRN.Property == nameof(EProveedorMedix.Destino) ||
+                    vRN.Property == nameof(EProveedorMedix.Busqueda1) ||
+                    vRN.Property == nameof(EProveedorMedix.Busqueda2) ||
+                    vRN.Property == nameof(EProveedorMedix.UsuarioId))
+                    vRN.Required = true; //Todos obligatorios
+            }
+
+            return vReglas.Rules;
+        }
+        protected List<MEReglaNeg> CrearReglasNeg(EProveedorMedix proveedor,
+                                                  List<EProcesoOperativoCol> colMD)
         {
             //Creamos las reglas de negocio
             IMReglasNeg<EProveedorMedix> vReglas = Validaciones.CreaReglasNeg<EProveedorMedix>(Mensajes);
@@ -169,9 +200,6 @@ namespace Rediin2022.Negocio.PriClientes
                     vRN.Required = true; //Todos obligatorios
                 else
                     vRN.Required = false;
-
-                //if (colMD.FirstOrDefault(e => e.Propiedad == vRN.Property, new()).ComboId > 0)
-                //    vRN.MessageForExpr = XLanguageXId.MessageForExpr;
             }
 
             vReglas.AddVisible(e => e.Rfc, e => e.TipoCaptura != TipoCaptura.PersonaExtranjera);

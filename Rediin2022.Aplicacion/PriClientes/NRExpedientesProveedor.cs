@@ -61,7 +61,19 @@ namespace Rediin2022.Aplicacion.PriClientes
         #endregion
 
         #region Monte Pio
-        
+
+        #endregion
+
+        #region Medix
+        /// <summary>
+        /// Reglas de validacion para SAP.
+        /// En Medix se usa para validar antes de pasar a estatus EnTesoreria
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<MEReglaNeg>> ReglasValidacionSAP(Int64 procesoOperativoIdProveedor)
+        {
+            return await CallAsync<List<MEReglaNeg>>(NomFn(), procesoOperativoIdProveedor);
+        }
         #endregion
 
         #endregion

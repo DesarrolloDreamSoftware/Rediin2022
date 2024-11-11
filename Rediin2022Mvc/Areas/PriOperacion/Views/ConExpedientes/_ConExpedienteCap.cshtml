@@ -29,160 +29,137 @@
     if (vLinea.Count > 0)
         vLineas.Add(vLinea);
 }
-
-@if ((Boolean)ViewBag.PrimCap == true)
-{
-    <div melemento="CapLin">
-        <div melemento="CapCol" melem-cols="3">
-            <input mval="Model" xval-for="ExpedienteId" xval-enabled="false" />
+<div xunstyledpanel="" xpnl-readonly="@EV.Accion == MAccionesGen.Consulta">
+    @if ((Boolean)ViewBag.PrimCap == true)
+    {
+        <div melemento="CapLin">
+            <div melemento="CapCol" melem-cols="3">
+                <input mval="Model" xval-for="ExpedienteId" xval-enabled="false" />
+            </div>
+            <div melemento="CapCol" melem-cols="3">
+            </div>
+            <div melemento="CapCol" melem-cols="3">
+            </div>
+            <div melemento="CapCol" melem-cols="3">
+            </div>
         </div>
-        <div melemento="CapCol" melem-cols="3">
-        </div>
-        <div melemento="CapCol" melem-cols="3">
-        </div>
-        <div melemento="CapCol" melem-cols="3">
-        </div>
-    </div>
-}
-@foreach (List<EProcesoOperativoCol> vLin in vLineas)
-{
-    <div melemento="CapLin">
-        @foreach (EProcesoOperativoCol vCol in vLin)
-        {
-            foreach (EConExpValores vVal in Model.Valores)
+    }
+    @foreach (List<EProcesoOperativoCol> vLin in vLineas)
+    {
+        <div melemento="CapLin">
+            @foreach (EProcesoOperativoCol vCol in vLin)
             {
-                if (vVal.ColumnaId == vCol.ColumnaId)
+                foreach (EConExpValores vVal in Model.Valores)
                 {
-                    vValor = vVal;
-                    break;
+                    if (vVal.ColumnaId == vCol.ColumnaId)
+                    {
+                        vValor = vVal;
+                        break;
+                    }
                 }
-            }
 
-            XInputTypes vTipo = XInputTypes.Text;
-            if (vCol.Tipo == TiposColumna.Texto)
-                vTipo = XInputTypes.Text;
-            else if (vCol.Tipo == TiposColumna.Boleano)
-                vTipo = XInputTypes.Bool;
-            else if (vCol.Tipo == TiposColumna.Entero)
-                vTipo = XInputTypes.Int;
-            else if (vCol.Tipo == TiposColumna.Importe)
-                vTipo = XInputTypes.Dec;
-            else if (vCol.Tipo == TiposColumna.Fecha)
-                vTipo = XInputTypes.Date;
-            else if (vCol.Tipo == TiposColumna.FechaYHora)
-                vTipo = XInputTypes.DateTime;
-            else if (vCol.Tipo == TiposColumna.Hora)
-                vTipo = XInputTypes.Time;
-
-            String vValorCadena = String.Empty;
-            if (vValor != null)
-            {
+                XInputTypes vTipo = XInputTypes.Text;
                 if (vCol.Tipo == TiposColumna.Texto)
-                    vValorCadena = vValor.ValorTexto;
+                    vTipo = XInputTypes.Text;
                 else if (vCol.Tipo == TiposColumna.Boleano)
-                    vValorCadena = vValor.ValorTexto;
+                    vTipo = XInputTypes.Bool;
                 else if (vCol.Tipo == TiposColumna.Entero)
-                    vValorCadena = String.Format("{0:0}", vValor.ValorNumerico);
+                    vTipo = XInputTypes.Int;
                 else if (vCol.Tipo == TiposColumna.Importe)
-                    vValorCadena = String.Format($"{{0:0.{XString.Complement("0", vCol.Decimales)}}}", vValor.ValorNumerico);
+                    vTipo = XInputTypes.Dec;
                 else if (vCol.Tipo == TiposColumna.Fecha)
-                    vValorCadena = String.Format("{0:dd/MM/yyyy}", vValor.ValorFecha);
+                    vTipo = XInputTypes.Date;
                 else if (vCol.Tipo == TiposColumna.FechaYHora)
-                    vValorCadena = String.Format("{0:dd/MM/yyyy HH:mm}", vValor.ValorFecha);
+                    vTipo = XInputTypes.DateTime;
                 else if (vCol.Tipo == TiposColumna.Hora)
-                    vValorCadena = String.Format("{0:HH:mm}", vValor.ValorFecha);
-            }
+                    vTipo = XInputTypes.Time;
 
-            <div melemento="CapCol" melem-cols="@vCol.CapColumnas * 3">
-                @if (vCol.ComboId > 0)
+                String vValorCadena = String.Empty;
+                if (vValor != null)
                 {
-                    Boolean vActivar = vCol.ElementosCmb != null && vCol.ElementosCmb.Count > 0;
+                    if (vCol.Tipo == TiposColumna.Texto)
+                        vValorCadena = vValor.ValorTexto;
+                    else if (vCol.Tipo == TiposColumna.Boleano)
+                        vValorCadena = vValor.ValorTexto;
+                    else if (vCol.Tipo == TiposColumna.Entero)
+                        vValorCadena = String.Format("{0:0}", vValor.ValorNumerico);
+                    else if (vCol.Tipo == TiposColumna.Importe)
+                        vValorCadena = String.Format($"{{0:0.{XString.Complement("0", vCol.Decimales)}}}", vValor.ValorNumerico);
+                    else if (vCol.Tipo == TiposColumna.Fecha)
+                        vValorCadena = String.Format("{0:dd/MM/yyyy}", vValor.ValorFecha);
+                    else if (vCol.Tipo == TiposColumna.FechaYHora)
+                        vValorCadena = String.Format("{0:dd/MM/yyyy HH:mm}", vValor.ValorFecha);
+                    else if (vCol.Tipo == TiposColumna.Hora)
+                        vValorCadena = String.Format("{0:HH:mm}", vValor.ValorFecha);
+                }
 
-                    if ((EV.ColumnaIdPais != null && EV.ColumnaIdPais.ColumnaId == vCol.ColumnaId) ||
+                <div melemento="CapCol" melem-cols="@vCol.CapColumnas * 3">
+                    @if (vCol.ComboId > 0)
+                    {
+                        Boolean vActivar = vCol.ElementosCmb != null && vCol.ElementosCmb.Count > 0;
+                        if(EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor &&
+                           EV.Medix != null &&
+                           vCol.ColumnaId == EV.Medix.ColumnaIdModelo &&
+                           EV.Accion == MAccionesGen.Actualiza)
+                           vActivar = false; // No se puede cambiar el modelo al editar en Medix
+
+                        if ((EV.ColumnaIdPais != null && EV.ColumnaIdPais.ColumnaId == vCol.ColumnaId) ||
                         (EV.ColumnaIdEstado != null && EV.ColumnaIdEstado.ColumnaId == vCol.ColumnaId) ||
                         (EV.ColumnaIdMunicipio != null && EV.ColumnaIdMunicipio.ColumnaId == vCol.ColumnaId))
+                        {
+                            String vAccion = (EV.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInsertaCap2) : nameof(ConExpedientesController.ConExpedienteActualizaCap2));
+                            vAccion += $"?PEMColumnaId={vCol.ColumnaId}";
+                            <select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
+                                    xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+                                    xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+                                    value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vCol.ElementosCmb"
+                                    xval-enabled="@vActivar" xval-action="@vAccion"></select>
+                        }
+                        else
+                        {
+                            <select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
+                                    xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+                                    xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+                                    value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vCol.ElementosCmb"
+                                    xval-enabled="@vActivar"></select>
+                        }
+                    }
+                    // else if (vCol.CapCmbProcesoOperativoId > 0)
+                    // {
+                    //     <select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
+                    //             xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+                    //             xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+                    //             value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vCol.ElementosCmb"></select>
+                    // }
+                    else if (vCol.Tipo == TiposColumna.Importe && vCol.Decimales > 0)
                     {
-                        String vAccion = (EV.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInsertaCap2) : nameof(ConExpedientesController.ConExpedienteActualizaCap2));
-                        vAccion += $"?PEMColumnaId={vCol.ColumnaId}";
-                        <select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-                                xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-                                xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                                value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vCol.ElementosCmb"
-                                xval-enabled="@vActivar" xval-action="@vAccion"></select>
+                        <input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
+                               xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+                               xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+                               value="@vValorCadena" xval-dec="@vCol.Decimales" />
+                    }
+                    else if (vCol.Tipo == TiposColumna.Boleano)
+                    {
+                        Boolean vChecado = (vValorCadena ?? String.Empty) == "1";
+                        <input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
+                               xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+                               xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+                               value="true" checked="@vChecado" />
                     }
                     else
                     {
-                        <select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-                                xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-                                xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                                value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vCol.ElementosCmb"
-                                xval-enabled="@vActivar"></select>
+                        <input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
+                               xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
+                               xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
+                               value="@Html.Raw(vValorCadena)" />
                     }
-                }
-                // else if (vCol.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId &&
-                //      EV.CombosProveedores != null &&
-                //      EV.CombosProveedores.ContainsKey(vCol.ColumnaId))
-                // {
-                //     List<MEElemento> vElementos = EV.CombosProveedores[vCol.ColumnaId];
-
-                //     Boolean vActivar = vElementos != null; // && vElementos.Count > 0;
-
-                //     if (vCol.ColumnaId == EV.ParamProveedorColumnaIdPais ||
-                //         vCol.ColumnaId == EV.ParamProveedorColumnaIdEstado ||
-                //         vCol.ColumnaId == EV.ParamProveedorColumnaIdMunicipio)
-                //     {
-                //         String vAccion = (ViewBag.Accion == MAccionesGen.Inserta ? nameof(ConExpedientesController.ConExpedienteInsertaCap2) : nameof(ConExpedientesController.ConExpedienteActualizaCap2));
-                //         vAccion += $"?PEMColumnaId={vCol.ColumnaId}";
-                //         <select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-                //                 xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-                //                 xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                //                 value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vElementos"
-                //                 xval-enabled="@vActivar" xval-action="@vAccion"></select>
-                //     }
-                //     else
-                //     {
-                //         <select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-                //                 xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-                //                 xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                //                 value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vElementos"
-                //                 xval-enabled="@vActivar"></select>
-                //     }
-                // }
-                else if (vCol.CapCmbProcesoOperativoId > 0)
-                {
-                    <select mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-                            xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-                            xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                            value="@vValorCadena" xval-dec="@vCol.Decimales" xval-items="@vCol.ElementosCmb"></select>
-                }
-                else if (vCol.Tipo == TiposColumna.Importe && vCol.Decimales > 0)
-                {
-                    <input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-                           xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-                           xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                           value="@vValorCadena" xval-dec="@vCol.Decimales" />
-                }
-                else if (vCol.Tipo == TiposColumna.Boleano)
-                {
-                    Boolean vChecado = (vValorCadena ?? String.Empty) == "1";
-                    <input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-                           xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-                           xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                           value="true" checked="@vChecado" />
-                }
-                else
-                {
-                    <input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
-                           xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
-                           xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                           value="@Html.Raw(vValorCadena)" />
-                }
-            </div>
-            @if (vCol.CapColumnasVacias > 0)
-            {
-                <div melemento="CapCol" melem-cols="vCol.CapColumnasVacias * 3">
                 </div>
+                @if (vCol.CapColumnasVacias > 0)
+                {
+                    <div melemento="CapCol" melem-cols="vCol.CapColumnasVacias * 3">
+                    </div>
+                }
             }
-        }
-    </div>
-}
+        </div>
+    }
+</div>

@@ -176,11 +176,11 @@ namespace Rediin2022Api.Areas.PriClientes.Controllers
 
             return await Task.FromResult(vDoc);
         }
-        [HttpPost]
-        public async Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb)
-        {
-            return await NExpedientes.ConExpedienteCmb(expendienteDatCmb);
-        }
+        //[HttpPost]
+        //public async Task<List<MEElemento>> ConExpedienteCmb(EExpendienteDatCmb expendienteDatCmb)
+        //{
+        //    return await NExpedientes.ConExpedienteCmb(expendienteDatCmb);
+        //}
         #endregion
 
         #endregion

@@ -29,9 +29,9 @@ namespace Rediin2022.Entidades.PriCatalogos
         [MDAMain] public Boolean CapObligatorio { get; set; } = false;
         [MDAMain] public String CapRangoIni { get; set; } = String.Empty;
         [MDAMain] public String CapRangoFin { get; set; } = String.Empty;
-		[MDAMain(true)] public Int64 CapCmbProcesoOperativoId { get; set; } = 0L;
-		[MDAMain(true)] public Int64 CapCmbIdColumnaId { get; set; } = 0L;
-		[MDAMain(true)] public Int64 CapCmbTextoColumnaId { get; set; } = 0L;
+		//[MDAMain(true)] public Int64 CapCmbProcesoOperativoId { get; set; } = 0L;
+		//[MDAMain(true)] public Int64 CapCmbIdColumnaId { get; set; } = 0L;
+		//[MDAMain(true)] public Int64 CapCmbTextoColumnaId { get; set; } = 0L;
         [MDAMain(true)] public Combos ComboId { get; set; } = Combos.Ninguno;
         [MDAMain] public Boolean Activo { get; set; } = false;
 

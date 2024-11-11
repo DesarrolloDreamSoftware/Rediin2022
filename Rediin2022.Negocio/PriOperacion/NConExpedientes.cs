@@ -151,14 +151,6 @@ namespace Rediin2022.Negocio.PriOperacion
         #endregion
 
         #region ConExpedienteObjeto (Objs)
-        ///// <summary>
-        ///// Reglas de negocio de la entidad ConExpedienteObjeto.
-        ///// </summary>
-        //public Byte[] ConExpedienteDescarga(String entidad, Int32 expedienteId, String nombreArchivo)
-  //      {
-  //          return null;
-  //      }
-
         /// <summary>
         /// Esta funcion valida e inserta un registro en la base de datos.
         /// </summary>
@@ -206,15 +198,6 @@ namespace Rediin2022.Negocio.PriOperacion
             //Persistencia
             return await base.ConExpedienteObjetoElimina(conExpedienteObjeto);
         }
-        //Eli
-        ///// <summary>
-        ///// Acción personalizada Descarga.
-        ///// </summary>
-        //public new Boolean ConExpedienteObjetoDescarga()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         /// <summary>
         /// Acción personalizada SelArchivo.
         /// </summary>

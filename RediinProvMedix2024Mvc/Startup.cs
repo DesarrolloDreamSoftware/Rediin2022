@@ -1,9 +1,9 @@
 using DSEntityNetX.Entities.Rules;
-using DSMetodNetX.AspNetCore;
 using DSMetodNetX.Comun;
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Mvc;
 using DSMetodNetX.Mvc.TagHelpers.Filters;
+using DSMetodNetX.Web;
 using Rediin2022.Aplicacion.PriCatalogos;
 using Rediin2022.Aplicacion.PriClientes;
 using Rediin2022.Aplicacion.PriOperacion;

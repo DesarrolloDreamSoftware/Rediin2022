@@ -1,4 +1,6 @@
-﻿using DSEntityNetX.Common.Casting;
+﻿using DSEntityNetX.Business.Rules;
+using DSEntityNetX.Common.Casting;
+using DSEntityNetX.Entities.Rules;
 using DSMetodNetX.Entidades;
 using DSMetodNetX.Entidades.Config;
 using DSMetodNetX.Entidades.Correo;
@@ -83,6 +85,7 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
         EV.Medix = new();
         EV.Medix.ParamEstIdCaptura = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdCaptura");
         //EV.Medix.ParamEstIdAutorizado = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdAutorizado");
+        EV.Medix.ParamEstIdEnTesoreria = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdEnTesoreria");
         EV.Medix.ParamEstIdRevisado = await Servicios.ParamSist.Param<Int64>("RediinProveedorProcesoOperativoEstIdRevisado");
         EV.Medix.ParamUrlRediinProveedores = await Servicios.ParamSist.Param<String>("RediinProveedorUrl");
 
@@ -131,27 +134,6 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
         EV.Medix.ApiSapUsuario = Config.Valor<String>("MedixApiSapUsuario");
         EV.Medix.ApiSapPwd = Config.Valor<String>("MedixApiSapPwd");
         EV.Medix.ApiSapUrl = Config.Valor<String>("MedixApiSapUrl");
-
-
-        //JRD QUITAR DESPUES
-        //EV.ConExpediente.Filtro.ProcesoOperativoId = EV.ConExpProcOperativo.Sel.ProcesoOperativoId;
-        //EV.ConExpediente.Filtro.ControlEstatus = EV.ConExpProcOperativo.Sel.ControlEstatus;
-
-        //await Servicios.Pag.CargaPagOrdYFil(EV.ConExpediente);
-
-        //EV.ConExpediente.Filtro.ColumnaId =
-        //    XString.XToInt64(EV.ConExpediente.Filtro.ColumnaOrden);
-        //if (EV.ConExpediente.Filtro.ColumnaId < 0)
-        //    EV.ConExpediente.Filtro.ColumnaId *= -1;
-        //if (EV.ConExpediente.Filtro.ColumnaId > 0)
-        //    EV.ConExpediente.Filtro.Ascendente =
-        //        !EV.ConExpediente.Filtro.ColumnaOrden.StartsWith("-");
-
-        //EV.ConExpediente.Pag = await NConExpedientes.ConExpedientePag(EV.ConExpediente.Filtro);
-        //EV.ConExpediente.Sel = EV.ConExpediente.Pag.Pagina[EV.ConExpediente.Pag.Pagina.Count - 1];
-        //await ActualizaAPI();
-        //FIN JRD QUITAR DESPUES
-
 
         return Mensajes.Ok;
     }
@@ -221,12 +203,15 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
     public async Task<bool> ValidaEstatusParaCambio(EConExpedienteCambioEstatus conExpedienteCambioEstatus)
     {
         if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.Medix.ParamEstIdRevisado)
-            return await ActualizaAPI(conExpedienteCambioEstatus.ExpedienteId);
+            return await ActualizaAPI();
+        else if (conExpedienteCambioEstatus.ProcesoOperativoEstId == EV.Medix.ParamEstIdEnTesoreria)
+            return await ValidaDatosSAP();
         else
             return true;
     }
 
-    private async Task<Boolean> ActualizaAPI(Int64 expedienteId)
+    //private async Task<Boolean> ActualizaAPI(Int64 expedienteId)
+    private async Task<Boolean> ActualizaAPI()
     {
         EMedixApi vApiBase = new();
         //Lenamos el proveedor
@@ -258,22 +243,6 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
 
             EMedixApiRecibir vApiRecibir = await vRes.Content.ReadFromJsonAsync<EMedixApiRecibir>();
 
-            //JRD ELIMINAR DESPUES
-            //await NErroresNoControlados.ErrorNoControladoInserta(new DSMetodNetX.Entidades.ServiciosSisegui.EErrorNoControlado()
-            //{
-            //    Accion = nameof(ActualizaAPI),
-            //    Area = "Expedientes",
-            //    Controlador = "Expedientes",
-            //    Error = vApiRespuesta,
-            //    PilaDeSeguimiento = JsonSerializer.Serialize(vApiRecibir),
-            //    EstablecimientoId = Servicios.EVDatosPortal.UsuarioSesion.EstablecimientoId,
-            //    EstablecimientoNombre = Servicios.EVDatosPortal.UsuarioSesion.EstablecimientoNombre,
-            //    Fecha = DateTime.Now,
-            //    TipoAplicacionError = DSMetodNetX.Entidades.ServiciosSisegui.TipoAplicacionError.Mvc,
-            //    Estatus = DSMetodNetX.Entidades.ServiciosSisegui.EstatusErroresNoCtrl.PorRevisar,
-            //    UsuarioId = Servicios.EVDatosPortal.UsuarioSesion.UsuarioId
-            //});
-
             if (vApiRecibir.respuesta.estatus != "success")
             {
                 Mensajes.AddError(vApiRecibir.respuesta.mensaje);
@@ -301,8 +270,9 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
             }
 
             //Actualizamos en el expediente el proveedorId
-            var conExpediente = await NConExpedientes.ConExpedienteXId(expedienteId);
-            foreach (var vValor in conExpediente.Valores)
+            //var conExpediente = await NConExpedientes.ConExpedienteXId(expedienteId);
+            //foreach (var vValor in conExpediente.Valores)
+            foreach (var vValor in EV.ConExpediente.Sel.Valores)
             {
                 if (vValor.ColumnaId == EV.Medix.ColumnaIdProveedor)
                 {
@@ -310,7 +280,8 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
                     break;
                 }
             }
-            if (await NConExpedientes.ConExpedienteActualiza(conExpediente))
+            //if (await NConExpedientes.ConExpedienteActualiza(conExpediente))
+            if (await NConExpedientes.ConExpedienteActualiza(EV.ConExpediente.Sel))
             {
                 //Envia correo
                 String vCorreo = ObtenValor(EV.ConExpediente.Sel, EV.Medix.ParamColumnaIdCorreo).ToString();
@@ -325,22 +296,6 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
             Mensajes.AddError("Error al llamar al API.");
             Mensajes.AddError(ex.Message);
         }
-
-        //JRD ELIMINAR DESPUES
-        //await NErroresNoControlados.ErrorNoControladoInserta(new DSMetodNetX.Entidades.ServiciosSisegui.EErrorNoControlado()
-        //{
-        //    Accion = nameof(ActualizaAPI),
-        //    Area = "Expedientes",
-        //    Controlador = "Expedientes MENSAJES FIN",
-        //    Error = "Mensajes:",
-        //    PilaDeSeguimiento = "--> " + JsonSerializer.Serialize(Mensajes),
-        //    EstablecimientoId = Servicios.EVDatosPortal.UsuarioSesion.EstablecimientoId,
-        //    EstablecimientoNombre = Servicios.EVDatosPortal.UsuarioSesion.EstablecimientoNombre,
-        //    Fecha = DateTime.Now,
-        //    TipoAplicacionError = DSMetodNetX.Entidades.ServiciosSisegui.TipoAplicacionError.Mvc,
-        //    Estatus = DSMetodNetX.Entidades.ServiciosSisegui.EstatusErroresNoCtrl.PorRevisar,
-        //    UsuarioId = Servicios.EVDatosPortal.UsuarioSesion.UsuarioId
-        //});
 
         return Mensajes.Ok;
     }
@@ -458,7 +413,32 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
             }
         }
     }
+    private async Task<Boolean> ValidaDatosSAP()
+    {
+        //Cargamos las reglas de negocio si no estan cargadas
+        if (EV.Medix.ReglasSAP == null)
+            EV.Medix.ReglasSAP = await NExpedientesProveedor.ReglasValidacionSAP(EV.ProcesoOperativoIdProveedor);
 
+        //Creamos el objeto de validacion
+        NExpedientes.Mensajes.Initialize();
+        IXBusinessRules<EProveedorMedix, MEReglaNeg> vReglas =
+            new XBusinessRules<EProveedorMedix, MEReglaNeg>(NExpedientes.Mensajes, EV.Medix.ReglasSAP);
+
+        //Obtenemos el expediente
+        EProveedorMedix vProveedor = new();
+        UtilProveedorEspecif.CargaEntidadProveedor(EV.ProcOperColumnasCon, EV.ConExpediente.Sel, vProveedor);
+        if(vProveedor.SapSociedadId == "0")
+            vProveedor.SapSociedadId = string.Empty;
+        if (vProveedor.SapOrganizacionCompraId == "0")
+            vProveedor.SapOrganizacionCompraId = string.Empty;
+        if (vProveedor.MonedaId == "0")
+            vProveedor.MonedaId = string.Empty;
+        if (vProveedor.SapCondicionPagoId == "0")
+            vProveedor.SapCondicionPagoId = string.Empty;
+
+        //Validamos
+        return vReglas.Validate(vProveedor);
+    }
     private async Task EnviaCorreo(String correoDestino, String subject, String body)
     {
         IMCorreo vCorreo = await Servicios.ServCorreo.ServCorreo("RediinProveedoresMail");

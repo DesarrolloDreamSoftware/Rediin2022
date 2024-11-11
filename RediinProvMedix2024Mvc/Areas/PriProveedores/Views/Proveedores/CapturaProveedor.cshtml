@@ -143,7 +143,7 @@
                 @if (Model.TipoCaptura == TipoCaptura.PersonaMoral)
                 {
                     <div style="@vAcConVisible">
-                            <partial name="_ActaConstitutiva" view-data="@ViewData" model="@Model"></partial>
+                        <partial name="_ActaConstitutiva" view-data="@ViewData" model="@Model"></partial>
                     </div>
                 }
                 @if (ViewBag.Pagina != 3)
@@ -172,8 +172,8 @@
     </form>
 </div>
 @if (ViewBag.Pagina == 0 &&
-(Boolean)ViewBag.EsCaptura &&
-!String.IsNullOrWhiteSpace(@Model.Comentarios))
+   (Boolean)ViewBag.EsCaptura &&
+   !String.IsNullOrWhiteSpace(@Model.Comentarios))
 {
     <div class="row">
         <div class="col-md-12">
@@ -185,6 +185,8 @@
         </div>
     </div>
 }
+<br />
+<br />
 @if (ViewBag.SubeArchivo ?? false == true)
 {
     <div id="divSubeArchivo" class="modalDatos" xmodal="true" xmd-scrb="true" xmd-hauto="false" xmd-adh="100">

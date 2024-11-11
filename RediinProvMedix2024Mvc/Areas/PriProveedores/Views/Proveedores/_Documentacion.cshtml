@@ -22,7 +22,8 @@
                         <td>
                             @if (ViewBag.EsCaptura)
                             {
-                                <a style="background-color:#549BB4" asp-action="@nameof(ProveedoresController.SubeArchivoIni)" asp-route-indice="@i" xvisible="@ViewBag.EsCaptura"><img src="~/Imagenes/LogoSubir.png" width="27 px" title="Subir Archivo"></a>
+                                @* <a style="background-color:#549BB4" asp-action="@nameof(ProveedoresController.SubeArchivoIni)" asp-route-indice="@i" xvisible="@ViewBag.EsCaptura"><img src="~/Imagenes/LogoSubir.png" width="27 px" title="Subir Archivo"></a> *@
+                                <button type="submit" class="btn btn-link" asp-action="@nameof(ProveedoresController.SubeArchivoIni)" asp-route-indice="@i" xvisible="@ViewBag.EsCaptura"><img src="~/Imagenes/LogoSubir.png" width="27" title="Subir Archivo"></button>
                                 @if (!String.IsNullOrWhiteSpace(Model[i].ArchivoNombre))
                                 {
                                     <a style="background-color:#549BB4" asp-action="@nameof(ProveedoresController.EliminaArchivo)" asp-route-indice="@i"><img src="~/Imagenes/LogoElimina.png" width="25 px" title="Elimina Archivo"></a>

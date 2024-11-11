@@ -81,13 +81,13 @@ namespace Rediin2022.Aplicacion.PriOperacion
         {
             return await CallAsync<List<MEReglaNeg>>(NomFn());
         }
-        /// <summary>
-        /// Consulta para los combos que se capturan.
-        /// </summary>
-        public async Task<List<MEElemento>> ConExpedienteCmb(EProcesoOperativoCol procesoOperativoCol)
-        {
-            return await CallAsync<List<MEElemento>>(NomFn(), procesoOperativoCol);
-        }
+        ///// <summary>
+        ///// Consulta para los combos que se capturan.
+        ///// </summary>
+        //public async Task<List<MEElemento>> ConExpedienteCmb(EProcesoOperativoCol procesoOperativoCol)
+        //{
+        //    return await CallAsync<List<MEElemento>>(NomFn(), procesoOperativoCol);
+        //}
         #endregion
 
         #region ConExpedienteObjeto (Objs)

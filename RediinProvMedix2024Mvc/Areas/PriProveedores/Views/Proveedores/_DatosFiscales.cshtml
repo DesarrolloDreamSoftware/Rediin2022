@@ -4,7 +4,7 @@
 
 @model EProveedorMedix
 
-<div xpanel="Edit" xpnl-rules="@ViewBag.Reglas">
+<div xpanel="Edit" xpnl-rules="@ViewBag.Reglas" xpnl-readonly="@(!ViewBag.EsCaptura)">
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">

@@ -50,6 +50,8 @@
 						<span mhead-for="@nameof(EConExpedienteObjeto.ArchivoNombre)" xhead-sort="true"></span>
 					</th>
 					<th>
+					</th>
+					<th>
 						<span mhead-for="@nameof(EConExpedienteObjeto.FechaUltMod)" xhead-sort="true"></span>
 					</th>
 					<th>
@@ -90,6 +92,18 @@
 								else
 								{
 									<a asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoDescarga)" asp-route-indice="@i" title="Descargar">
+										<span mcell-for="@Model[i].ArchivoNombre" xcell-first="30" style="color:blue"></span>
+									</a>
+								}
+							</td>
+							<td>
+								@if (String.IsNullOrWhiteSpace(Model[i].ArchivoNombre))
+								{
+									<a asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoSelArchivoIni)" asp-route-indice="@i" style="color:blue">Agregar archivo</a>
+								}
+								else
+								{
+									<a target="_blank" asp-action="@nameof(ConExpedientesController.ConExpedienteObjetoDescarga2)" asp-route-indice="@i" title="Descargar">
 										<span mcell-for="@Model[i].ArchivoNombre" xcell-first="30" style="color:blue"></span>
 									</a>
 								}

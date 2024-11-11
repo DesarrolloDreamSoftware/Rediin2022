@@ -69,9 +69,6 @@
     <Reference Include="DSMetodNetX.Aplicacion">
       <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Aplicacion.dll</HintPath>
     </Reference>
-    <Reference Include="DSMetodNetX.AspNetCore">
-      <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.AspNetCore.dll</HintPath>
-    </Reference>
     <Reference Include="DSMetodNetX.Comun">
       <HintPath>..\..\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Comun.dll</HintPath>
     </Reference>
