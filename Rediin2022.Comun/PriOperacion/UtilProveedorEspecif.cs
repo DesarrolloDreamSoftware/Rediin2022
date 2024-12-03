@@ -19,23 +19,30 @@ public class UtilProveedorEspecif
     }
     public static void SeparaNombreUsuario(string proveedor, EUsuario usuario)
     {
-        String[] vNombres = proveedor.Split(" ");
-        if (vNombres.Length >= 3)
+        String[] vNombresArray = proveedor.Split(" ");
+        List<String> vNombres = new List<string>();
+        foreach(String vPal in vNombresArray)
         {
-            usuario.ApellidoMaterno = vNombres[vNombres.Length - 1];
-            usuario.ApellidoPaterno = vNombres[vNombres.Length - 2];
+            if (vPal.Length > 2)
+                vNombres.Add(vPal);
+        }
+
+        if (vNombres.Count >= 3)
+        {
+            usuario.ApellidoMaterno = vNombres[vNombres.Count - 1];
+            usuario.ApellidoPaterno = vNombres[vNombres.Count - 2];
             usuario.Nombre = String.Empty;
-            for (int i = 0; i < vNombres.Length - 2; i++)
+            for (int i = 0; i < vNombres.Count - 2; i++)
                 usuario.Nombre += (i > 0 ? " " : String.Empty) + vNombres[i];
 
             usuario.Usuario = $"{usuario.Nombre[0]}{usuario.ApellidoPaterno}".ToLower();
         }
-        else if (vNombres.Length >= 2)
+        else if (vNombres.Count >= 2)
         {
             usuario.ApellidoMaterno = "S/N.";
-            usuario.ApellidoPaterno = vNombres[vNombres.Length - 1];
+            usuario.ApellidoPaterno = vNombres[vNombres.Count - 1];
             usuario.Nombre = String.Empty;
-            for (int i = 0; i < vNombres.Length - 1; i++)
+            for (int i = 0; i < vNombres.Count - 1; i++)
                 usuario.Nombre += (i > 0 ? " " : String.Empty) + vNombres[i];
 
             usuario.Usuario = $"{usuario.Nombre[0]}{usuario.ApellidoPaterno}".ToLower();

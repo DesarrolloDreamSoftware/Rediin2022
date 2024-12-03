@@ -184,20 +184,20 @@ namespace Rediin2022.Negocio.PriClientes
                     vRN.Property == nameof(EProveedorMedix.Cuenta1) ||
                     vRN.Property == nameof(EProveedorMedix.CuentaClabe1))
                     vRN.Required = true; //Todos obligatorios
-                else if (proveedor.TipoCaptura == TipoCaptura.PersonaMoral && (
-                         vRN.Property == nameof(EProveedorMedix.NotarioNombre) ||
-                         vRN.Property == nameof(EProveedorMedix.NumeroEscritura) ||
-                         vRN.Property == nameof(EProveedorMedix.FechaEscritura) ||
-                         vRN.Property == nameof(EProveedorMedix.RepresentanteLegal) ||
-                         vRN.Property == nameof(EProveedorMedix.IdentificacionId) ||
-                         vRN.Property == nameof(EProveedorMedix.NumIdentificacion) ||
-                         vRN.Property == nameof(EProveedorMedix.PoderNotarialNotarioNombre) ||
-                         vRN.Property == nameof(EProveedorMedix.PoderNotarialNumEscritura) ||
-                         vRN.Property == nameof(EProveedorMedix.PoderNotarialFechaEscritura) ||
-                         vRN.Property == nameof(EProveedorMedix.PoderNotarialRepresentanteLegal) ||
-                         vRN.Property == nameof(EProveedorMedix.PoderNotarialIdentificacionId) ||
-                         vRN.Property == nameof(EProveedorMedix.PoderNotarialNumIdentificacion)))
-                    vRN.Required = true; //Todos obligatorios
+                //else if (proveedor.TipoCaptura == TipoCaptura.PersonaMoral && (
+                         //vRN.Property == nameof(EProveedorMedix.NotarioNombre) ||
+                         //vRN.Property == nameof(EProveedorMedix.NumeroEscritura) ||
+                         //vRN.Property == nameof(EProveedorMedix.FechaEscritura) ||
+                         //vRN.Property == nameof(EProveedorMedix.RepresentanteLegal) ||
+                         //vRN.Property == nameof(EProveedorMedix.IdentificacionId) ||
+                         //vRN.Property == nameof(EProveedorMedix.NumIdentificacion) ||
+                         //vRN.Property == nameof(EProveedorMedix.PoderNotarialNotarioNombre) ||
+                         //vRN.Property == nameof(EProveedorMedix.PoderNotarialNumEscritura) ||
+                         //vRN.Property == nameof(EProveedorMedix.PoderNotarialFechaEscritura) ||
+                         //vRN.Property == nameof(EProveedorMedix.PoderNotarialRepresentanteLegal) ||
+                         //vRN.Property == nameof(EProveedorMedix.PoderNotarialIdentificacionId) ||
+                         //vRN.Property == nameof(EProveedorMedix.PoderNotarialNumIdentificacion)))
+                    //vRN.Required = true; //Todos obligatorios
                 else
                     vRN.Required = false;
             }

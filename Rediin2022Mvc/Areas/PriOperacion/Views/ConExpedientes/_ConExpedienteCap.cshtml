@@ -6,6 +6,7 @@
 
 @{
     EVConExpedientes EV = ViewBag.EV;
+    bool vActivo = EV.Accion == MAccionesGen.Inserta || EV.Accion == MAccionesGen.Actualiza;
 
     List<EProcesoOperativoCol> vProcOperColumnas = ViewBag.ProcOperColumnasXTab;
     EConExpValores vValor = null;
@@ -34,7 +35,13 @@
     {
         <div melemento="CapLin">
             <div melemento="CapCol" melem-cols="3">
-                <input mval="Model" xval-for="ExpedienteId" xval-enabled="false" />
+                @* 20241122 Al estar disabled no forma parte en el objeto IFormCollection 
+                   utilizado para obtener los valores y se pierde el ExpedienteId
+                   por lo que agregamos el hidden para que se agregue  a IFormCollection
+                   se requiere el diabled ya que el cliente no quiere que se pueda colocar
+                   el foco en el campo*@
+                <input xhidden-for="ExpedienteId" />
+                <input mval="Model" xval-for="ExpedienteId" disabled />
             </div>
             <div melemento="CapCol" melem-cols="3">
             </div>
@@ -96,7 +103,7 @@
                 <div melemento="CapCol" melem-cols="@vCol.CapColumnas * 3">
                     @if (vCol.ComboId > 0)
                     {
-                        Boolean vActivar = vCol.ElementosCmb != null && vCol.ElementosCmb.Count > 0;
+                        Boolean vActivar = vCol.ElementosCmb != null && vCol.ElementosCmb.Count > 0 && vActivo;
                         if(EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ProcesoOperativoIdProveedor &&
                            EV.Medix != null &&
                            vCol.ColumnaId == EV.Medix.ColumnaIdModelo &&
@@ -136,7 +143,7 @@
                         <input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
                                xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
                                xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                               value="@vValorCadena" xval-dec="@vCol.Decimales" />
+                               value="@vValorCadena" xval-dec="@vCol.Decimales" disabled="@(!vActivo)" />
                     }
                     else if (vCol.Tipo == TiposColumna.Boleano)
                     {
@@ -151,7 +158,7 @@
                         <input mval="@vTipo" id="@vCol.ColumnaId" xval-min="@vCol.CapRangoIni"
                                xval-max="@vCol.CapRangoFin" xval-req="@vCol.CapObligatorio"
                                xval-label="@vCol.Etiqueta" xval-group="@nameof(EConExpediente)"
-                               value="@Html.Raw(vValorCadena)" />
+                               value="@Html.Raw(vValorCadena)" disabled="@(!vActivo)" />
                     }
                 </div>
                 @if (vCol.CapColumnasVacias > 0)
