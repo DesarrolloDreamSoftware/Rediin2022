@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -31,9 +31,6 @@
     </Reference>
     <Reference Include="DSMetodNetX.Aplicacion">
       <HintPath>..\..\..\..\Demexis - Rediin\3 Desarrollo\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Aplicacion.dll</HintPath>
-    </Reference>
-    <Reference Include="DSMetodNetX.AspNetCore">
-      <HintPath>..\..\..\..\Demexis - Rediin\3 Desarrollo\2 Librerias\DreamSoftware\Metod\DSMetodNetX.AspNetCore.dll</HintPath>
     </Reference>
     <Reference Include="DSMetodNetX.Comun">
       <HintPath>..\..\..\..\Demexis - Rediin\3 Desarrollo\2 Librerias\DreamSoftware\Metod\DSMetodNetX.Comun.dll</HintPath>
