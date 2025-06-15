@@ -77,6 +77,7 @@ namespace Rediin2022Mvc
 			else
                 services.AddScoped<ISENConExpedienteProv>(delegate (IServiceProvider p) { return null; });
 
+            services.AddScoped<NRMedix, NRMedix>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

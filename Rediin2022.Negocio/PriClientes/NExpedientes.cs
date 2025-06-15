@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rediin2022.Negocio.PriClientes
@@ -40,125 +41,37 @@ namespace Rediin2022.Negocio.PriClientes
 
         #region Funciones
 
-        #region Funciones para el cliente
+        #region Expediente
         public async Task<Int64> ExpedienteInserta(EExpediente expediente)
         {
             //Validamos
-            if (expediente.ProcesoOperativoId <= 0)
-                Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ProcesoOperativoId);
-
-            //if (expediente.ExpendienteId <= 0)
-            //    Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ExpedienteId);
-
-            if (expediente.Valores == null || expediente.Valores.Count == 0)
-                Mensajes.AddError("No especificó los valores.");
-
-            if (!Mensajes.Ok)
+            if(!ExpedienteValida(expediente))
                 return 0L;
 
             List<EProcesoOperativoCol> vColumnas =
                 await NProcesosOperativos.ProcesoOperativoColCT(expediente.ProcesoOperativoId);
 
-            foreach (EProcesoOperativoCol vCol in vColumnas)
-            {
-                Boolean vExiste = false;
-                foreach (EExpendienteValor vVal in expediente.Valores)
-                {
-                    if (vVal.ColumnaId == vCol.ColumnaId)
-                        vExiste = true;
-                }
-
-                if (!vExiste)
-                    Mensajes.AddError("La columna [{0}] no fue agregada a Valores.", vCol.ColumnaId);
-            }
-
-            if (!Mensajes.Ok)
+            if (!ProcOperColValida(vColumnas, expediente))
                 return 0L;
 
             //Proceso
             EConExpediente vConExp = new EConExpediente();
             vConExp.ProcesoOperativoId = expediente.ProcesoOperativoId;
             vConExp.ExpedienteId = 0; //Es insercion
-            foreach (EProcesoOperativoCol vCol in vColumnas)
-            {
-                foreach (EExpendienteValor vVal in expediente.Valores)
-                {
-                    if (vVal.ColumnaId == vCol.ColumnaId)
-                    {
-                        var vValExp = new EConExpValores()
-                        {
-                            ExpedienteId = 0,
-                            ColumnaId = vCol.ColumnaId
-                        };
-                        if (String.IsNullOrWhiteSpace(vVal.Valor))
-                            vVal.Valor = String.Empty;
-
-                        if (vCol.Tipo == TiposColumna.Texto)
-                            vValExp.ValorTexto = vVal.Valor;
-                        else if (vCol.Tipo == TiposColumna.Boleano)
-                            vValExp.ValorTexto = (vVal.Valor == "1" || vVal.Valor == "true" ? "1" : String.Empty);
-                        else if (vCol.Tipo == TiposColumna.Entero || vCol.Tipo == TiposColumna.Importe)
-                            vValExp.ValorNumerico = XString.XToDecimal(vVal.Valor);
-                        else if (vCol.Tipo == TiposColumna.Fecha || vCol.Tipo == TiposColumna.FechaYHora)
-                            vValExp.ValorFecha = XString.XToDateTime(vVal.Valor);
-                        else if (vCol.Tipo == TiposColumna.Hora)
-                        {
-                            DateTime vFecha = XString.XToDateTime(vVal.Valor);
-                            if (vFecha == DateTime.MinValue && vVal.Valor.Contains(":"))
-                            {
-                                String[] vVals = vVal.Valor.Split(":");
-                                Int32 vHora = 0;
-                                Int32 vMinuto = 0;
-                                if (vVals.Length > 0)
-                                    vHora = XString.XToInt32(vVals[0]);
-                                if (vVals.Length > 1)
-                                    vMinuto = XString.XToInt32(vVals[1]);
-                                vFecha = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, vHora, vMinuto, 0);
-                            }
-
-                            if (vFecha > DateTime.MinValue)
-                                vValExp.ValorFecha = vFecha;
-                        }
-
-                        vConExp.Valores.Add(vValExp);
-                    }
-                }
-            }
-
+            CargaDatosConExp(vColumnas, expediente.Valores, 0, vConExp.Valores);
+           
             return await NConExpedientes.ConExpedienteInserta(vConExp);
         }
         public async Task<Boolean> ExpedienteActualiza(EExpediente expediente)
         {
             //Validamos
-            if (expediente.ProcesoOperativoId <= 0)
-                Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ProcesoOperativoId);
-
-            //if (expediente.ExpendienteId <= 0)
-            //    Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ExpedienteId);
-
-            if (expediente.Valores == null || expediente.Valores.Count == 0)
-                Mensajes.AddError("No especificó los valores.");
-
-            if (!Mensajes.Ok)
+            if(!ExpedienteValida(expediente))
                 return false;
-
+           
             List<EProcesoOperativoCol> vColumnas =
                 await NProcesosOperativos.ProcesoOperativoColCT(expediente.ProcesoOperativoId);
 
-            foreach (EProcesoOperativoCol vCol in vColumnas)
-            {
-                Boolean vExiste = false;
-                foreach (EExpendienteValor vVal in expediente.Valores)
-                {
-                    if (vVal.ColumnaId == vCol.ColumnaId)
-                        vExiste = true;
-                }
-
-                if (!vExiste)
-                    Mensajes.AddError("La columna [{0}] no fue agregada a Valores.", vCol.ColumnaId);
-            }
-
-            if (!Mensajes.Ok)
+            if (!ProcOperColValida(vColumnas, expediente))
                 return false;
 
             //Proceso
@@ -166,51 +79,7 @@ namespace Rediin2022.Negocio.PriClientes
             vConExp.ProcesoOperativoId = expediente.ProcesoOperativoId;
             vConExp.ExpedienteId = expediente.ExpendienteId;
             vConExp.PermiteActualiza = true;
-            foreach (EProcesoOperativoCol vCol in vColumnas)
-            {
-                foreach (EExpendienteValor vVal in expediente.Valores)
-                {
-                    if (vVal.ColumnaId == vCol.ColumnaId)
-                    {
-                        var vValExp = new EConExpValores()
-                        {
-                            ExpedienteId = expediente.ExpendienteId,
-                            ColumnaId = vCol.ColumnaId
-                        };
-                        if (String.IsNullOrWhiteSpace(vVal.Valor))
-                            vVal.Valor = String.Empty;
-
-                        if (vCol.Tipo == TiposColumna.Texto)
-                            vValExp.ValorTexto = vVal.Valor;
-                        else if (vCol.Tipo == TiposColumna.Boleano)
-                            vValExp.ValorTexto = (vVal.Valor == "1" || vVal.Valor == "true" ? "1" : String.Empty);
-                        else if (vCol.Tipo == TiposColumna.Entero || vCol.Tipo == TiposColumna.Importe)
-                            vValExp.ValorNumerico = XString.XToDecimal(vVal.Valor);
-                        else if (vCol.Tipo == TiposColumna.Fecha || vCol.Tipo == TiposColumna.FechaYHora)
-                            vValExp.ValorFecha = XString.XToDateTime(vVal.Valor);
-                        else if (vCol.Tipo == TiposColumna.Hora)
-                        {
-                            DateTime vFecha = XString.XToDateTime(vVal.Valor);
-                            if (vFecha == DateTime.MinValue && vVal.Valor.Contains(":"))
-                            {
-                                String[] vVals = vVal.Valor.Split(":");
-                                Int32 vHora = 0;
-                                Int32 vMinuto = 0;
-                                if (vVals.Length > 0)
-                                    vHora = XString.XToInt32(vVals[0]);
-                                if (vVals.Length > 1)
-                                    vMinuto = XString.XToInt32(vVals[1]);
-                                vFecha = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, vHora, vMinuto, 0);
-                            }
-
-                            if (vFecha > DateTime.MinValue)
-                                vValExp.ValorFecha = vFecha;
-                        }
-
-                        vConExp.Valores.Add(vValExp);
-                    }
-                }
-            }
+            CargaDatosConExp(vColumnas, expediente.Valores, expediente.ExpendienteId, vConExp.Valores);
 
             return await NConExpedientes.ConExpedienteActualiza(vConExp);
         }
@@ -221,26 +90,90 @@ namespace Rediin2022.Negocio.PriClientes
                 ExpedienteId = expedienteId
             });
         }
-        protected Boolean ObjetoValida(EExpedienteObjeto expedienteObjeto)
+        protected Boolean ExpedienteValida(EExpediente expediente)
         {
-            //Validacion
-            if (expedienteObjeto.ExpedienteId <= 0)
-                Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ExpedienteId);
+            if (expediente.ProcesoOperativoId <= 0)
+                Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ProcesoOperativoId);
 
-            if (expedienteObjeto.ProcesoOperativoObjetoId <= 0)
-                Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ProcesoOperativoObjetoId);
+            //if (expediente.ExpendienteId <= 0)
+            //    Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ExpedienteId);
 
-            if (!expedienteObjeto.Eliminar)
+            if (expediente.Valores == null || expediente.Valores.Count == 0)
+                Mensajes.AddError("No especificó los valores.");
+
+            return Mensajes.Ok;
+        }
+        protected Boolean ProcOperColValida(List<EProcesoOperativoCol> columnas, EExpediente expediente)
+        {
+            foreach (EProcesoOperativoCol vCol in columnas)
             {
-                if (String.IsNullOrWhiteSpace(expedienteObjeto.ArchivoNombre))
-                    Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ArchivoNombre);
+                Boolean vExiste = false;
+                foreach (EExpendienteValor vVal in expediente.Valores)
+                {
+                    if (vVal.ColumnaId == vCol.ColumnaId)
+                        vExiste = true;
+                }
 
-                if (expedienteObjeto.Archivo == null)
-                    Mensajes.AddError("No se envio un archivo junto con el expediente.");
+                if (!vExiste)
+                    Mensajes.AddError("La columna [{0}] no fue agregada a Valores.", vCol.ColumnaId);
             }
 
             return Mensajes.Ok;
         }
+        protected void CargaDatosConExp(List<EProcesoOperativoCol> procOperColumnas,
+                                        List<EExpendienteValor> expValores,
+                                        Int64 expedienteId,
+                                        List<EConExpValores> conExpValores)
+        {
+            foreach (EProcesoOperativoCol vCol in procOperColumnas)
+            {
+                foreach (EExpendienteValor vVal in expValores)
+                {
+                    if (vVal.ColumnaId == vCol.ColumnaId)
+                    {
+                        var vValExp = new EConExpValores()
+                        {
+                            ExpedienteId = expedienteId,
+                            ColumnaId = vCol.ColumnaId
+                        };
+                        if (String.IsNullOrWhiteSpace(vVal.Valor))
+                            vVal.Valor = String.Empty;
+
+                        if (vCol.Tipo == TiposColumna.Texto)
+                            vValExp.ValorTexto = vVal.Valor;
+                        else if (vCol.Tipo == TiposColumna.Boleano)
+                            vValExp.ValorTexto = (vVal.Valor == "1" || vVal.Valor == "true" ? "1" : String.Empty);
+                        else if (vCol.Tipo == TiposColumna.Entero || vCol.Tipo == TiposColumna.Importe)
+                            vValExp.ValorNumerico = XString.XToDecimal(vVal.Valor);
+                        else if (vCol.Tipo == TiposColumna.Fecha || vCol.Tipo == TiposColumna.FechaYHora)
+                            vValExp.ValorFecha = XString.XToDateTime(vVal.Valor);
+                        else if (vCol.Tipo == TiposColumna.Hora)
+                        {
+                            DateTime vFecha = XString.XToDateTime(vVal.Valor);
+                            if (vFecha == DateTime.MinValue && vVal.Valor.Contains(":"))
+                            {
+                                String[] vVals = vVal.Valor.Split(":");
+                                Int32 vHora = 0;
+                                Int32 vMinuto = 0;
+                                if (vVals.Length > 0)
+                                    vHora = XString.XToInt32(vVals[0]);
+                                if (vVals.Length > 1)
+                                    vMinuto = XString.XToInt32(vVals[1]);
+                                vFecha = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, vHora, vMinuto, 0);
+                            }
+
+                            if (vFecha > DateTime.MinValue)
+                                vValExp.ValorFecha = vFecha;
+                        }
+
+                        conExpValores.Add(vValExp);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Objeto        
         public async Task<Int64> ObjetoInserta(EExpedienteObjeto expedienteObjeto)
         {
             if (!ObjetoValida(expedienteObjeto))
@@ -295,6 +228,26 @@ namespace Rediin2022.Negocio.PriClientes
         public async Task<Boolean> ObjetoSubeDocto(EDocumento documento)
         {
             return await Task.FromResult(true);
+        }
+        protected Boolean ObjetoValida(EExpedienteObjeto expedienteObjeto)
+        {
+            //Validacion
+            if (expedienteObjeto.ExpedienteId <= 0)
+                Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ExpedienteId);
+
+            if (expedienteObjeto.ProcesoOperativoObjetoId <= 0)
+                Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ProcesoOperativoObjetoId);
+
+            if (!expedienteObjeto.Eliminar)
+            {
+                if (String.IsNullOrWhiteSpace(expedienteObjeto.ArchivoNombre))
+                    Mensajes.AddError("El [{0}] no es valido.", MensajesXId.ArchivoNombre);
+
+                if (expedienteObjeto.Archivo == null)
+                    Mensajes.AddError("No se envio un archivo junto con el expediente.");
+            }
+
+            return Mensajes.Ok;
         }
         ///// <summary>
         ///// Listados para cargar los combos con expedientes de procesos operativos que son catalogos

@@ -496,34 +496,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                     }
                 }
             }
-
-
-            //if (EV.ConExpProcOperativo.Sel.ProcesoOperativoId == EV.ParamProveedorProcesoOperativoId)
-            //{
-            //    EV.CombosProveedores[EV.ParamProveedorColumnaIdEstado] = null;
-            //    EV.CombosProveedores[EV.ParamProveedorColumnaIdMunicipio] = null;
-            //    EV.CombosProveedores[EV.ParamProveedorColumnaIdColonia] = null;
-
-            //    Int64 vPaisId = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdPais));
-            //    if (vPaisId > 0)
-            //    {
-            //        EV.CombosProveedores[EV.ParamProveedorColumnaIdEstado] =
-            //            await NPaises.EstadoCmb(vPaisId);
-            //        Int64 vEstadoId = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdEstado));
-            //        if (vEstadoId > 0)
-            //        {
-            //            EV.CombosProveedores[EV.ParamProveedorColumnaIdMunicipio] =
-            //                await NPaises.MunicipioCmb(vEstadoId);
-            //            Int64 vMunicipio = XObject.ToInt64(ObtenValor(conExpediente, EV.ParamProveedorColumnaIdMunicipio));
-            //            if (vMunicipio > 0)
-            //            {
-            //                EV.CombosProveedores[EV.ParamProveedorColumnaIdColonia] =
-            //                    await NPaises.ColoniaCmb(vMunicipio);
-            //            }
-            //        }
-            //    }
-            //}
-
+          
             return ViewCap(nameof(ConExpedienteCaptura), conExpediente);
         }
         private void AjustaComboCascadaPEM(EConExpediente conExpediente, Int64 columnaId)
@@ -560,36 +533,7 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
                 }
             }
         }
-        //private void AjustaComboCascadaPEMProv(EConExpediente conExpediente, Int64 columnaId)
-        //{
-        //    if (columnaId == EV.ParamProveedorColumnaIdPais)
-        //    {
-        //        foreach (var vVal in conExpediente.Valores)
-        //        {
-        //            if (vVal.ColumnaId == EV.ParamProveedorColumnaIdEstado ||
-        //               vVal.ColumnaId == EV.ParamProveedorColumnaIdMunicipio ||
-        //               vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
-        //                EstableceValor(vVal, TiposColumna.Entero, "0");
-        //        }
-        //    }
-        //    else if (columnaId == EV.ParamProveedorColumnaIdEstado)
-        //    {
-        //        foreach (var vVal in conExpediente.Valores)
-        //        {
-        //            if (vVal.ColumnaId == EV.ParamProveedorColumnaIdMunicipio ||
-        //                vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
-        //                EstableceValor(vVal, TiposColumna.Entero, "0");
-        //        }
-        //    }
-        //    else if (columnaId == EV.ParamProveedorColumnaIdMunicipio)
-        //    {
-        //        foreach (var vVal in conExpediente.Valores)
-        //        {
-        //            if (vVal.ColumnaId == EV.ParamProveedorColumnaIdColonia)
-        //                EstableceValor(vVal, TiposColumna.Entero, "0");
-        //        }
-        //    }
-        //}
+       
         private Object ObtenValor(EConExpediente conExpediente, Int64 columnaId)
         {
             return UtilExpediente.ObtenValor(EV.ProcOperColumnasCon,
@@ -820,8 +764,6 @@ namespace Rediin2022Mvc.Areas.PriOperacion.Controllers
 
 			return Redirect(googleViewerUrl);
 		}
-
-
 		//[MValidaSeg(nameof(ConExpedienteObjetoDescarga))]
 		//public async Task<IActionResult> ConExpedienteObjetoDescarga2(Int32 indice)
 		//{

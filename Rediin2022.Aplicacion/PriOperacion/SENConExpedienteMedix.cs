@@ -11,10 +11,6 @@ using Rediin2022.Entidades.PriOperacion;
 using Sisegui2020.Entidades.PriCatalogos;
 using Sisegui2020.Entidades.PriSeguridad;
 using System;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Rediin2022.Aplicacion.PriOperacion;
@@ -33,11 +29,12 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
                                  INBancos nBancos,
                                  INIncoterms nIncoterms,
                                  IConfig config,
-                                 HttpClient httpClient,
+                                 //HttpClient httpClient,
+                                 NRMedix nMedix,
                                  INErroresNoControlados nErroresNoControlados)
     {
         Servicios = servicios;
-        Config = config;
+        //Config = config;
         NConExpedientes = nConExpedientes;
         NExpedientes = nExpedientes;
         NExpedientesProveedor = nExpedientesProveedor;
@@ -48,7 +45,8 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
         NRegimenesFiscales = nRegimenesFiscales;
         NBancos = nBancos;
         NIncoterms = nIncoterms;
-        HttpClient = httpClient;
+        //HttpClient = httpClient;
+        NMedix = nMedix;
 
         NErroresNoControlados = nErroresNoControlados;
     }
@@ -62,8 +60,9 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
 
     public EVConExpedientes EV { get; set; }
 
-    private IConfig Config { get; set; }
-    private HttpClient HttpClient { get; set; }
+    //private IConfig Config { get; set; }
+    //private HttpClient HttpClient { get; set; }
+    private NRMedix NMedix { get; set; }
 
     private IMSrvPrivado Servicios { get; set; }
     private INConExpedientes NConExpedientes { get; set; }
@@ -131,14 +130,15 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
             return false;
         }
 
-        EV.Medix.ApiSapUsuario = Config.Valor<String>("MedixApiSapUsuario");
-        EV.Medix.ApiSapPwd = Config.Valor<String>("MedixApiSapPwd");
-        EV.Medix.ApiSapUrl = Config.Valor<String>("MedixApiSapUrl");
+        //EV.Medix.ApiSapUsuario = Config.Valor<String>("MedixApiSapUsuario");
+        //EV.Medix.ApiSapPwd = Config.Valor<String>("MedixApiSapPwd");
+        //EV.Medix.ApiSapUrl = Config.Valor<String>("MedixApiSapUrl");
 
         return Mensajes.Ok;
     }
     public async Task<Boolean> Inserta(EConExpediente conExpediente)
     {
+        //Se valida aqui porque usa List<EProcesoOperativoCol> para ObtenValor
         String vNombre = ObtenValor(conExpediente, EV.Medix.ParamColumnaIdNombre).ToString();
         String vCorreo = ObtenValor(conExpediente, EV.Medix.ParamColumnaIdCorreo).ToString();
         if (String.IsNullOrWhiteSpace(vNombre))
@@ -159,14 +159,15 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
 
         if (NExpedientes.Mensajes.Ok)
         {
-            foreach (var vValor in conExpediente.Valores)
-            {
-                if (vValor.ColumnaId == EV.Medix.ColumnaIdUsuario)
-                {
-                    UtilExpediente.EstableceValor(vValor, TiposColumna.Entero, vCve.UsuarioId.ToString());
-                    break;
-                }
-            }
+            //foreach (var vValor in conExpediente.Valores)
+            //{
+            //    if (vValor.ColumnaId == EV.Medix.ColumnaIdUsuario)
+            //    {
+            //        UtilExpediente.EstableceValor(vValor, TiposColumna.Entero, vCve.UsuarioId.ToString());
+            //        break;
+            //    }
+            //}
+            UtilExpediente.EstableceValor(conExpediente.Valores, EV.Medix.ColumnaIdUsuario, TiposColumna.Entero, vCve.UsuarioId.ToString());
             await NConExpedientes.ConExpedienteActualiza(conExpediente);
 
             await EnviaCorreo(vUsuario.CorreoElectronico,
@@ -217,85 +218,88 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
         //Lenamos el proveedor
         await LlenaCamposAPI(vApiBase.proveedor);
 
-        //Convertimos el proveedor a base64
-        string vApiBaseJson = JsonSerializer.Serialize(vApiBase);
-        byte[] vApiBaseBytes = Encoding.UTF8.GetBytes(vApiBaseJson);
-        string vApiBaseBase64 = Convert.ToBase64String(vApiBaseBytes);
+        ////Convertimos el proveedor a base64
+        //string vApiBaseJson = JsonSerializer.Serialize(vApiBase);
+        //byte[] vApiBaseBytes = Encoding.UTF8.GetBytes(vApiBaseJson);
+        //string vApiBaseBase64 = Convert.ToBase64String(vApiBaseBytes);
 
-        //Preparamos la entidad de envio
-        EMedixApiEnviar vEnvio = new();
-        vEnvio.solicitud.idApp = EV.Medix.ApiSapUsuario;
-        vEnvio.solicitud.pwdApp = EV.Medix.ApiSapPwd;
-        vEnvio.solicitud.enc_request = vApiBaseBase64;
+        ////Preparamos la entidad de envio
+        //EMedixApiEnviar vEnvio = new();
+        //vEnvio.solicitud.idApp = EV.Medix.ApiSapUsuario;
+        //vEnvio.solicitud.pwdApp = EV.Medix.ApiSapPwd;
+        //vEnvio.solicitud.enc_request = vApiBaseBase64;
 
         //Llamamos al API
-        try
+        //try
+        //{
+        EMedixApiRecibir vApiRecibir = await NMedix.AltaProveedorRediin(vApiBase);
+        if (!Mensajes.Ok)
+            return false;
+
+        //HttpResponseMessage vRes = await HttpClient.PostAsJsonAsync(EV.Medix.ApiSapUrl, vEnvio);
+        //if (!vRes.IsSuccessStatusCode)
+        //{
+        //    Mensajes.AddError("Error al consultar el API.");
+        //    return false;
+        //}
+
+        ////JRD ELIMINAR DESPUES
+        ////string vApiRespuesta = await vRes.Content.ReadAsStringAsync();
+
+        //EMedixApiRecibir vApiRecibir = await vRes.Content.ReadFromJsonAsync<EMedixApiRecibir>();
+
+        //if (vApiRecibir.respuesta.estatus != "success")
+        //{
+        //    Mensajes.AddError(vApiRecibir.respuesta.mensaje);
+        //    return false;
+        //}
+
+        //if (vApiRecibir.respuesta.data == null ||
+        //    vApiRecibir.respuesta.data.proveedor == null ||
+        //    vApiRecibir.respuesta.data.proveedor.Count == 0)
+        //{
+        //    Mensajes.AddError("No se recibio el proveedor en el resultado.");
+        //    return false;
+        //}
+
+        //if (vApiRecibir.respuesta.data.proveedor[0].respuestaSAPEstatus != "success")
+        //{
+        //    Mensajes.AddError(vApiRecibir.respuesta.data.proveedor[0].respuestaSAPMensaje);
+        //    return false;
+        //}
+
+        //if (string.IsNullOrWhiteSpace(vApiRecibir.respuesta.data.proveedor[0].numeroProveedor))
+        //{
+        //    Mensajes.AddError("El numero de proveedor esta vacio.");
+        //    return false;
+        //}
+
+        //Actualizamos en el expediente el proveedorId
+        //foreach (var vValor in EV.ConExpediente.Sel.Valores)
+        //{
+        //    if (vValor.ColumnaId == EV.Medix.ColumnaIdProveedor)
+        //    {
+        //        UtilExpediente.EstableceValor(vValor, TiposColumna.Entero, vApiRecibir.respuesta.data.proveedor[0].numeroProveedor);
+        //        break;
+        //    }
+        //}
+        UtilExpediente.EstableceValor(EV.ConExpediente.Sel.Valores, EV.Medix.ColumnaIdProveedor,
+            TiposColumna.Entero, vApiRecibir.respuesta.data.proveedor[0].numeroProveedor);
+        if (await NConExpedientes.ConExpedienteActualiza(EV.ConExpediente.Sel))
         {
-            HttpResponseMessage vRes = await HttpClient.PostAsJsonAsync(EV.Medix.ApiSapUrl, vEnvio);
-            if (!vRes.IsSuccessStatusCode)
-            {
-                Mensajes.AddError("Error al consultar el API.");
-                return false;
-            }
-
-            //JRD ELIMINAR DESPUES
-            //string vApiRespuesta = await vRes.Content.ReadAsStringAsync();
-
-            EMedixApiRecibir vApiRecibir = await vRes.Content.ReadFromJsonAsync<EMedixApiRecibir>();
-
-            if (vApiRecibir.respuesta.estatus != "success")
-            {
-                Mensajes.AddError(vApiRecibir.respuesta.mensaje);
-                return false;
-            }
-
-            if (vApiRecibir.respuesta.data == null ||
-                vApiRecibir.respuesta.data.proveedor == null ||
-                vApiRecibir.respuesta.data.proveedor.Count == 0)
-            {
-                Mensajes.AddError("No se recibio el proveedor en el resultado.");
-                return false;
-            }
-
-            if (vApiRecibir.respuesta.data.proveedor[0].respuestaSAPEstatus != "success")
-            {
-                Mensajes.AddError(vApiRecibir.respuesta.data.proveedor[0].respuestaSAPMensaje);
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(vApiRecibir.respuesta.data.proveedor[0].numeroProveedor))
-            {
-                Mensajes.AddError("El numero de proveedor esta vacio.");
-                return false;
-            }
-
-            //Actualizamos en el expediente el proveedorId
-            //var conExpediente = await NConExpedientes.ConExpedienteXId(expedienteId);
-            //foreach (var vValor in conExpediente.Valores)
-            foreach (var vValor in EV.ConExpediente.Sel.Valores)
-            {
-                if (vValor.ColumnaId == EV.Medix.ColumnaIdProveedor)
-                {
-                    UtilExpediente.EstableceValor(vValor, TiposColumna.Entero, vApiRecibir.respuesta.data.proveedor[0].numeroProveedor);
-                    break;
-                }
-            }
-            //if (await NConExpedientes.ConExpedienteActualiza(conExpediente))
-            if (await NConExpedientes.ConExpedienteActualiza(EV.ConExpediente.Sel))
-            {
-                //Envia correo
-                String vCorreo = ObtenValor(EV.ConExpediente.Sel, EV.Medix.ParamColumnaIdCorreo).ToString();
-                String vProveedor = ObtenValor(EV.ConExpediente.Sel, EV.Medix.ParamColumnaIdNombre).ToString();
-                await EnviaCorreo(vCorreo,
-                   "Seguimiento en Portal de Rediin Proveedores",
-                   $"Estimado {vProveedor}:<br/><br/>Su alta como proveedor ha sido satisfactoria.");
-            }
+            //Envia correo
+            String vCorreo = ObtenValor(EV.ConExpediente.Sel, EV.Medix.ParamColumnaIdCorreo).ToString();
+            String vProveedor = ObtenValor(EV.ConExpediente.Sel, EV.Medix.ParamColumnaIdNombre).ToString();
+            await EnviaCorreo(vCorreo,
+               "Seguimiento en Portal de Rediin Proveedores",
+               $"Estimado {vProveedor}:<br/><br/>Su alta como proveedor ha sido satisfactoria.");
         }
-        catch (Exception ex)
-        {
-            Mensajes.AddError("Error al llamar al API.");
-            Mensajes.AddError(ex.Message);
-        }
+        //}
+        //catch (Exception ex)
+        //{
+        //    Mensajes.AddError("Error al llamar al API.");
+        //    Mensajes.AddError(ex.Message);
+        //}
 
         return Mensajes.Ok;
     }
@@ -427,7 +431,7 @@ public class SENConExpedienteMedix : ISENConExpedienteProv
         //Obtenemos el expediente
         EProveedorMedix vProveedor = new();
         UtilProveedorEspecif.CargaEntidadProveedor(EV.ProcOperColumnasCon, EV.ConExpediente.Sel, vProveedor);
-        if(vProveedor.SapSociedadId == "0")
+        if (vProveedor.SapSociedadId == "0")
             vProveedor.SapSociedadId = string.Empty;
         if (vProveedor.SapOrganizacionCompraId == "0")
             vProveedor.SapOrganizacionCompraId = string.Empty;

@@ -76,37 +76,6 @@ public class SENConExpedienteMontePio : ISENConExpedienteProv
             return false;
         }
 
-        //Para catalogos
-        //JRD QUITART
-        //EV.ParamProveedorColumnaIdPais = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.PaisId)).ColumnaId;
-        //EV.ParamProveedorColumnaIdEstado = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.EstadoId)).ColumnaId;
-        //EV.ParamProveedorColumnaIdMunicipio = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.MunicipioId)).ColumnaId;
-        //EV.ParamProveedorColumnaIdColonia = UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.ColoniaId)).ColumnaId;
-
-        //JRD QUITART
-        //List<MEElemento> vBancos = await NBancos.BancoCmb();
-        //EV.CombosProveedores = new Dictionary<Int64, List<MEElemento>>()
-        //{
-        //    { EV.ParamProveedorColumnaIdPais, await NPaises.PaisCmb() },
-        //    { EV.ParamProveedorColumnaIdEstado, null},
-        //    { EV.ParamProveedorColumnaIdMunicipio, null},
-        //    { EV.ParamProveedorColumnaIdColonia, null},
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.BancoId)).ColumnaId, vBancos },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.BancoId2)).ColumnaId, vBancos },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.BancoId3)).ColumnaId, vBancos },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapSociedadId)).ColumnaId, await NSapSociedades.SapSociedadCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapSociedadGLId)).ColumnaId, await NSapSociedadesGL.SapSociedadGLCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoCuentaId)).ColumnaId, await NSapGrupoCuentas.SapGrupoCuentaCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapOrganizacionCompraId)).ColumnaId, await NSapOrganizacionesCompra.SapOrganizacionCompraCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapTratamientoId)).ColumnaId, await NSapTratamientos.SapTratamientoCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCuentaAsociadaId)).ColumnaId, await NSapCuentasAsociadas.SapCuentaAsociadaCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoTesoreriaId)).ColumnaId, await NSapGruposTesoreria.SapGrupoTesoreriaCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapBancoId)).ColumnaId, await NSapBancos.SapBancoCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapCondicionPagoId)).ColumnaId, await NSapCondicionesPago.SapCondicionPagoCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapViaPagoId)).ColumnaId, await NSapViasPago.SapViaPagoCmb() },
-        //    { UtilExpediente.ObtenRelacion(vRelaciones, nameof(EProveedor.SapGrupoToleranciaId)).ColumnaId, await NSapGruposTolerancia.SapGrupoToleranciaCmb() },
-        //};
-
         return true;
     }
     public async Task<Boolean> Inserta(EConExpediente conExpediente)
@@ -131,11 +100,12 @@ public class SENConExpedienteMontePio : ISENConExpedienteProv
 
         if (NExpedientes.Mensajes.Ok)
         {
-            foreach (var vValor in conExpediente.Valores)
-            {
-                if (vValor.ColumnaId == EV.MontePio.ColumnaIdUsuario)
-                    UtilExpediente.EstableceValor(vValor, TiposColumna.Entero, vCve.UsuarioId.ToString());
-            }
+            //foreach (var vValor in conExpediente.Valores)
+            //{
+            //    if (vValor.ColumnaId == EV.MontePio.ColumnaIdUsuario)
+            //        UtilExpediente.EstableceValor(vValor, TiposColumna.Entero, vCve.UsuarioId.ToString());
+            //}
+            UtilExpediente.EstableceValor(conExpediente.Valores, EV.MontePio.ColumnaIdUsuario, TiposColumna.Entero, vCve.UsuarioId.ToString());
             await NConExpedientes.ConExpedienteActualiza(conExpediente);
 
             EnviaCorreo(vUsuario.CorreoElectronico,

@@ -18,9 +18,9 @@ public class EVConExpedientesMedix
     public Int64 ColumnaIdModelo { get; set; }
     public String ParamUrlRediinProveedores { get; set; }
 
-    public string ApiSapUsuario { get; set; }
-    public string ApiSapPwd { get; set; }
-    public string ApiSapUrl { get; set; }
+    //public string ApiSapUsuario { get; set; }
+    //public string ApiSapPwd { get; set; }
+    //public string ApiSapUrl { get; set; }
 
     public List<MEReglaNeg> ReglasSAP { get; set; } = null;
 }

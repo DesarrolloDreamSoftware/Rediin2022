@@ -18,7 +18,17 @@ public static class UtilExpediente
         else
             valor.ValorTexto = cadena;
     }
-  
+    public static void EstableceValor(List<EConExpValores> valores, Int64 columnaId, TiposColumna tipo, string cadena)
+    {
+        foreach (var vValor in valores)
+        {
+            if (vValor.ColumnaId == columnaId)
+            {
+                EstableceValor(vValor, TiposColumna.Entero, cadena);
+                break;
+            }
+        }
+    }
     public static Object ObtenValor(List<EProcesoOperativoCol> procesoOperativoCols,
                                     EConExpediente conExpediente,
                                     Int64 columnaId)
@@ -104,7 +114,7 @@ public static class UtilExpediente
 
     public static Type ObtenTipoColumna(TiposColumna tipo)
     {
-        if(tipo == TiposColumna.Boleano)
+        if (tipo == TiposColumna.Boleano)
             return typeof(Boolean);
         else if (tipo == TiposColumna.Entero)
             return typeof(Int64);
@@ -112,7 +122,7 @@ public static class UtilExpediente
             return typeof(DateTime);
         else if (tipo == TiposColumna.Importe)
             return typeof(Decimal);
-        else 
+        else
             return typeof(String);
     }
 }
