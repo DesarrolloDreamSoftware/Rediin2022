@@ -37,7 +37,7 @@ public class Startup
         string vProveedor = Configuration["CCP"];
         DbProviderFactory vBDFactory = null;
         if (vProveedor == "sql")
-            vBDFactory = System.Data.SqlClient.SqlClientFactory.Instance;
+            vBDFactory = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
         else if (vProveedor == "postgresql")
             //vBDFactory = new MPostgreProviderFactory(Npgsql.NpgsqlFactory.Instance);
             throw new Exception($"Fabrica [{vProveedor}] no existe para esta API.");

@@ -51,6 +51,7 @@ public class UtilProveedorEspecif
         {
             usuario.ApellidoPaterno = "S/N.";
             usuario.ApellidoMaterno = "S/N.";
+            usuario.Nombre = proveedor;
             usuario.Usuario = $"{usuario.Nombre.Trim().Replace(" ", "")}".ToLower();
         }
     }
